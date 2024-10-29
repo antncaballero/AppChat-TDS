@@ -3,7 +3,6 @@ package umu.tds.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
@@ -13,9 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
-
-import org.w3c.dom.css.RGBColor;
-
 import umu.tds.dominio.Usuario;
 
 public class UserCellRenderer extends JPanel implements ListCellRenderer<Usuario>{

@@ -7,35 +7,25 @@ import java.awt.TextField;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDate;
-
 import javax.imageio.ImageIO;
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
-
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-
 import tds.BubbleText;
-
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
-
 import umu.tds.dominio.Usuario;
 
 public class VentanaPrincipal extends JFrame {
@@ -93,7 +83,7 @@ public class VentanaPrincipal extends JFrame {
 		}
 
 	}
-
+	
 	public VentanaPrincipal() {
 		setTitle("AppMusic");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
