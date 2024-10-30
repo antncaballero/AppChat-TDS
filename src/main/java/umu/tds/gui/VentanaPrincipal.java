@@ -96,21 +96,39 @@ public class VentanaPrincipal extends JFrame {
 		JPanel panelNorte = new JPanel();
 		contentPane.add(panelNorte, BorderLayout.NORTH);
 
-		JButton botonPremium = new JButton(getIcon("src/main/resources/premium.png", 3f));
+		JButton botonPremium = new JButton(getIcon("src/main/resources/premium.png", 3.3f));
 		JButton botonBuscar = new JButton(getIcon("src/main/resources/glass.png", 2.5f));
+		JButton botonContactos = new JButton(getIcon("src/main/resources/contacts.png", 2.5f));
+		JButton botonPerfil = new JButton(getIcon("src/main/resources/user.png", 2.5f));
+		JButton botonMandar = new JButton(getIcon("src/main/resources/send.png", 2.5f));
+		
 		botonPremium.setBackground(Color.WHITE);
-
 		botonPremium.setBorder(BorderFactory.createEmptyBorder());
 		botonBuscar.setBackground(Color.WHITE);
 		botonPremium.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		botonBuscar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-		panelNorte.add(botonBuscar);
+		botonContactos.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		botonContactos.setBackground(Color.WHITE);
+		botonContactos.setText("Contactos");
+		botonContactos.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		botonContactos.setIconTextGap(8);
+		botonPerfil.setBackground(Color.WHITE);
+		botonPerfil.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		botonPerfil.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		botonPerfil.setIconTextGap(10);
+		botonPerfil.setText("Antonio");
+		botonMandar.setBackground(Color.WHITE);
+		botonMandar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		
+		panelNorte.add(botonMandar);
+		panelNorte.add(botonBuscar);		
+		panelNorte.add(botonContactos);
 		panelNorte.add(botonPremium);
-
+		panelNorte.add(botonPerfil);
+		
 
 		JPanel panelChat = new JPanel();
-		panelChat.setBorder(new TitledBorder(null, "mensajes con contacto1", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelChat.setBorder(new TitledBorder(null, "mensajes con contactos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		contentPane.add(panelChat, BorderLayout.EAST);
 		panelChat.setLayout(new BoxLayout(panelChat,BoxLayout.Y_AXIS)); 
 		panelChat.setSize(500,600); 
@@ -118,20 +136,14 @@ public class VentanaPrincipal extends JFrame {
 		panelChat.setMaximumSize(new Dimension(500,600)); 
 		panelChat.setPreferredSize(new Dimension(500,600));
 
-		BubbleText burbuja; 
-		burbuja=new BubbleText(panelChat,"Hola grupo!!", Color.GREEN, "J.Ramón", BubbleText.SENT); 
-
-		BubbleText burbuja2; 
-		burbuja2=new BubbleText(panelChat, "Hola, ¿Está seguro de que la burbuja usa varias lineas si es necesario?", Color.LIGHT_GRAY, "Alumno", BubbleText.RECEIVED); 		
-
+		BubbleText burbuja=new BubbleText(panelChat,"Hola grupo!!", Color.GREEN, "J.Ramón", BubbleText.SENT); 
+		BubbleText burbuja2=new BubbleText(panelChat, "Hola, ¿Está seguro de que la burbuja usa varias lineas si es necesario?", Color.LIGHT_GRAY, "Alumno", BubbleText.RECEIVED); 		
 		BubbleText burbuja3=new BubbleText(panelChat, 4, Color.GREEN, "J.Ramón", BubbleText.SENT, 12); 
-		panelChat.add(burbuja);
 
 		TextField mensaje = new TextField();
 		JButton botonSend = new JButton(getIcon("src/main/resources/send.png", 2f));
 		botonSend.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		botonSend.setBackground(Color.WHITE);
-
 
 		panelChat.setLayout(new BorderLayout());
 
@@ -152,8 +164,18 @@ public class VentanaPrincipal extends JFrame {
 		panelCentro.setBorder(new TitledBorder(null, "Mis chats", TitledBorder.LEADING, TitledBorder.TOP));
 		contentPane.add(panelCentro, BorderLayout.CENTER);
 
+		
 		JList<Usuario> lista = new JList<>(new UserListModel());
 		lista.setCellRenderer(new UserCellRenderer());
+		lista.addListSelectionListener(e -> {
+			if (!e.getValueIsAdjusting()) {
+				Usuario selectedUser = lista.getSelectedValue();
+				if (selectedUser != null) {
+					String contactoSeleccionado = selectedUser.getNombre() + " " + selectedUser.getApellidos();
+					panelChat.setBorder(new TitledBorder(null, "Mensajes con " + contactoSeleccionado, TitledBorder.LEADING, TitledBorder.TOP, null, null));
+				}
+			}
+		});
 
 		JScrollPane scrollPane = new JScrollPane(lista);
 		scrollPane.setSize(380,490); 
@@ -162,6 +184,8 @@ public class VentanaPrincipal extends JFrame {
 		scrollPane.setPreferredSize(new Dimension(380,490));
 		scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelCentro.add(scrollPane);
+		
+		
 	}
 
 	private ImageIcon getIcon(String imageUrl, float factor) {
