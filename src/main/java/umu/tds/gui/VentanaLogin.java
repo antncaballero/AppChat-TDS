@@ -4,12 +4,15 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Color;
+
 import javax.swing.JLabel;
 import javax.swing.BoxLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 
@@ -22,7 +25,7 @@ import javax.swing.JPasswordField;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-public class VentanaLoginRegistro {
+public class VentanaLogin {
 
 	private JFrame frame;
 
@@ -33,7 +36,7 @@ public class VentanaLoginRegistro {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					VentanaLoginRegistro window = new VentanaLoginRegistro();
+					VentanaLogin window = new VentanaLogin();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -45,10 +48,19 @@ public class VentanaLoginRegistro {
 	/**
 	 * Create the application.
 	 */
-	public VentanaLoginRegistro() {
+	public VentanaLogin() {
 		initialize();
 	}
 
+	/**
+	 * Set the visibility of the frame. 
+	 * @param b
+	 */
+	public void setVisible(boolean b) {
+		frame.setVisible(b);
+	}
+	
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -71,7 +83,7 @@ public class VentanaLoginRegistro {
 		panelNorte.add(labelTitulo);
 
 		JPanel panelCentro = new JPanel();
-		panelCentro.setBorder(new TitledBorder(null, "Login", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelCentro.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "Login", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelLogin.add(panelCentro, BorderLayout.CENTER);
 		GridBagLayout gbl_panelCentro = new GridBagLayout();
 		gbl_panelCentro.columnWidths = new int[]{0, 0, 0, 0};
@@ -124,6 +136,11 @@ public class VentanaLoginRegistro {
 		JButton btnRegistrar = new JButton("Registrar");
 		btnRegistrar.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		panelSur.add(btnRegistrar);
+		btnRegistrar.addActionListener(e -> {
+            VentanaRegistro registro = new VentanaRegistro();
+            registro.setVisible(true);
+            frame.dispose();
+        });
 
 		Component espacioBotones = Box.createHorizontalStrut(150);
 		panelSur.add(espacioBotones);
@@ -138,7 +155,7 @@ public class VentanaLoginRegistro {
 		btnAceptar.addActionListener(e -> {
 			VentanaPrincipal main = new VentanaPrincipal();
 			main.setVisible(true);
-			frame.setVisible(false);
+			frame.dispose();
 		});
 
 		JPanel panelOeste = new JPanel();
@@ -153,5 +170,5 @@ public class VentanaLoginRegistro {
 		Component espacioEste = Box.createHorizontalStrut(110);
 		panelEste.add(espacioEste);
 	}
-
+	
 }

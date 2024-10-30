@@ -8,6 +8,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.imageio.ImageIO;
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
@@ -21,7 +24,9 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import tds.BubbleText;
 import javax.swing.JScrollPane;
@@ -81,6 +86,10 @@ public class VentanaPrincipal extends JFrame {
 		public Usuario getElementAt(int index) {
 			return users[index];
 		}
+		
+		public static List<Usuario> getUsers() {
+			   return Arrays.asList(users);
+		}
 
 	}
 	
@@ -101,6 +110,10 @@ public class VentanaPrincipal extends JFrame {
 		JButton botonContactos = new JButton(getIcon("src/main/resources/contacts.png", 2.5f));
 		JButton botonPerfil = new JButton(getIcon("src/main/resources/user.png", 2.5f));
 		JButton botonMandar = new JButton(getIcon("src/main/resources/send.png", 2.5f));
+		JComboBox<String> comboContactos = new JComboBox<String>();
+		comboContactos.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		
+		UserListModel.getUsers().stream().forEach(u -> comboContactos.addItem(u.getNombre() + " " + u.getApellidos()));
 		
 		botonPremium.setBackground(Color.WHITE);
 		botonPremium.setBorder(BorderFactory.createEmptyBorder());
@@ -120,6 +133,7 @@ public class VentanaPrincipal extends JFrame {
 		botonMandar.setBackground(Color.WHITE);
 		botonMandar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		
+		panelNorte.add(comboContactos);
 		panelNorte.add(botonMandar);
 		panelNorte.add(botonBuscar);		
 		panelNorte.add(botonContactos);
@@ -128,7 +142,7 @@ public class VentanaPrincipal extends JFrame {
 		
 
 		JPanel panelChat = new JPanel();
-		panelChat.setBorder(new TitledBorder(null, "mensajes con contactos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelChat.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "mensajes con contactos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		contentPane.add(panelChat, BorderLayout.EAST);
 		panelChat.setLayout(new BoxLayout(panelChat,BoxLayout.Y_AXIS)); 
 		panelChat.setSize(500,600); 
@@ -161,7 +175,7 @@ public class VentanaPrincipal extends JFrame {
 		panelChat.add(messagePanel, BorderLayout.SOUTH);
 
 		JPanel panelCentro = new JPanel();
-		panelCentro.setBorder(new TitledBorder(null, "Mis chats", TitledBorder.LEADING, TitledBorder.TOP));
+		panelCentro.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "Mis chats", TitledBorder.LEADING, TitledBorder.TOP));
 		contentPane.add(panelCentro, BorderLayout.CENTER);
 
 		
@@ -212,4 +226,6 @@ public class VentanaPrincipal extends JFrame {
 			return null;
 		}
 	}
+	
+	
 }
