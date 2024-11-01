@@ -227,5 +227,7 @@ public class VentanaPrincipal extends JFrame {
 		}
 	}
 	
-	
+	public static ImageIcon getScaledIcon(String imageUrl, int width, int height) {		
+		return new ImageIcon(new ImageIcon(imageUrl).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));		
+	}
 }
