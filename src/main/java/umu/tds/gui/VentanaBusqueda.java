@@ -62,7 +62,6 @@ public class VentanaBusqueda extends JFrame {
 		labelIcono.setText("Búsqueda de mensajes ");
 		labelIcono.setFont(new Font("Segoe UI", Font.BOLD, 18));
 		labelIcono.setBorder(new LineBorder(Color.BLACK, 2));
-		labelIcono.setAlignmentX(Component.CENTER_ALIGNMENT);
 		contentPane.add(labelIcono);
 		
 		JPanel panelBuscar = new JPanel();
@@ -105,13 +104,13 @@ public class VentanaBusqueda extends JFrame {
 		panelAbajo.add(btnBuscar);
 		panelBuscar.add(panelAbajo);
 		
-		panelBuscar.setPreferredSize(new Dimension(800, 100));
-		panelBuscar.setMaximumSize(new Dimension(800, 100));
+		panelBuscar.setPreferredSize(new Dimension(800, 120));
 		
 		DefaultListModel<Mensaje> mensajesBuscados = new DefaultListModel<>();
 		mensajesBuscados.addElement(new Mensaje("¡Hola! ¿Cómo estás?", LocalDateTime.of(2023, 11, 1, 9, 30), 1, 123456789, 987654321));
 		mensajesBuscados.addElement(new Mensaje("¿Quieres salir a cenar esta noche?", LocalDateTime.of(2023, 11, 1, 17, 45), 2, 123456789, 987654321));
 		mensajesBuscados.addElement(new Mensaje("¡Felicidades en tu nuevo trabajo!", LocalDateTime.of(2023, 11, 2, 10, 15), 3, 234567890, 123456789));
+		/*
 		mensajesBuscados.addElement(new Mensaje("¿A qué hora paso por ti?", LocalDateTime.of(2023, 11, 3, 14, 0), 0, 345678901, 234567890));
 		mensajesBuscados.addElement(new Mensaje("¡Nos vemos mañana! Nos vemos mañana! Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!", LocalDateTime.of(2023, 11, 3, 20, 30), 4, 456789012, 345678901));
 		mensajesBuscados.addElement(new Mensaje("Gracias por el consejo", LocalDateTime.of(2023, 11, 4, 16, 20), 5, 567890123, 456789012));
@@ -121,13 +120,18 @@ public class VentanaBusqueda extends JFrame {
 		mensajesBuscados.addElement(new Mensaje("Te llamo en un momento.", LocalDateTime.of(2023, 11, 5, 13, 55), 0, 789012345, 678901234));
 		mensajesBuscados.addElement(new Mensaje("Te llamo en un momento.", LocalDateTime.of(2023, 11, 5, 13, 55), 0, 789012345, 678901234));
 		mensajesBuscados.addElement(new Mensaje("Te llamo en un momento.", LocalDateTime.of(2023, 11, 5, 13, 55), 0, 789012345, 678901234));
-
+		*/
 		JList<Mensaje> listaMensajes = new JList<>(mensajesBuscados);
 		listaMensajes.setCellRenderer(createListRenderer());
+		listaMensajes.setBackground(getForeground());
 		
 		JScrollPane scrollPane = new JScrollPane(listaMensajes);
+		
 		scrollPane.setBorder(new TitledBorder(null, "Resultados", TitledBorder.LEADING, TitledBorder.TOP));
+		scrollPane.setPreferredSize(new Dimension(800, 480));
 		contentPane.add(scrollPane);
+		
+		contentPane.add(Box.createVerticalStrut(10));
 		
 		JButton btnVolver = new JButton("Volver a la ventana principal");
 		btnVolver.setFont(new Font("Segoe UI", Font.BOLD, 15));
@@ -163,15 +167,14 @@ public class VentanaBusqueda extends JFrame {
 				labelTexto.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 				labelTexto.setBorder(new LineBorder(Color.BLACK, 1));
 				
-				labelTexto.setPreferredSize(new Dimension(730, 50));
+				labelTexto.setPreferredSize(new Dimension(730, 45));
 				
 				panel.add(labelEmisor, BorderLayout.WEST);
 				panel.add(labelReceptor, BorderLayout.EAST);
 				panel.add(labelTexto, BorderLayout.SOUTH);
-				panel.setPreferredSize(new Dimension(730, 80));
 				panel.setMaximumSize(new Dimension(730, 80));
 				
-				panel.setBackground((isSelected) ? Color.lightGray : list.getBackground());
+				panel.setBackground((isSelected) ? Color.lightGray : Color.white);
 							
 				panelEntero.add(panel);
 				panelEntero.add(Box.createVerticalStrut(10));
