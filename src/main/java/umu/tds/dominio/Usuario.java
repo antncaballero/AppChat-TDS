@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -37,6 +38,7 @@ public class Usuario {
 		this.fechaNacimiento = fechaNacimiento;
 		this.email = email;
 		this.isPremium = false;
+		this.contactos = new LinkedList<>();
 		
 		try {
 			URL imageUrl = new URL("https://robohash.org/" + nombre + "?size=50x50");

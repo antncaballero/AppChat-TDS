@@ -199,10 +199,14 @@ public class VentanaPrincipal extends JFrame {
 		scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelCentro.add(scrollPane);
 		
-		
+		botonBuscar.addActionListener(e -> {
+			VentanaBusqueda ventanaBusqueda = new VentanaBusqueda();
+			ventanaBusqueda.setVisible(true);
+			dispose();
+		});
 	}
 
-	private ImageIcon getIcon(String imageUrl, float factor) {
+	public static ImageIcon getIcon(String imageUrl, float factor) {
 		try {
 			// Leer la imagen
 			BufferedImage img = ImageIO.read(new File(imageUrl));
