@@ -97,7 +97,11 @@ public class VentanaGrupo extends JFrame {
 		
 		panelNorte.add(user);
 		
+		
+		DefaultListModel<Contacto> modelAdded = new DefaultListModel<>();
 		DefaultListModel<Contacto> modelNotAdded = new DefaultListModel<>();
+		
+		
 		//Ejemplo de contactos
 		modelNotAdded.addElement(new ContactoIndividual("pepe", VentanaPrincipal.UserListModel.getUsers().get(0)));
 		modelNotAdded.addElement(new ContactoIndividual("Antonio Clase", VentanaPrincipal.UserListModel.getUsers().get(1)));
@@ -108,14 +112,13 @@ public class VentanaGrupo extends JFrame {
 		modelNotAdded.addElement(new ContactoIndividual("Contacto2", VentanaPrincipal.UserListModel.getUsers().get(6)));
 		modelNotAdded.addElement(new ContactoIndividual("Contacto3", VentanaPrincipal.UserListModel.getUsers().get(7)));
 		modelNotAdded.addElement(new ContactoIndividual("Contacto4", VentanaPrincipal.UserListModel.getUsers().get(8)));
-		
-		DefaultListModel<Contacto> modelAdded = new DefaultListModel<>();
+			
 		
 		JList<Contacto> listaContactosNotAdded = new JList<>(modelNotAdded);
 		listaContactosNotAdded.setCellRenderer(new ContactCellRenderer());
 		
 		JList<Contacto> listaContactosAdded = new JList<>(modelAdded);
-		listaContactosNotAdded.setCellRenderer(new ContactCellRenderer());
+		listaContactosAdded.setCellRenderer(new ContactCellRenderer());
 				
 		JScrollPane scrollContactos = new JScrollPane(listaContactosNotAdded);
 		scrollContactos.setPreferredSize(new Dimension(380,450));
