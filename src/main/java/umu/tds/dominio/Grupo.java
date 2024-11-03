@@ -1,9 +1,7 @@
 package umu.tds.dominio;
 
 import java.util.Set;
-
 import javax.swing.ImageIcon;
-
 import umu.tds.gui.VentanaPrincipal;
 
 public class Grupo extends Contacto {
@@ -16,14 +14,14 @@ public class Grupo extends Contacto {
 	}
 	
 	@Override
-	public ImageIcon getFoto() {
-	
+	public ImageIcon getFoto() {	
 		return VentanaPrincipal.getScaledIcon("src/main/resources/group.png", 50, 50);
 	}
+	
 	@Override
 	public String getEstado() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return "";
 	}
 	
 	
