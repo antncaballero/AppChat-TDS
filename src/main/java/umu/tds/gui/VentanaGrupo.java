@@ -25,10 +25,14 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+
 import java.awt.Component;
 import javax.swing.SwingConstants;
 import java.awt.FlowLayout;
 import javax.swing.Box;
+import umu.tds.dominio.Contacto;
+import umu.tds.dominio.ContactoIndividual;
 
 public class VentanaGrupo extends JFrame {
 
@@ -93,16 +97,31 @@ public class VentanaGrupo extends JFrame {
 		
 		panelNorte.add(user);
 		
-		JList<Usuario> listaContactos = new JList<>(new UserListModel());
-		listaContactos.setCellRenderer(new UserCellRenderer());
+		DefaultListModel<Contacto> modelNotAdded = new DefaultListModel<>();
+		//Ejemplo de contactos
+		modelNotAdded.addElement(new ContactoIndividual("pepe", VentanaPrincipal.UserListModel.getUsers().get(0)));
+		modelNotAdded.addElement(new ContactoIndividual("Antonio Clase", VentanaPrincipal.UserListModel.getUsers().get(1)));
+		modelNotAdded.addElement(new ContactoIndividual("Joselu", VentanaPrincipal.UserListModel.getUsers().get(2)));
+		modelNotAdded.addElement(new ContactoIndividual("Jose trabajo", VentanaPrincipal.UserListModel.getUsers().get(3)));
+		modelNotAdded.addElement(new ContactoIndividual("Jesus", VentanaPrincipal.UserListModel.getUsers().get(4)));
+		modelNotAdded.addElement(new ContactoIndividual("Contacto1", VentanaPrincipal.UserListModel.getUsers().get(5)));
+		modelNotAdded.addElement(new ContactoIndividual("Contacto2", VentanaPrincipal.UserListModel.getUsers().get(6)));
+		modelNotAdded.addElement(new ContactoIndividual("Contacto3", VentanaPrincipal.UserListModel.getUsers().get(7)));
+		modelNotAdded.addElement(new ContactoIndividual("Contacto4", VentanaPrincipal.UserListModel.getUsers().get(8)));
 		
-		JScrollPane scrollContactos = new JScrollPane(listaContactos);
+		DefaultListModel<Contacto> modelAdded = new DefaultListModel<>();
+		
+		JList<Contacto> listaContactosNotAdded = new JList<>(modelNotAdded);
+		listaContactosNotAdded.setCellRenderer(new ContactCellRenderer());
+		
+		JList<Contacto> listaContactosAdded = new JList<>(modelAdded);
+		listaContactosNotAdded.setCellRenderer(new ContactCellRenderer());
+				
+		JScrollPane scrollContactos = new JScrollPane(listaContactosNotAdded);
 		scrollContactos.setPreferredSize(new Dimension(380,450));
 		
-		JScrollPane scrollContactosAdded = new JScrollPane(listaContactos);
-		scrollContactosAdded.setPreferredSize(new Dimension(380,450));
-		
-		
+		JScrollPane scrollContactosAdded = new JScrollPane(listaContactosAdded);
+		scrollContactosAdded.setPreferredSize(new Dimension(380,450));	
 		
 		scrollContactos.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		scrollContactosAdded.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -152,8 +171,7 @@ public class VentanaGrupo extends JFrame {
         gbc_btnAdd.gridx = 0;
         gbc_btnAdd.gridy = 4;
         panelCentro.add(btnAdd, gbc_btnAdd);
-        
-        
+               
         JButton btnRemove = new JButton(VentanaPrincipal.getScaledIcon("src/main/resources/person-remove.png", 40, 40));
         btnRemove.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnRemove.setBackground(Color.WHITE);
@@ -163,7 +181,19 @@ public class VentanaGrupo extends JFrame {
         gbc_btnRemove.gridy = 5;
         panelCentro.add(btnRemove, gbc_btnRemove);
 		
+		btnAdd.addActionListener(e -> {
+			if (!listaContactosNotAdded.isSelectionEmpty()) {
+				modelAdded.addElement(listaContactosNotAdded.getSelectedValue());
+				modelNotAdded.removeElement(listaContactosNotAdded.getSelectedValue());
+			}
+		});
 		
+		btnRemove.addActionListener(e -> {
+			if (!listaContactosAdded.isSelectionEmpty()) {
+				modelNotAdded.addElement(listaContactosAdded.getSelectedValue());
+				modelAdded.removeElement(listaContactosAdded.getSelectedValue());
+			}
+		});
 		
 	}
 

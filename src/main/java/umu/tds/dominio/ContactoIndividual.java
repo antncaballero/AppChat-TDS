@@ -6,8 +6,9 @@ public class ContactoIndividual extends Contacto {
 	
 	private Usuario usuarioAsociado;
 	
-	public ContactoIndividual(String nombre) {
+	public ContactoIndividual(String nombre, Usuario usuarioAsociado) {
 		super(nombre);
+		this.usuarioAsociado = usuarioAsociado;
 	}
 	
 	@Override
