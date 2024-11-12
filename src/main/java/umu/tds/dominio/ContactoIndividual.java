@@ -5,6 +5,7 @@ import javax.swing.ImageIcon;
 public class ContactoIndividual extends Contacto {
 	
 	private Usuario usuarioAsociado;
+	private int codigo = 0;
 	
 	public ContactoIndividual(String nombre, Usuario usuarioAsociado) {
 		super(nombre);
@@ -18,5 +19,21 @@ public class ContactoIndividual extends Contacto {
 	@Override
 	public String getEstado() {
 		return usuarioAsociado.getEstado();
+	}
+	
+	public Usuario getUsuarioAsociado() {
+		return usuarioAsociado;
+	}
+	
+	public void setUsuarioAsociado(Usuario usuarioAsociado) {
+		this.usuarioAsociado = usuarioAsociado;
+	}
+	
+	public int getCodigo() {
+		return codigo;
+	}
+	
+	public void setCodigo(int codigo) {
+		this.codigo = codigo;
 	}
 }

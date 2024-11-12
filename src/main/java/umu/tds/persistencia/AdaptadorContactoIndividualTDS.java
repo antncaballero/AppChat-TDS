@@ -1,5 +1,8 @@
 package umu.tds.persistencia;
 
+import java.util.Optional;
+
+import beans.Entidad;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
 import umu.tds.dominio.ContactoIndividual;
@@ -13,8 +16,22 @@ public class AdaptadorContactoIndividualTDS {
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
 	
+	public static AdaptadorContactoIndividualTDS getInstancia() {
+		if (unicaInstancia == null)
+			unicaInstancia = new AdaptadorContactoIndividualTDS();
+		return unicaInstancia;
+	}
+	
 	public void registrarContactoIndividual(ContactoIndividual contactoIndividual) {
-		// TODO Auto-generated method stub
+		
+		Optional<Entidad> e = Optional.ofNullable(servPersistencia.recuperarEntidad(contactoIndividual.getCodigo()));
+		if (e.isPresent()) return;
+		
+		//registar usuario
+		
+		
+		
+		
 	}
 
 	public void borrarContactoIndividual(ContactoIndividual contactoIndividual) {

@@ -7,10 +7,16 @@ import umu.tds.dominio.Grupo;
 public class AdaptadorGrupoTDS {
 
 	private static ServicioPersistencia servPersistencia;
-	private static AdaptadorContactoIndividualTDS unicaInstancia = null;
+	private static AdaptadorGrupoTDS unicaInstancia = null;
 
 	private AdaptadorGrupoTDS() {
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
+	}
+	
+	public static AdaptadorGrupoTDS getInstancia() {
+		if (unicaInstancia == null)
+			unicaInstancia = new AdaptadorGrupoTDS();
+		return unicaInstancia;
 	}
 
 	public void registrarGrupo(Grupo grupo) {
