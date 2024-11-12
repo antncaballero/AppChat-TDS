@@ -1,10 +1,18 @@
 package umu.tds.persistencia;
 
+import tds.driver.FactoriaServicioPersistencia;
+import tds.driver.ServicioPersistencia;
 import umu.tds.dominio.ContactoIndividual;
 
 public class AdaptadorContactoIndividualTDS {
-
-
+	
+	private static ServicioPersistencia servPersistencia;
+	private static AdaptadorContactoIndividualTDS unicaInstancia = null;
+	
+	private AdaptadorContactoIndividualTDS() {
+		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
+	}
+	
 	public void registrarContactoIndividual(ContactoIndividual contactoIndividual) {
 		// TODO Auto-generated method stub
 	}
