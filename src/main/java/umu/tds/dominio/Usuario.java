@@ -15,6 +15,7 @@ public class Usuario {
 	
 	private final static String ESTADO_POR_DEFECTO = "Hey, I'm using AppChat";
 	
+	private int codigo;
 	private String nombre;
 	private String apellidos;
 	private int numTlf;
@@ -30,6 +31,7 @@ public class Usuario {
 	public Usuario(String nombre, String apellidos, int numTlf, String password, String estado,
 			LocalDate fechaNacimiento, String email) {
 		super();
+		this.codigo = 0;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.numTlf = numTlf;
@@ -56,6 +58,9 @@ public class Usuario {
 	}
 	
 	
+	public int getCodigo() {
+		return codigo;
+	}
 	public String getNombre() {
 		return nombre;
 	}
