@@ -4,8 +4,13 @@ import java.time.LocalDateTime;
 
 public class Mensaje {
 	
+	private int codigo;
 	private String texto;
 	private LocalDateTime hora;
+	private int emoticono;
+	private int tlfEmisor;
+	private int tlfReceptor;
+	
 	public Mensaje(String texto, LocalDateTime hora, int emoticono, int tlfEmisor, int tlfReceptor) {
 		super();
 		this.texto = texto;
@@ -13,6 +18,13 @@ public class Mensaje {
 		this.emoticono = emoticono;
 		this.tlfEmisor = tlfEmisor;
 		this.tlfReceptor = tlfReceptor;
+	}
+	
+	public int getCodigo() {
+		return codigo;
+	}   		
+	public void setCodigo(int codigo) {
+		this.codigo = codigo;
 	}
 	public String getTexto() {
 		return texto;
@@ -44,8 +56,5 @@ public class Mensaje {
 	public void setTlfReceptor(int tlfReceptor) {
 		this.tlfReceptor = tlfReceptor;
 	}
-	private int emoticono;
-	private int tlfEmisor;
-	private int tlfReceptor;
 
 }
