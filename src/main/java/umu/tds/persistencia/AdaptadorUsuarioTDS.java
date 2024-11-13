@@ -18,8 +18,6 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 	private static ServicioPersistencia servPersistencia;
 	private static AdaptadorUsuarioTDS unicaInstancia = null;
 	
-	DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-	
 	public static AdaptadorUsuarioTDS getUnicaInstancia() {
 		if (unicaInstancia == null) {
 			return new AdaptadorUsuarioTDS();
@@ -53,28 +51,28 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 			}
 		}
 		
-		//Creamos una entidad producto
+		//Creamos una entidad usuario
 		eUsuario = new Entidad();
 		
 		//Asignamos tipo
 		eUsuario.setNombre("usuario");
 		
 		//Registramos atributos
-		String fechaNacim = user.getFechaNacimiento().format(formato);
 		eUsuario.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
 				new Propiedad("nombre", user.getNombre()),
 				new Propiedad("apellidos", user.getApellidos()),
-				new Propiedad("numTlf", String.valueOf(user.getNumTlf())),
+				new Propiedad("numTlf", Integer.toString(user.getNumTlf())),
 				new Propiedad("password", user.getPassword()),
 				new Propiedad("fotoPerfil", String.valueOf(user.getFotoPerfil().getDescription())),
 				new Propiedad("estado", user.getEstado()),
-				new Propiedad("fechaNacimiento", fechaNacim),
+				new Propiedad("fechaNacimiento", user.getFechaNacimiento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))),
 				new Propiedad("email", user.getEmail()),
 				new Propiedad("isPremium", String.valueOf(user.isPremium()))
 				)));
 		
 		// registrar entidad cliente
 		eUsuario = servPersistencia.registrarEntidad(eUsuario);
+		
 		// asignar identificador unico al usuario, aprovechando el que genera el servicio de persistencia
 		user.setCodigo(eUsuario.getId());
 	}
