@@ -30,8 +30,7 @@ public abstract class Contacto {
 	
 	public abstract ImageIcon getFoto();
 	
-	public abstract String getEstado();
-	
+	public abstract String getEstado();	
 	
 }
 
