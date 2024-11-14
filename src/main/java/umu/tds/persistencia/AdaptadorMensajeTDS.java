@@ -61,7 +61,11 @@ public class AdaptadorMensajeTDS {
 	}
 
 	public void borrarMensaje(Mensaje mensaje) {
-		// TODO - implement AdaptadorMensajeDAO.borrarMensaje
+		//Recuperamos la entidad
+		Entidad eMensaje = servPersistencia.recuperarEntidad(mensaje.getCodigo());
+		
+		//Borramos la entidad
+		servPersistencia.borrarEntidad(eMensaje);
 	}
 
 	public void modificarMensaje(Mensaje mensaje) {
