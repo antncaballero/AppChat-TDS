@@ -80,8 +80,23 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 
 	@Override
 	public void borrarUsuario(Usuario user) {
-		// TODO Auto-generated method stub
-
+		//Se recupera entidad usuario
+		Entidad eUsuario = servPersistencia.recuperarEntidad(user.getCodigo());
+		AdaptadorContactoIndividualTDS adaptadorContactoIndividual = AdaptadorContactoIndividualTDS.getInstancia();
+		AdaptadorGrupoTDS adaptadorGrupo = AdaptadorGrupoTDS.getInstancia();
+		
+		//Eliminamos sus entidades agregadas
+		for (Contacto contacto : user.getContactos()) {
+			if (contacto instanceof ContactoIndividual) {
+				adaptadorContactoIndividual.borrarContactoIndividual((ContactoIndividual) contacto);
+			} else{
+				adaptadorGrupo.borrarGrupo((Grupo) contacto);
+			}
+		}
+		
+		//Eliminamos la entidad usuario
+		servPersistencia.borrarEntidad(eUsuario);
+		
 	}
 
 	@Override
