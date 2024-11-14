@@ -13,6 +13,7 @@ public class Mensaje {
 	
 	public Mensaje(String texto, LocalDateTime hora, int emoticono, int tlfEmisor, int tlfReceptor) {
 		super();
+		this.codigo = 0;
 		this.texto = texto;
 		this.hora = hora;
 		this.emoticono = emoticono;

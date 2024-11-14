@@ -69,7 +69,25 @@ public class AdaptadorMensajeTDS {
 	}
 
 	public void modificarMensaje(Mensaje mensaje) {
-		// TODO - implement AdaptadorMensajeDAO.modificarMensaje
+		// Recuperamos la entidad
+		Entidad eMensaje = servPersistencia.recuperarEntidad(mensaje.getCodigo());
+
+		//Se recorren sus propiedades y se actualiza su valor
+		for (Propiedad prop : eMensaje.getPropiedades()) {
+			if (prop.getNombre().equals("texto")) {
+				prop.setValor(mensaje.getTexto());
+			} else if (prop.getNombre().equals("hora")) {
+				prop.setValor(mensaje.getHora().toString());
+			} else if (prop.getNombre().equals("emoticono")) {
+				prop.setValor(Integer.toString(mensaje.getEmoticono()));
+			} else if (prop.getNombre().equals("tlfEmisor")) {
+				prop.setValor(Integer.toString(mensaje.getTlfEmisor()));
+			} else if (prop.getNombre().equals("tlfReceptor")) {
+				prop.setValor(Integer.toString(mensaje.getTlfReceptor()));
+			}
+			// Actualizamos la entidad
+			servPersistencia.modificarEntidad(eMensaje);
+		}		
 	}
 
 	public Mensaje recuperarMensaje(int codigo) {

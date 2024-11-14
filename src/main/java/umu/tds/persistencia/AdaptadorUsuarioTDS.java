@@ -3,6 +3,7 @@ package umu.tds.persistencia;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import beans.Entidad;
 import beans.Propiedad;
@@ -101,8 +102,36 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 
 	@Override
 	public void modificarUsuario(Usuario user) {
-		// TODO Auto-generated method stub
-
+		//Se recupera entidad
+		Entidad eUsuario = servPersistencia.recuperarEntidad(user.getCodigo());
+		
+		//Se recorren sus propiedades y se actualiza su valor
+		for (Propiedad prop : eUsuario.getPropiedades()) {
+			if (prop.getNombre().equals("nombre")) {
+				prop.setValor(user.getNombre());
+			} else if (prop.getNombre().equals("apellidos")) {
+				prop.setValor(user.getApellidos());
+			} else if (prop.getNombre().equals("numTlf")) {
+				prop.setValor(Integer.toString(user.getNumTlf()));
+			} else if (prop.getNombre().equals("password")) {
+				prop.setValor(user.getPassword());
+			} else if (prop.getNombre().equals("fotoPerfil")) {
+				prop.setValor(String.valueOf(user.getFotoPerfil().getDescription()));
+			} else if (prop.getNombre().equals("estado")) {
+				prop.setValor(user.getEstado());
+			} else if (prop.getNombre().equals("fechaNacimiento")) {
+				prop.setValor(user.getFechaNacimiento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+			} else if (prop.getNombre().equals("email")) {
+				prop.setValor(user.getEmail());
+			} else if (prop.getNombre().equals("isPremium")) {
+				prop.setValor(String.valueOf(user.isPremium()));
+			} else if (prop.getNombre().equals("contactos")) {
+				prop.setValor(obtenerCodigosContactos(user.getContactos()));
+			}
+			
+			//actualizamos la entidad
+			servPersistencia.modificarEntidad(eUsuario);
+		}
 	}
 
 	@Override
@@ -110,5 +139,15 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+//___________________________________Fnciones Auxiliares________________________________________
+	
+	private String obtenerCodigosContactos(List<Contacto> contactos) {
+		String codigos = "";
+		for (Contacto contacto: contactos) {
+			codigos += contacto.getCodigo() + " ";
+		}
+		return codigos.trim();
+	}
+	
+	
 }
