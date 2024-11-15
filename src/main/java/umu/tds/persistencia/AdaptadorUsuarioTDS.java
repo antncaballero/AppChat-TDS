@@ -1,9 +1,14 @@
 package umu.tds.persistencia;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.StringTokenizer;
+
+import javax.swing.ImageIcon;
 
 import beans.Entidad;
 import beans.Propiedad;
@@ -136,8 +141,34 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 
 	@Override
 	public Usuario recuperarUsuario(int codigo) {
-		// TODO Auto-generated method stub
-		return null;
+		//Recuperamos la entidad usuario de BD
+		Entidad eUsuario = servPersistencia.recuperarEntidad(codigo);
+		
+		//Recuperamos sus propiedades que no son objetos
+		String nombre = servPersistencia.recuperarPropiedadEntidad(eUsuario, "nombre");
+		String apellidos = servPersistencia.recuperarPropiedadEntidad(eUsuario, "apellidos");
+		int numTlf = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eUsuario, "numTlf"));
+		String password = servPersistencia.recuperarPropiedadEntidad(eUsuario, "password");
+		String fotoPerfilPath = servPersistencia.recuperarPropiedadEntidad(eUsuario, "fotoPerfil");
+		ImageIcon fotoPerfil = new ImageIcon(fotoPerfilPath);
+		
+		String estado = servPersistencia.recuperarPropiedadEntidad(eUsuario, "estado");
+		String fechaNacimientoString = servPersistencia.recuperarPropiedadEntidad(eUsuario, "fechaNacimiento");
+		LocalDate fechaNacimientoDate = LocalDate.parse(fechaNacimientoString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		
+		String email = servPersistencia.recuperarPropiedadEntidad(eUsuario, "email");
+		boolean isPremium = Boolean.parseBoolean(servPersistencia.recuperarPropiedadEntidad(eUsuario, "isPremium"));
+		
+		//Creamos el usuario
+		Usuario usuario = new Usuario(nombre, apellidos, numTlf, password, fotoPerfil, estado, fechaNacimientoDate, email);
+		usuario.setCodigo(codigo);
+		
+		//Añadiomos las propiedades que son objetos
+		List<Contacto> contactos = obtenerContactosDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eUsuario, "contactos"));
+		usuario.setContactos(contactos);
+		
+		//Devolvemos el usuario
+		return usuario;
 	}
 //___________________________________Fnciones Auxiliares________________________________________
 	
@@ -147,6 +178,24 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 			codigos += contacto.getCodigo() + " ";
 		}
 		return codigos.trim();
+	}
+	
+	private List<Contacto> obtenerContactosDesdeCodigos(String codigos) {
+		List<Contacto> contactos = new LinkedList<>();
+		StringTokenizer strTok = new StringTokenizer(codigos, " ");
+		AdaptadorContactoIndividualTDS adaptadorCI = AdaptadorContactoIndividualTDS.getInstancia();
+		AdaptadorGrupoTDS adaptadorG = AdaptadorGrupoTDS.getInstancia();
+		while (strTok.hasMoreTokens()) {
+			int codigo = Integer.parseInt(strTok.nextToken());
+			Contacto contacto = adaptadorCI.recuperarContactoIndividual(codigo);
+			if (contacto == null) {
+				contacto = adaptadorG.recuperarGrupo(codigo);
+			}
+			contactos.add(contacto);
+		}
+			
+			
+		return contactos;
 	}
 	
 	
