@@ -149,18 +149,14 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		String apellidos = servPersistencia.recuperarPropiedadEntidad(eUsuario, "apellidos");
 		int numTlf = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eUsuario, "numTlf"));
 		String password = servPersistencia.recuperarPropiedadEntidad(eUsuario, "password");
-		String fotoPerfilPath = servPersistencia.recuperarPropiedadEntidad(eUsuario, "fotoPerfil");
-		ImageIcon fotoPerfil = new ImageIcon(fotoPerfilPath);
-		
+		ImageIcon fotoPerfil = new ImageIcon(servPersistencia.recuperarPropiedadEntidad(eUsuario, "fotoPerfil"));
 		String estado = servPersistencia.recuperarPropiedadEntidad(eUsuario, "estado");
-		String fechaNacimientoString = servPersistencia.recuperarPropiedadEntidad(eUsuario, "fechaNacimiento");
-		LocalDate fechaNacimientoDate = LocalDate.parse(fechaNacimientoString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		
+		LocalDate fechaNacimiento = LocalDate.parse(servPersistencia.recuperarPropiedadEntidad(eUsuario, "fechaNacimiento"), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		String email = servPersistencia.recuperarPropiedadEntidad(eUsuario, "email");
 		boolean isPremium = Boolean.parseBoolean(servPersistencia.recuperarPropiedadEntidad(eUsuario, "isPremium"));
 		
 		//Creamos el usuario
-		Usuario usuario = new Usuario(nombre, apellidos, numTlf, password, fotoPerfil, estado, fechaNacimientoDate, email);
+		Usuario usuario = new Usuario(nombre, apellidos, numTlf, password, fotoPerfil, estado, fechaNacimiento, email);
 		usuario.setCodigo(codigo);
 		
 		//Añadiomos las propiedades que son objetos
