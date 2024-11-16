@@ -192,9 +192,7 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 				contacto = adaptadorG.recuperarGrupo(codigo);
 			}
 			contactos.add(contacto);
-		}
-			
-			
+		}		
 		return contactos;
 	}
 	
