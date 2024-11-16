@@ -1,5 +1,6 @@
 package umu.tds.persistencia;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -91,7 +92,37 @@ public class AdaptadorMensajeTDS {
 	}
 
 	public Mensaje recuperarMensaje(int codigo) {
-		// TODO - implement AdaptadorMensajeDAO.recuperarMensaje
-		return null;
+		//Recuperamos la entidad
+		Entidad eMensaje = servPersistencia.recuperarEntidad(codigo);
+		
+		//Recuperamos sus propiedades
+		String texto = servPersistencia.recuperarPropiedadEntidad(eMensaje, "texto");
+		String hora = servPersistencia.recuperarPropiedadEntidad(eMensaje, "hora");
+		LocalDateTime fechaHora = LocalDateTime.parse(hora);
+		
+		String emoticono = servPersistencia.recuperarPropiedadEntidad(eMensaje, "emoticono");
+		String tlfEmisor = servPersistencia.recuperarPropiedadEntidad(eMensaje, "tlfEmisor");
+		String tlfReceptor = servPersistencia.recuperarPropiedadEntidad(eMensaje, "tlfReceptor");
+		
+		//Creamos el mensaje
+		Mensaje mensaje = new Mensaje(texto, fechaHora, Integer.parseInt(emoticono), Integer.parseInt(tlfEmisor), Integer.parseInt(tlfReceptor));
+		mensaje.setCodigo(codigo);
+		
+		//Devolvemos el mensaje
+		return mensaje;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
