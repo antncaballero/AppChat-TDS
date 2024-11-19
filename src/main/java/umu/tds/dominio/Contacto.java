@@ -10,6 +10,7 @@ public abstract class Contacto {
 	
 	private int codigo;
 	private String nombre;
+	//TODO revisar si tiene sentido que un grupo tenga una lista de mensajes
 	private List<Mensaje> listaMensajes;
 	
 	public Contacto(String nombre) {
