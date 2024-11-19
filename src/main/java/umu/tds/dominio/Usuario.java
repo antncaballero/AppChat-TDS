@@ -57,9 +57,17 @@ public class Usuario {
 		this(nombre, apellidos, numTlf, password, ESTADO_POR_DEFECTO, fechaNacimiento, email);		
 	}
 	
+	public Usuario(String nombre, String apellidos, int numTlf, String password, ImageIcon imagen, String estado,
+			LocalDate fechaNacimiento, String email) {
+		this(nombre, apellidos, numTlf, password, estado, fechaNacimiento, email);
+		this.fotoPerfil = imagen;
+	}
 	
 	public int getCodigo() {
 		return codigo;
+	}
+	public void setCodigo(int codigo) {
+		this.codigo = codigo;
 	}
 	public String getNombre() {
 		return nombre;
@@ -119,7 +127,11 @@ public class Usuario {
 		return Collections.unmodifiableList(contactos);
 	}
 	
-	
+	public void setContactos(List<Contacto> contactos) {
+		for (Contacto contacto : contactos) {
+			contactos.add(contacto);
+		}
+	}
 	
 
 }
