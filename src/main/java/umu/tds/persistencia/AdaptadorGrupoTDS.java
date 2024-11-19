@@ -51,7 +51,16 @@ public class AdaptadorGrupoTDS {
 	}
 
 	public void borrarGrupo(Grupo grupo) {
-		// TODO Auto-generated method stub
+
+		Entidad eGrupo;
+		grupo.getListaMensajes().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::borrarMensaje);
+		grupo.getParticipantes().forEach(AdaptadorContactoIndividualTDS.getInstancia()::borrarContactoIndividual);
+
+		eGrupo = servPersistencia.recuperarEntidad(grupo.getCodigo());
+		servPersistencia.borrarEntidad(eGrupo);
+		
+		if (PoolDAO.getUnicaInstancia().contiene(grupo.getCodigo()))
+			PoolDAO.getUnicaInstancia().removeObjeto(grupo.getCodigo());
 	}
 
 	public void modificarGrupo(Grupo grupo) {

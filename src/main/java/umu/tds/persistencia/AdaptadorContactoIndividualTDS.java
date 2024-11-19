@@ -54,8 +54,18 @@ public class AdaptadorContactoIndividualTDS {
 	}
 
 	public void borrarContactoIndividual(ContactoIndividual contactoIndividual) {
-		// TODO Auto-generated method stub
+		
+		Entidad eContact;		
+		contactoIndividual.getListaMensajes().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::borrarMensaje);
+
+		eContact = servPersistencia.recuperarEntidad(contactoIndividual.getCodigo());
+		servPersistencia.borrarEntidad(eContact);
+		
+		// Si está en el pool, borramos del pool
+		if (PoolDAO.getUnicaInstancia().contiene(contactoIndividual.getCodigo()))
+			PoolDAO.getUnicaInstancia().removeObjeto(contactoIndividual.getCodigo());
 	}
+	
 
 	public void modificarContactoIndividual(ContactoIndividual contactoIndividual) {
 		// TODO Auto-generated method stub
