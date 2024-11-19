@@ -1,8 +1,12 @@
 package umu.tds.persistencia;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import beans.Entidad;
+import beans.Propiedad;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
 import umu.tds.dominio.ContactoIndividual;
@@ -25,15 +29,28 @@ public class AdaptadorContactoIndividualTDS {
 	
 	public void registrarContactoIndividual(ContactoIndividual contactoIndividual) {
 		
-		Optional<Entidad> e = Optional.ofNullable(servPersistencia.recuperarEntidad(contactoIndividual.getCodigo()));
-		if (e.isPresent()) return;
+		//Comprobar si ya esta registrado
+		Optional<Entidad> eContactoIndividual = Optional.ofNullable(servPersistencia.recuperarEntidad(contactoIndividual.getCodigo()));
+		if (eContactoIndividual.isPresent()) return;
 		
-		for (Mensaje m : contactoIndividual.getListaMensajes()) {
-			//AdaptadorMensajeTDS.getUnicaInstancia().registrarMensaje(m);
-		}
+		//Registramos sus objetos asociados
+		AdaptadorUsuarioTDS.getUnicaInstancia().registrarUsuario(contactoIndividual.getUsuarioAsociado());	
+		contactoIndividual.getListaMensajes().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::registrarMensaje);
+	
+		//Creamos la entidad y añadimos propiedades
+		eContactoIndividual = Optional.of(new Entidad());
+		eContactoIndividual.get().setNombre("contactoIndividual");
+		eContactoIndividual.get().setPropiedades(
+			    new ArrayList<Propiedad>(Arrays.asList(
+			        new Propiedad("nombre", contactoIndividual.getNombre()),
+			        new Propiedad("usuarioAsociado", String.valueOf(contactoIndividual.getUsuarioAsociado().getCodigo())),
+			        new Propiedad("listaMensajes", obtenerCodigosMensajes(contactoIndividual.getListaMensajes()))
+			    ))
+		);
 		
-		
-		
+		//Registramos la entidad
+		eContactoIndividual = Optional.ofNullable(servPersistencia.registrarEntidad(eContactoIndividual.get()));
+		contactoIndividual.setCodigo(eContactoIndividual.get().getId());		
 	}
 
 	public void borrarContactoIndividual(ContactoIndividual contactoIndividual) {
@@ -47,5 +64,12 @@ public class AdaptadorContactoIndividualTDS {
 	public ContactoIndividual recuperarContactoIndividual(int codigo) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private String obtenerCodigosMensajes(List<Mensaje> mensajesRecibidos) {
+		return mensajesRecibidos.stream()
+				.map(m -> String.valueOf(m.getCodigo()))
+				.reduce("", (l, m) -> l + m + " ")
+				.trim();
 	}
 }
