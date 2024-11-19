@@ -17,13 +17,13 @@ public class TDSFactoriaDAO extends FactoriaDAO{
 
 	@Override
 	public UsuarioDAO getUsuarioDAO() {
-		// TODO Auto-generated method stub
+		//return (UsuarioDAO) AdaptadorUsuarioTDS.getInstancia();
 		return null;
 	}
 
 	@Override
-	public MensajeDAO getCancionDAO() {
-		// TODO Auto-generated method stub
+	public MensajeDAO getMensajeDAO() {
+		//return (MensajeDAO) AdaptadorMensajeTDS.getUnicaInstancia();
 		return null;
 	}
 

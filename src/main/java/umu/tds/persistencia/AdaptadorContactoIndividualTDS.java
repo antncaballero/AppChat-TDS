@@ -6,6 +6,7 @@ import beans.Entidad;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
 import umu.tds.dominio.ContactoIndividual;
+import umu.tds.dominio.Mensaje;
 
 public class AdaptadorContactoIndividualTDS {
 	
@@ -27,8 +28,9 @@ public class AdaptadorContactoIndividualTDS {
 		Optional<Entidad> e = Optional.ofNullable(servPersistencia.recuperarEntidad(contactoIndividual.getCodigo()));
 		if (e.isPresent()) return;
 		
-		//registar usuario
-		
+		for (Mensaje m : contactoIndividual.getListaMensajes()) {
+			//AdaptadorMensajeTDS.getUnicaInstancia().registrarMensaje(m);
+		}
 		
 		
 		
