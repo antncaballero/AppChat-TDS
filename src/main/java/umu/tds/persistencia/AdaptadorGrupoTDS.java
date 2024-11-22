@@ -59,8 +59,8 @@ public class AdaptadorGrupoTDS {
 		eGrupo = servPersistencia.recuperarEntidad(grupo.getCodigo());
 		servPersistencia.borrarEntidad(eGrupo);
 		
-		if (PoolDAO.getUnicaInstancia().contiene(grupo.getCodigo()))
-			PoolDAO.getUnicaInstancia().removeObjeto(grupo.getCodigo());
+		if (PoolDAO.INSTANCE.contains(grupo.getCodigo()))
+			PoolDAO.INSTANCE.removeObject(grupo.getCodigo());
 	}
 
 	public void modificarGrupo(Grupo grupo) {

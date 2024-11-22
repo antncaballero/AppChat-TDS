@@ -62,8 +62,8 @@ public class AdaptadorContactoIndividualTDS {
 		servPersistencia.borrarEntidad(eContact);
 		
 		// Si está en el pool, borramos del pool
-		if (PoolDAO.getUnicaInstancia().contiene(contactoIndividual.getCodigo()))
-			PoolDAO.getUnicaInstancia().removeObjeto(contactoIndividual.getCodigo());
+		if (PoolDAO.INSTANCE.contains(contactoIndividual.getCodigo()))
+			PoolDAO.INSTANCE.removeObject(contactoIndividual.getCodigo());
 	}
 	
 
