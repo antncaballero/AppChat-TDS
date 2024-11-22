@@ -13,7 +13,7 @@ import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Mensaje;
 
-public class AdaptadorGrupoTDS {
+public class AdaptadorGrupoTDS implements GrupoDAO{
 
 	private static ServicioPersistencia servPersistencia;
 	private static AdaptadorGrupoTDS unicaInstancia = null;

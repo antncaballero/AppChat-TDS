@@ -1,6 +1,6 @@
 package umu.tds.persistencia;
 
-import beans.Mensaje;
+import umu.tds.dominio.Mensaje;
 
 public interface MensajeDAO {
 	public void registrarMensaje(Mensaje mensaje);

@@ -11,8 +11,9 @@ import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Mensaje;
+import umu.tds.dominio.Usuario;
 
-public class AdaptadorContactoIndividualTDS {
+public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 	
 	private static ServicioPersistencia servPersistencia;
 	private static AdaptadorContactoIndividualTDS unicaInstancia = null;
@@ -68,12 +69,57 @@ public class AdaptadorContactoIndividualTDS {
 	
 
 	public void modificarContactoIndividual(ContactoIndividual contactoIndividual) {
-		// TODO Auto-generated method stub
+		
+		Entidad eContactoIndividual;
+		eContactoIndividual = servPersistencia.recuperarEntidad(contactoIndividual.getCodigo());
+		
+		for (Propiedad p : eContactoIndividual.getPropiedades()) {
+			if (p.getNombre().equals("nombre")) {
+				p.setValor(contactoIndividual.getNombre());
+			} else if (p.getNombre().equals("usuarioAsociado")) {
+				p.setValor(String.valueOf(contactoIndividual.getUsuarioAsociado().getCodigo()));
+			} else if (p.getNombre().equals("listaMensajes")) {
+				p.setValor(obtenerCodigosMensajes(contactoIndividual.getListaMensajes()));
+			}
+			servPersistencia.modificarPropiedad(p);
+		}
+			
+	/*	
+		//TODO Ver si esto funciona igual
+		 
+		eContactoIndividual.getPropiedades().get(0).setValor(contactoIndividual.getNombre());
+		eContactoIndividual.getPropiedades().get(1).setValor(String.valueOf(contactoIndividual.getUsuarioAsociado().getCodigo()));
+		eContactoIndividual.getPropiedades().get(2).setValor(obtenerCodigosMensajes(contactoIndividual.getListaMensajes()));
+
+		servPersistencia.modificarEntidad(eContactoIndividual);
+	*/	
 	}
+	
 
 	public ContactoIndividual recuperarContactoIndividual(int codigo) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// Si esta en el pool, se devuelve
+		if (PoolDAO.INSTANCE.contains(codigo)) return (ContactoIndividual) PoolDAO.INSTANCE.getObject(codigo);
+
+		Usuario usuarioAsociado = null;
+		
+		Entidad eContactoIndividual = servPersistencia.recuperarEntidad(codigo);
+		String nombre = servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, "nombre");
+		
+		ContactoIndividual contactoIndividual = new ContactoIndividual(nombre, usuarioAsociado);
+		contactoIndividual.setCodigo(codigo);
+		
+		PoolDAO.INSTANCE.addObject(codigo, contactoIndividual);
+		
+		UsuarioDAO usuarioDAO = AdaptadorUsuarioTDS.getUnicaInstancia();
+		usuarioAsociado = usuarioDAO.recuperarUsuario(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, "usuarioAsociado")));
+		contactoIndividual.setUsuarioAsociado(usuarioAsociado);
+		
+		MensajeDAO mensajeDAO = (MensajeDAO) AdaptadorMensajeTDS.getUnicaInstancia();
+		// TODO List<Mensaje> mensajes = obtenerMensajesDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, "mensajesRecibidos"));
+		// añadir mensajes o enviar mensajes?
+
+		return contactoIndividual;
 	}
 	
 	private String obtenerCodigosMensajes(List<Mensaje> mensajesRecibidos) {

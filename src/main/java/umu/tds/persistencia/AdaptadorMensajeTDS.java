@@ -10,7 +10,7 @@ import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
 import umu.tds.dominio.Mensaje;
 
-public class AdaptadorMensajeTDS {
+public class AdaptadorMensajeTDS implements MensajeDAO {
 	
 	private static ServicioPersistencia servPersistencia;
 	private static AdaptadorMensajeTDS unicaInstancia = null;
