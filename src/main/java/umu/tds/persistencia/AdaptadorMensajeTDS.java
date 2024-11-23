@@ -59,6 +59,9 @@ public class AdaptadorMensajeTDS {
 		
 		//Asignamos el codigo unico, aprovechamos el que genera el servicio de persistencia
 		mensaje.setCodigo(eMensaje.getId());
+		
+		//Añadimos al pool
+		PoolDAO.getUnicaInstancia().addObjeto(mensaje.getCodigo(), mensaje);
 	}
 
 	public void borrarMensaje(Mensaje mensaje) {
@@ -67,6 +70,11 @@ public class AdaptadorMensajeTDS {
 		
 		//Borramos la entidad
 		servPersistencia.borrarEntidad(eMensaje);
+		
+		//Si esta en el pool, lo borramos
+		if (PoolDAO.getUnicaInstancia().contiene(mensaje.getCodigo())) 
+			PoolDAO.getUnicaInstancia().removeObjeto(mensaje.getCodigo());
+		
 	}
 
 	public void modificarMensaje(Mensaje mensaje) {
@@ -92,7 +100,12 @@ public class AdaptadorMensajeTDS {
 	}
 
 	public Mensaje recuperarMensaje(int codigo) {
-		//Recuperamos la entidad
+		//Si esta en el pool, lo devolvemos
+		if (PoolDAO.getUnicaInstancia().contiene(codigo))
+			return (Mensaje) PoolDAO.getUnicaInstancia().getObjeto(codigo);
+		
+		
+		//Sino, recuperamos la entidad
 		Entidad eMensaje = servPersistencia.recuperarEntidad(codigo);
 		
 		//Recuperamos sus propiedades
@@ -107,6 +120,9 @@ public class AdaptadorMensajeTDS {
 		//Creamos el mensaje
 		Mensaje mensaje = new Mensaje(texto, fechaHora, Integer.parseInt(emoticono), Integer.parseInt(tlfEmisor), Integer.parseInt(tlfReceptor));
 		mensaje.setCodigo(codigo);
+		
+		//Añadimos al pool
+		PoolDAO.getUnicaInstancia().addObjeto(codigo, mensaje);
 		
 		//Devolvemos el mensaje
 		return mensaje;
