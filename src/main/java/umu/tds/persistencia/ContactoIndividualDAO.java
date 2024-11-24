@@ -1,5 +1,7 @@
 package umu.tds.persistencia;
 
+import java.util.List;
+
 import umu.tds.dominio.ContactoIndividual;
 
 public interface ContactoIndividualDAO {
@@ -12,5 +14,6 @@ public interface ContactoIndividualDAO {
 
 	public ContactoIndividual recuperarContactoIndividual(int codigo);
 
+	public List<ContactoIndividual> recuperarTodosLosContactosIndividuales();
 	
 }

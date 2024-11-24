@@ -182,6 +182,14 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		//Devolvemos el usuario
 		return usuario;
 	}
+	
+	@Override
+	public List<Usuario> recuperarTodosLosUsuarios() {
+		List<Usuario> usuarios = new LinkedList<Usuario>();
+		List<Entidad> eUsuarios = servPersistencia.recuperarEntidades("usuario");
+		eUsuarios.forEach(e -> usuarios.add(recuperarUsuario(e.getId())));
+		return usuarios;
+	}
 //___________________________________Fnciones Auxiliares________________________________________
 	
 	private String obtenerCodigosContactos(List<Contacto> contactos) {
@@ -206,6 +214,8 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		}		
 		return contactos;
 	}
+
+	
 	
 	
 }

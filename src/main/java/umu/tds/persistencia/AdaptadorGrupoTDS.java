@@ -107,6 +107,14 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 
 	}
 	
+	@Override
+	public List<Grupo> recuperarTodosLosGrupos() {
+        List<Grupo> grupos = new LinkedList<Grupo>();
+        List<Entidad> entidades = servPersistencia.recuperarEntidades("grupo");
+        entidades.forEach(eGrupo -> grupos.add(recuperarGrupo(eGrupo.getId())));
+        return grupos;
+	}
+	
 	//TODO esto esta en el adaptador individual, revisar si podriamos crear un adaptador abstracto con este metodo o si lo podriamos mover a mensajes o utils
 	private List<Mensaje> obtenerMensajesDesdeCodigos(String codigos) {
 		return Arrays.stream(codigos.split(" "))

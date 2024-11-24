@@ -3,6 +3,7 @@ package umu.tds.persistencia;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import beans.Entidad;
 import beans.Propiedad;
@@ -127,6 +128,17 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		//Devolvemos el mensaje
 		return mensaje;
 	}
+
+	@Override
+	public List<Mensaje> recuperarTodosLosMensajes() {
+		List<Mensaje> mensajes = new ArrayList<Mensaje>();
+		List<Entidad> eMensajes = servPersistencia.recuperarEntidades("mensaje");
+		eMensajes.forEach(e -> mensajes.add(recuperarMensaje(e.getId())));
+		return mensajes;
+	}
+
+	
+
 }
 
 

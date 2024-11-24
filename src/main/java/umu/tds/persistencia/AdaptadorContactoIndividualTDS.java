@@ -133,6 +133,14 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 		return contactoIndividual;
 	}
 	
+	@Override
+	public List<ContactoIndividual> recuperarTodosLosContactosIndividuales() {
+		List<ContactoIndividual> contactosIndividuales = new ArrayList<ContactoIndividual>();
+		List<Entidad> entidades = servPersistencia.recuperarEntidades("contactoIndividual");
+		entidades.forEach(e -> contactosIndividuales.add(recuperarContactoIndividual(e.getId())));
+		return contactosIndividuales;
+	}
+	
 	private String obtenerCodigosMensajes(List<Mensaje> mensajesRecibidos) {
 		return mensajesRecibidos.stream()
 				.map(m -> String.valueOf(m.getCodigo()))
@@ -146,4 +154,6 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 				.map(AdaptadorMensajeTDS.getUnicaInstancia()::recuperarMensaje)
 				.collect(Collectors.toList());
 	}
+
+	
 }
