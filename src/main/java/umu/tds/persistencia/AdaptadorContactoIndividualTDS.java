@@ -10,6 +10,7 @@ import beans.Entidad;
 import beans.Propiedad;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
+import umu.tds.dao.DAOException;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.Usuario;
@@ -36,6 +37,16 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 		if (eContactoIndividual.isPresent()) return;
 		
 		//Registramos sus objetos asociados
+		
+		/* TODO revisar si habría que poner esto
+		try {
+			FactoriaDAO.getInstancia().getUsuarioDAO().registrarUsuario(contactoIndividual.getUsuarioAsociado());
+		} catch (DAOException e) {
+	
+			e.printStackTrace();
+		}
+		*/
+		
 		AdaptadorUsuarioTDS.getUnicaInstancia().registrarUsuario(contactoIndividual.getUsuarioAsociado());	
 		contactoIndividual.getListaMensajes().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::registrarMensaje);
 	
