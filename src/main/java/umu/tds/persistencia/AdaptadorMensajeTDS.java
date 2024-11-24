@@ -61,7 +61,7 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		mensaje.setCodigo(eMensaje.getId());
 		
 		//Añadimos al pool
-		PoolDAO.getUnicaInstancia().addObjeto(mensaje.getCodigo(), mensaje);
+		PoolDAO.INSTANCE.addObject(mensaje.getCodigo(), mensaje);
 	}
 
 	public void borrarMensaje(Mensaje mensaje) {
@@ -72,8 +72,8 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		servPersistencia.borrarEntidad(eMensaje);
 		
 		//Si esta en el pool, lo borramos
-		if (PoolDAO.getUnicaInstancia().contiene(mensaje.getCodigo())) 
-			PoolDAO.getUnicaInstancia().removeObjeto(mensaje.getCodigo());
+		if (PoolDAO.INSTANCE.contains(mensaje.getCodigo())) 
+			PoolDAO.INSTANCE.removeObject(mensaje.getCodigo());
 		
 	}
 
@@ -101,8 +101,8 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 
 	public Mensaje recuperarMensaje(int codigo) {
 		//Si esta en el pool, lo devolvemos
-		if (PoolDAO.getUnicaInstancia().contiene(codigo))
-			return (Mensaje) PoolDAO.getUnicaInstancia().getObjeto(codigo);
+		if (PoolDAO.INSTANCE.contains(codigo))
+			return (Mensaje) PoolDAO.INSTANCE.getObject(codigo);
 		
 		
 		//Sino, recuperamos la entidad
@@ -122,7 +122,7 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		mensaje.setCodigo(codigo);
 		
 		//Añadimos al pool
-		PoolDAO.getUnicaInstancia().addObjeto(codigo, mensaje);
+		PoolDAO.INSTANCE.addObject(codigo, mensaje);
 		
 		//Devolvemos el mensaje
 		return mensaje;

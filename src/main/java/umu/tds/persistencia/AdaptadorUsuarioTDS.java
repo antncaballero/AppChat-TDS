@@ -84,7 +84,7 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		user.setCodigo(eUsuario.getId());
 		
 		//Añadimos al pool
-		PoolDAO.getUnicaInstancia().addObjeto(user.getCodigo(), user);
+		PoolDAO.INSTANCE.addObject(user.getCodigo(), user);
 	}
 	
 
@@ -108,8 +108,8 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		servPersistencia.borrarEntidad(eUsuario);
 		
 		//Si esta en el pool, lo eliminamos
-		if (PoolDAO.getUnicaInstancia().contiene(user.getCodigo()))
-			PoolDAO.getUnicaInstancia().removeObjeto(user.getCodigo());
+		if (PoolDAO.INSTANCE.contains(user.getCodigo()))
+			PoolDAO.INSTANCE.removeObject(user.getCodigo());
 		
 	}
 
@@ -150,8 +150,8 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 	@Override
 	public Usuario recuperarUsuario(int codigo) {
 		//Si esta en el pool, devolvemos el objeto del pool
-		if (PoolDAO.getUnicaInstancia().contiene(codigo))
-			return (Usuario) PoolDAO.getUnicaInstancia().getObjeto(codigo);
+		if (PoolDAO.INSTANCE.contains(codigo))
+			return (Usuario) PoolDAO.INSTANCE.getObject(codigo);
 		
 		//Sino, recuperamos la entidad usuario de BD
 		Entidad eUsuario = servPersistencia.recuperarEntidad(codigo);
@@ -173,7 +173,7 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		usuario.setCodigo(codigo);
 		
 		//Añadimos al pool antes de añadir los contactos
-		PoolDAO.getUnicaInstancia().addObjeto(codigo, usuario);
+		PoolDAO.INSTANCE.addObject(codigo, usuario);
 		
 		//Añadiomos las propiedades que son objetos
 		List<Contacto> contactos = obtenerContactosDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eUsuario, "contactos"));

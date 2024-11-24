@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import beans.Entidad;
 import beans.Propiedad;
@@ -115,9 +116,9 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 		usuarioAsociado = usuarioDAO.recuperarUsuario(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, "usuarioAsociado")));
 		contactoIndividual.setUsuarioAsociado(usuarioAsociado);
 		
-		MensajeDAO mensajeDAO = (MensajeDAO) AdaptadorMensajeTDS.getUnicaInstancia();
-		// TODO List<Mensaje> mensajes = obtenerMensajesDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, "mensajesRecibidos"));
-		// añadir mensajes o enviar mensajes?
+		MensajeDAO mensajeDAO = AdaptadorMensajeTDS.getUnicaInstancia();
+		List<Mensaje> mensajes = obtenerMensajesDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, "mensajesRecibidos"));
+		// TODO añadir mensajes o enviar mensajes?
 
 		return contactoIndividual;
 	}
@@ -127,5 +128,12 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 				.map(m -> String.valueOf(m.getCodigo()))
 				.reduce("", (l, m) -> l + m + " ")
 				.trim();
+	}
+	
+	private List<Mensaje> obtenerMensajesDesdeCodigos(String codigos) {
+		return Arrays.asList(codigos.split(" ")).stream()
+				.map(Integer::parseInt)
+				.map(AdaptadorMensajeTDS.getUnicaInstancia()::recuperarMensaje)
+				.collect(Collectors.toList());
 	}
 }
