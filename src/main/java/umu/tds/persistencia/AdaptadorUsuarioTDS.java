@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 import javax.swing.ImageIcon;
@@ -38,7 +39,6 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 	
 	@Override
 	public void registrarUsuario(Usuario user) {
-		// TODO Auto-generated method stub
 		Entidad eUsuario = null;
 		//Comprobamos que la entidad no este registrada
 		try {
@@ -73,14 +73,18 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 				new Propiedad("estado", user.getEstado()),
 				new Propiedad("fechaNacimiento", user.getFechaNacimiento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))),
 				new Propiedad("email", user.getEmail()),
-				new Propiedad("isPremium", String.valueOf(user.isPremium()))
-				)));
+				new Propiedad("isPremium", String.valueOf(user.isPremium())),
+				new Propiedad("contactos", obtenerCodigosContactos(user.getContactos()))
+			    )));
 		
 		// registrar entidad cliente
-		eUsuario = servPersistencia.registrarEntidad(eUsuario);
+		eUsuario = Optional.ofNullable(servPersistencia.registrarEntidad(eUsuario)).get();
 		
 		// asignar identificador unico al usuario, aprovechando el que genera el servicio de persistencia
 		user.setCodigo(eUsuario.getId());
+		
+		//Añadimos al pool
+		PoolDAO.getUnicaInstancia().addObjeto(user.getCodigo(), user);
 	}
 	
 
@@ -102,6 +106,10 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		
 		//Eliminamos la entidad usuario
 		servPersistencia.borrarEntidad(eUsuario);
+		
+		//Si esta en el pool, lo eliminamos
+		if (PoolDAO.getUnicaInstancia().contiene(user.getCodigo()))
+			PoolDAO.getUnicaInstancia().removeObjeto(user.getCodigo());
 		
 	}
 
@@ -141,7 +149,11 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 
 	@Override
 	public Usuario recuperarUsuario(int codigo) {
-		//Recuperamos la entidad usuario de BD
+		//Si esta en el pool, devolvemos el objeto del pool
+		if (PoolDAO.getUnicaInstancia().contiene(codigo))
+			return (Usuario) PoolDAO.getUnicaInstancia().getObjeto(codigo);
+		
+		//Sino, recuperamos la entidad usuario de BD
 		Entidad eUsuario = servPersistencia.recuperarEntidad(codigo);
 		
 		//Recuperamos sus propiedades que no son objetos
@@ -157,7 +169,11 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		
 		//Creamos el usuario
 		Usuario usuario = new Usuario(nombre, apellidos, numTlf, password, fotoPerfil, estado, fechaNacimiento, email);
+		usuario.setPremium(isPremium);
 		usuario.setCodigo(codigo);
+		
+		//Añadimos al pool antes de añadir los contactos
+		PoolDAO.getUnicaInstancia().addObjeto(codigo, usuario);
 		
 		//Añadiomos las propiedades que son objetos
 		List<Contacto> contactos = obtenerContactosDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eUsuario, "contactos"));
@@ -169,11 +185,10 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 //___________________________________Fnciones Auxiliares________________________________________
 	
 	private String obtenerCodigosContactos(List<Contacto> contactos) {
-		String codigos = "";
-		for (Contacto contacto: contactos) {
-			codigos += contacto.getCodigo() + " ";
-		}
-		return codigos.trim();
+		return contactos.stream()
+				.map(c -> String.valueOf(c.getCodigo()))
+				.reduce("", (l, c) -> l + c + " ")
+				.trim();
 	}
 	
 	private List<Contacto> obtenerContactosDesdeCodigos(String codigos) {

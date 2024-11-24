@@ -128,9 +128,9 @@ public class Usuario {
 	}
 	
 	public void setContactos(List<Contacto> contactos) {
-		for (Contacto contacto : contactos) {
-			contactos.add(contacto);
-		}
+		contactos.stream()
+			.forEach(c -> this.contactos.add(c));
+		
 	}
 	
 
