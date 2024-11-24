@@ -57,5 +57,4 @@ public class Mensaje {
 	public void setTlfReceptor(int tlfReceptor) {
 		this.tlfReceptor = tlfReceptor;
 	}
-
 }

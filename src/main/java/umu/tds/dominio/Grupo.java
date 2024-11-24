@@ -29,5 +29,8 @@ public class Grupo extends Contacto {
         return Collections.unmodifiableList(participantes);
     }
 	
+	public boolean addParticipante(ContactoIndividual contacto) {
+		return participantes.add(contacto);
+	}
 	
 }

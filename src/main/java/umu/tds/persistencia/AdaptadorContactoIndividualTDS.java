@@ -116,9 +116,8 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 		usuarioAsociado = usuarioDAO.recuperarUsuario(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, "usuarioAsociado")));
 		contactoIndividual.setUsuarioAsociado(usuarioAsociado);
 		
-		MensajeDAO mensajeDAO = AdaptadorMensajeTDS.getUnicaInstancia();
-		List<Mensaje> mensajes = obtenerMensajesDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, "mensajesRecibidos"));
-		// TODO añadir mensajes o enviar mensajes?
+		obtenerMensajesDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, "mensajesRecibidos"))
+			.forEach(contactoIndividual::addMensaje);
 
 		return contactoIndividual;
 	}

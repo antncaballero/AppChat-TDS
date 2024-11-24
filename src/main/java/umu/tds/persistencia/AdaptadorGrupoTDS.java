@@ -2,8 +2,10 @@ package umu.tds.persistencia;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import beans.Entidad;
 import beans.Propiedad;
@@ -64,15 +66,56 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 	}
 
 	public void modificarGrupo(Grupo grupo) {
-		// TODO Auto-generated method stub
-	}
+		
+		Entidad eGrupo = servPersistencia.recuperarEntidad(grupo.getCodigo());
+		for (Propiedad p : eGrupo.getPropiedades()) {
+            switch (p.getNombre()) {
+            case "nombre":
+                p.setValor(grupo.getNombre());
+                break;
+            case "participantes":
+                p.setValor(obtenerCodigosContactosIndividual(grupo.getParticipantes()));
+                break;
+            case "listaMensajes":
+                p.setValor(obtenerCodigosMensajes(grupo.getListaMensajes()));
+                break;  
+            }
+            servPersistencia.modificarEntidad(eGrupo);
+		}
+}
 
 	public Grupo recuperarGrupo(int codigo) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		if (PoolDAO.INSTANCE.contains(codigo)) return (Grupo) PoolDAO.INSTANCE.getObject(codigo);
+		
+		Entidad eGrupo = servPersistencia.recuperarEntidad(codigo);
+	
+		String nombre = servPersistencia.recuperarPropiedadEntidad(eGrupo, "nombre");
+
+		Grupo grupo = new Grupo(nombre, new LinkedList<ContactoIndividual>());
+		grupo.setCodigo(codigo);
+		
+		PoolDAO.INSTANCE.addObject(codigo, grupo);
+		
+		String participantes = servPersistencia.recuperarPropiedadEntidad(eGrupo, "participantes");
+		obtenerIntegrantesDesdeCodigos(participantes).forEach(grupo::addParticipante);
+		
+		String mensajes = servPersistencia.recuperarPropiedadEntidad(eGrupo, "listaMensajes");
+		obtenerMensajesDesdeCodigos(mensajes).forEach(grupo::addMensaje);
+		
+		return grupo;
+
 	}
 	
-	//TODO esto esta en el adaptador individual, revisar si podriamos crear un adaptador abstracto con este metodo o si lo podriamos mover a mensajes
+	//TODO esto esta en el adaptador individual, revisar si podriamos crear un adaptador abstracto con este metodo o si lo podriamos mover a mensajes o utils
+	private List<Mensaje> obtenerMensajesDesdeCodigos(String codigos) {
+		return Arrays.stream(codigos.split(" "))
+                .map(Integer::parseInt)
+                .map(AdaptadorMensajeTDS.getUnicaInstancia()::recuperarMensaje)
+                .collect(Collectors.toList());
+
+	}
+	
 	private String obtenerCodigosMensajes(List<Mensaje> mensajesRecibidos) {
 		return mensajesRecibidos.stream()
 				.map(m -> String.valueOf(m.getCodigo()))
@@ -85,5 +128,12 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 				.map(c -> String.valueOf(c.getCodigo()))
 				.reduce("", (l, c) -> l + c + " ")
 				.trim();
+	}
+	
+	private List<ContactoIndividual> obtenerIntegrantesDesdeCodigos(String codigos) {
+		return Arrays.stream(codigos.split(" "))
+				.map(Integer::parseInt)
+				.map(AdaptadorContactoIndividualTDS.getInstancia()::recuperarContactoIndividual)
+				.collect(Collectors.toList());
 	}
 }

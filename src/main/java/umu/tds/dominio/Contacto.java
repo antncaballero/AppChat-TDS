@@ -38,6 +38,10 @@ public abstract class Contacto {
 	
 	public abstract String getEstado();	
 	
+	public boolean addMensaje(Mensaje mensaje) {
+		return listaMensajes.add(mensaje);
+	}
+	
 }
 
 
