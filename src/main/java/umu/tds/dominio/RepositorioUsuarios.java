@@ -27,5 +27,13 @@ public class RepositorioUsuarios {
 		return unicaInstancia;
 	}
 	
+	public boolean contains(Usuario usuario) {
+		return usuarios.containsValue(usuario);
+	}
+	
+	public void add(Usuario usuario) {
+		usuarios.put(usuario.getCodigo(), usuario);
+	}
+	
 
 }

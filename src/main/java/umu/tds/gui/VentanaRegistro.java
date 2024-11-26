@@ -327,12 +327,15 @@ public class VentanaRegistro extends JFrame {
 		});
 	
 		aceptarButton.addActionListener(e -> {
-			ControladorAppChat.getInstancia().registrarUsuario(nombreField.getText(), apellidosField.getText(), 
+			
+			boolean success =ControladorAppChat.getInstancia().registrarUsuario(nombreField.getText(), apellidosField.getText(), 
 					Integer.parseInt(telefonoField.getText()), new String(passwordField1.getPassword()), 
 					(ImageIcon) imageLabel.getIcon(), saludoField.getText(), 
 					dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), 
 					emailField.getText());
+			JOptionPane.showMessageDialog(VentanaRegistro.this, success ? "Te has registrado con éxito" : "El usuario ya existe");
 		});
+		
 	
 	}
 

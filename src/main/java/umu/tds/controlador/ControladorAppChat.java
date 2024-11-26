@@ -9,12 +9,14 @@ import umu.tds.dao.DAOException;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Mensaje;
+import umu.tds.dominio.RepositorioUsuarios;
 import umu.tds.dominio.Usuario;
 
 public class ControladorAppChat {
 
 	private static ControladorAppChat unicaInstancia = null;
 	private Usuario usuarioActual;
+	private RepositorioUsuarios repositorioUsuarios;
 
 	private ControladorAppChat() {
 	}
@@ -29,13 +31,17 @@ public class ControladorAppChat {
 			LocalDate fechaNacimiento, String email) {
 		
 		Usuario user = new Usuario(nombre, apellidos, numTlf, password, imagen, estado, fechaNacimiento, email);
-		try {
-			FactoriaDAO.getInstancia().getUsuarioDAO().registrarUsuario(user);
-		} catch (DAOException e) {
-			e.printStackTrace();
-		}
 		
-		return true;
+		if (!repositorioUsuarios.contains(user)) {
+			try {
+				FactoriaDAO.getInstancia().getUsuarioDAO().registrarUsuario(user);
+			} catch (DAOException e) {
+				e.printStackTrace();
+			}
+			repositorioUsuarios.add(user);			
+			return true;
+		}
+		else return false;
 	}
 }
 
