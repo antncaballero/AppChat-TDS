@@ -8,12 +8,17 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.util.List;
 import java.io.File;
+import java.time.ZoneId;
+
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import com.toedter.calendar.JDateChooser;
 
+import umu.tds.controlador.ControladorAppChat;
+
 public class VentanaRegistro extends JFrame {
+	private JTextField emailField;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -40,7 +45,7 @@ public class VentanaRegistro extends JFrame {
 		panelCentro.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "Registro", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		GridBagLayout gbl_panelCentro = new GridBagLayout();
 		gbl_panelCentro.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-		gbl_panelCentro.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0};
+		gbl_panelCentro.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0};
 		gbl_panelCentro.columnWidths = new int[]{0, 0, 0, 0, 152};
 		panelCentro.setLayout(gbl_panelCentro);
 
@@ -102,6 +107,22 @@ public class VentanaRegistro extends JFrame {
 		gbcTelefonoField.gridy = 2;
 		JTextField telefonoField = new JTextField(20);
 		panelCentro.add(telefonoField, gbcTelefonoField);
+		
+		JLabel lblEmail = new JLabel("Email:");
+		lblEmail.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		GridBagConstraints gbc_lblEmail = new GridBagConstraints();
+		gbc_lblEmail.insets = new Insets(0, 0, 5, 5);
+		gbc_lblEmail.gridx = 3;
+		gbc_lblEmail.gridy = 2;
+		panelCentro.add(lblEmail, gbc_lblEmail);
+		
+		emailField = new JTextField(20);
+		GridBagConstraints gbc_emailField = new GridBagConstraints();
+		gbc_emailField.anchor = GridBagConstraints.WEST;
+		gbc_emailField.insets = new Insets(0, 0, 5, 0);
+		gbc_emailField.gridx = 4;
+		gbc_emailField.gridy = 2;
+		panelCentro.add(emailField, gbc_emailField);
 
 		// Etiquetas y campos de "Contraseña"
 		GridBagConstraints gbcPasswordLabel1 = new GridBagConstraints();
@@ -194,9 +215,10 @@ public class VentanaRegistro extends JFrame {
 					List<File> droppedFiles = (List<File>) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
 					if (!droppedFiles.isEmpty()) {
 		            	File file = droppedFiles.get(0);		                
-		                ImageIcon icon = new ImageIcon(file.getAbsolutePath());
-	                    Image img = icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);                   	
-		                imageLabel.setIcon(new ImageIcon(img));
+		                ImageIcon icon = new ImageIcon(file.getPath());		                                   	
+		                ImageIcon imageIcon = new ImageIcon(icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+	                    imageIcon.setDescription(file.getPath());
+		                imageLabel.setIcon(imageIcon);
 						editorPane.setVisible(false);
 						imageLabel.setVisible(true);						
 					}
@@ -238,6 +260,7 @@ public class VentanaRegistro extends JFrame {
 	            File selectedFile = fileChooser.getSelectedFile();
 	            if (selectedFile != null) {
 	                ImageIcon imageIcon = new ImageIcon(new ImageIcon(selectedFile.getPath()).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+	                imageIcon.setDescription(selectedFile.getPath());
 	                imageLabel.setIcon(imageIcon);
 	                editorPane.setVisible(false);
 	                imageLabel.setVisible(true);
@@ -302,5 +325,15 @@ public class VentanaRegistro extends JFrame {
 			window.setVisible(true);
 			dispose();			
 		});
+	
+		aceptarButton.addActionListener(e -> {
+			ControladorAppChat.getInstancia().registrarUsuario(nombreField.getText(), apellidosField.getText(), 
+					Integer.parseInt(telefonoField.getText()), new String(passwordField1.getPassword()), 
+					(ImageIcon) imageLabel.getIcon(), saludoField.getText(), 
+					dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), 
+					emailField.getText());
+		});
+	
 	}
+
 }

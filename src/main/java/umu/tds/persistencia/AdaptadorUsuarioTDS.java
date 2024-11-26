@@ -69,7 +69,7 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 				new Propiedad("apellidos", user.getApellidos()),
 				new Propiedad("numTlf", Integer.toString(user.getNumTlf())),
 				new Propiedad("password", user.getPassword()),
-				new Propiedad("fotoPerfil", String.valueOf(user.getFotoPerfil().getDescription())),
+				new Propiedad("fotoPerfil", user.getFotoPerfil().getDescription()),
 				new Propiedad("estado", user.getEstado()),
 				new Propiedad("fechaNacimiento", user.getFechaNacimiento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))),
 				new Propiedad("email", user.getEmail()),
