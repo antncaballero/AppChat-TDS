@@ -187,17 +187,18 @@ public class VentanaRegistro extends JFrame {
 		editorPane.setText("Selecciona una imagen o<br>arrástrala aquí"); 
 		editorPane.setEditable(false); 
 		editorPane.setDropTarget(new DropTarget() {
+
 			public synchronized void drop(DropTargetDropEvent evt) {
 				try {
 					evt.acceptDrop(DnDConstants.ACTION_COPY);
 					List<File> droppedFiles = (List<File>) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-					for (File file : droppedFiles) {
-						if (file.getName().toLowerCase().endsWith(".jpg") || file.getName().toLowerCase().endsWith(".png") || file.getName().toLowerCase().endsWith(".jpeg")) {
-							ImageIcon imageIcon = new ImageIcon(new ImageIcon(file.getPath()).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-							imageLabel.setIcon(imageIcon);
-							editorPane.setVisible(false);
-							imageLabel.setVisible(true);
-						}
+					if (!droppedFiles.isEmpty()) {
+		            	File file = droppedFiles.get(0);		                
+		                ImageIcon icon = new ImageIcon(file.getAbsolutePath());
+	                    Image img = icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);                   	
+		                imageLabel.setIcon(new ImageIcon(img));
+						editorPane.setVisible(false);
+						imageLabel.setVisible(true);						
 					}
 				} catch (Exception ex) {
 					ex.printStackTrace();
