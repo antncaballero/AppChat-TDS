@@ -220,7 +220,8 @@ public class VentanaRegistro extends JFrame {
 	                    imageIcon.setDescription(file.getPath());
 		                imageLabel.setIcon(imageIcon);
 						editorPane.setVisible(false);
-						imageLabel.setVisible(true);						
+						imageLabel.setVisible(true);
+						
 					}
 				} catch (Exception ex) {
 					ex.printStackTrace();
