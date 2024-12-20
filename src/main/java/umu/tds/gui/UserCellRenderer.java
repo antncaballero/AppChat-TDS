@@ -14,6 +14,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import umu.tds.dominio.Usuario;
+import umu.tds.utils.Utils;
 
 public class UserCellRenderer extends JPanel implements ListCellRenderer<Usuario>{
 
@@ -59,7 +60,7 @@ public class UserCellRenderer extends JPanel implements ListCellRenderer<Usuario
 				
 		nameLabel.setText(user.getNombre() + " "+ user.getApellidos());
 		estadoLabel.setText(user.getEstado());
-		imageLabel.setIcon(new ImageIcon(user.getFotoPerfil()));
+		imageLabel.setIcon(Utils.imageToImageIcon(user.getFotoPerfil(), 40, 40));
 		
 		if (isSelected) setBackground(Color.lightGray);
 		else setBackground(list.getBackground());
