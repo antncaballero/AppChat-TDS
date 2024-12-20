@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 import javax.swing.ImageIcon;
 
@@ -69,7 +70,7 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 				new Propiedad("apellidos", user.getApellidos()),
 				new Propiedad("numTlf", Integer.toString(user.getNumTlf())),
 				new Propiedad("password", user.getPassword()),
-				new Propiedad("fotoPerfil", user.getFotoPerfil().getDescription()),
+				new Propiedad("fotoPerfilCodificada", user.getFotoPerfilCodificada()),
 				new Propiedad("estado", user.getEstado()),
 				new Propiedad("fechaNacimiento", user.getFechaNacimiento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))),
 				new Propiedad("email", user.getEmail()),
@@ -128,8 +129,8 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 				prop.setValor(Integer.toString(user.getNumTlf()));
 			} else if (prop.getNombre().equals("password")) {
 				prop.setValor(user.getPassword());
-			} else if (prop.getNombre().equals("fotoPerfil")) {
-				prop.setValor(String.valueOf(user.getFotoPerfil().getDescription()));
+			} else if (prop.getNombre().equals("fotoPerfilCodificada")) {
+				prop.setValor(String.valueOf(user.getFotoPerfilCodificada()));
 			} else if (prop.getNombre().equals("estado")) {
 				prop.setValor(user.getEstado());
 			} else if (prop.getNombre().equals("fechaNacimiento")) {
@@ -161,14 +162,14 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		String apellidos = servPersistencia.recuperarPropiedadEntidad(eUsuario, "apellidos");
 		int numTlf = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eUsuario, "numTlf"));
 		String password = servPersistencia.recuperarPropiedadEntidad(eUsuario, "password");
-		ImageIcon fotoPerfil = new ImageIcon(servPersistencia.recuperarPropiedadEntidad(eUsuario, "fotoPerfil"));
+		String fotoPerfilCodificada = servPersistencia.recuperarPropiedadEntidad(eUsuario, "fotoPerfilCodificada");
 		String estado = servPersistencia.recuperarPropiedadEntidad(eUsuario, "estado");
 		LocalDate fechaNacimiento = LocalDate.parse(servPersistencia.recuperarPropiedadEntidad(eUsuario, "fechaNacimiento"), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		String email = servPersistencia.recuperarPropiedadEntidad(eUsuario, "email");
 		boolean isPremium = Boolean.parseBoolean(servPersistencia.recuperarPropiedadEntidad(eUsuario, "isPremium"));
 		
 		//Creamos el usuario
-		Usuario usuario = new Usuario(nombre, apellidos, numTlf, password, fotoPerfil, estado, fechaNacimiento, email);
+		Usuario usuario = new Usuario(nombre, apellidos, numTlf, password, estado, fechaNacimiento, email, fotoPerfilCodificada);
 		usuario.setPremium(isPremium);
 		usuario.setCodigo(codigo);
 		
@@ -190,7 +191,7 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		eUsuarios.forEach(e -> usuarios.add(recuperarUsuario(e.getId())));
 		return usuarios;
 	}
-//___________________________________Fnciones Auxiliares________________________________________
+//Funciones auxiliares
 	
 	private String obtenerCodigosContactos(List<Contacto> contactos) {
 		return contactos.stream()
@@ -200,19 +201,10 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 	}
 	
 	private List<Contacto> obtenerContactosDesdeCodigos(String codigos) {
-		List<Contacto> contactos = new LinkedList<>();
-		StringTokenizer strTok = new StringTokenizer(codigos, " ");
-		AdaptadorContactoIndividualTDS adaptadorCI = AdaptadorContactoIndividualTDS.getInstancia();
-		AdaptadorGrupoTDS adaptadorG = AdaptadorGrupoTDS.getInstancia();
-		while (strTok.hasMoreTokens()) {
-			int codigo = Integer.parseInt(strTok.nextToken());
-			Contacto contacto = adaptadorCI.recuperarContactoIndividual(codigo);
-			if (contacto == null) {
-				contacto = adaptadorG.recuperarGrupo(codigo);
-			}
-			contactos.add(contacto);
-		}		
-		return contactos;
+		return Arrays.stream(codigos.split(" "))
+				.map(Integer::parseInt)
+				.map(AdaptadorContactoIndividualTDS.getInstancia()::recuperarContactoIndividual)
+				.collect(Collectors.toList());
 	}
 
 	

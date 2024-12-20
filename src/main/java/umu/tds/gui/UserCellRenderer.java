@@ -8,6 +8,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -58,7 +59,7 @@ public class UserCellRenderer extends JPanel implements ListCellRenderer<Usuario
 				
 		nameLabel.setText(user.getNombre() + " "+ user.getApellidos());
 		estadoLabel.setText(user.getEstado());
-		imageLabel.setIcon(user.getFotoPerfil());
+		imageLabel.setIcon(new ImageIcon(user.getFotoPerfil()));
 		
 		if (isSelected) setBackground(Color.lightGray);
 		else setBackground(list.getBackground());

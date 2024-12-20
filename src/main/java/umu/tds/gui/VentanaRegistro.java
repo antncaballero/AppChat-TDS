@@ -8,6 +8,7 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.util.List;
 import java.io.File;
+import java.time.LocalDate;
 import java.time.ZoneId;
 
 import javax.swing.border.LineBorder;
@@ -16,6 +17,7 @@ import javax.swing.border.TitledBorder;
 import com.toedter.calendar.JDateChooser;
 
 import umu.tds.controlador.ControladorAppChat;
+import umu.tds.utils.Utils;
 
 public class VentanaRegistro extends JFrame {
 	private JTextField emailField;
@@ -220,8 +222,7 @@ public class VentanaRegistro extends JFrame {
 	                    imageIcon.setDescription(file.getPath());
 		                imageLabel.setIcon(imageIcon);
 						editorPane.setVisible(false);
-						imageLabel.setVisible(true);
-						
+						imageLabel.setVisible(true);					
 					}
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -327,13 +328,19 @@ public class VentanaRegistro extends JFrame {
 			dispose();			
 		});
 	
-		aceptarButton.addActionListener(e -> {
+		aceptarButton.addActionListener(e -> {		
+			String fotoPerfilCodificada = imageLabel.getIcon() != null ?
+					Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription())) :
+					Utils.convertImageToBase64(new File("src/main/resources/user.png"));
 			
-			boolean success =ControladorAppChat.getInstancia().registrarUsuario(nombreField.getText(), apellidosField.getText(), 
-					Integer.parseInt(telefonoField.getText()), new String(passwordField1.getPassword()), 
-					(ImageIcon) imageLabel.getIcon(), saludoField.getText(), 
-					dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), 
-					emailField.getText());
+			LocalDate fechaNacimiento = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			
+			boolean success = ControladorAppChat.getInstancia().registrarUsuario(
+					nombreField.getText(), apellidosField.getText(), Integer.parseInt(telefonoField.getText()),
+					new String(passwordField1.getPassword()), saludoField.getText(), fechaNacimiento,
+					emailField.getText(), fotoPerfilCodificada
+					);
+			
 			JOptionPane.showMessageDialog(VentanaRegistro.this, success ? "Te has registrado con éxito" : "El usuario ya existe");
 		});
 		

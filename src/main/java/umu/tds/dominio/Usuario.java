@@ -1,15 +1,18 @@
 package umu.tds.dominio;
 
 import java.awt.Image;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import umu.tds.utils.Utils;
 
 public class Usuario {
 	
@@ -20,7 +23,7 @@ public class Usuario {
 	private String apellidos;
 	private int numTlf;
 	private String password;
-	private ImageIcon fotoPerfil;
+	private String fotoPerfilCodificada;
 	private String estado;
 	private final LocalDate fechaNacimiento;
 	private String email;
@@ -29,7 +32,7 @@ public class Usuario {
 	
 	
 	public Usuario(String nombre, String apellidos, int numTlf, String password, String estado,
-			LocalDate fechaNacimiento, String email) {
+			LocalDate fechaNacimiento, String email, String fotoPerfilCodificada) {
 		super();
 		this.codigo = 0;
 		this.nombre = nombre;
@@ -41,28 +44,29 @@ public class Usuario {
 		this.email = email;
 		this.isPremium = false;
 		this.contactos = new LinkedList<>();
+		this.fotoPerfilCodificada = fotoPerfilCodificada;
 		
-		try {
-			URL imageUrl = new URL("https://robohash.org/" + nombre + "?size=50x50");
-			Image image = ImageIO.read(imageUrl);
-			this.fotoPerfil = new ImageIcon(image.getScaledInstance(50, 50, Image.SCALE_SMOOTH));	
+	}
+	
+	public Usuario(String nombre, String apellidos, int numTlf, String password, LocalDate fechaNacimiento, String email, String fotoPerfilCodificada) {		
+		this(nombre, apellidos, numTlf, password, ESTADO_POR_DEFECTO, fechaNacimiento, email, fotoPerfilCodificada);		
+	}	
+	
+	public String getFotoPerfilCodificada() {
+		return fotoPerfilCodificada;
+	}
+	
+	public Image getFotoPerfil() {
+		
+		Optional<Image> imagen = Optional.ofNullable(Utils.convertBase64ToImage(fotoPerfilCodificada));	
+		return (imagen.isPresent() ? imagen.get() : Utils.convertBase64ToImage(Utils.convertImageToBase64(new File("src/main/resources/user.png"))));	
+	}
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+
+	public void setFotoPerfilCodificada(String fotoPerfilCodificada) {
+		this.fotoPerfilCodificada = fotoPerfilCodificada;
 	}
-	
-	public Usuario(String nombre, String apellidos, int numTlf, String password, LocalDate fechaNacimiento, String email) {		
-		this(nombre, apellidos, numTlf, password, ESTADO_POR_DEFECTO, fechaNacimiento, email);		
-	}
-	
-	public Usuario(String nombre, String apellidos, int numTlf, String password, ImageIcon imagen, String estado,
-			LocalDate fechaNacimiento, String email) {
-		this(nombre, apellidos, numTlf, password, estado, fechaNacimiento, email);
-		this.fotoPerfil = imagen;
-	}
-	
+
 	public int getCodigo() {
 		return codigo;
 	}
@@ -93,12 +97,7 @@ public class Usuario {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public ImageIcon getFotoPerfil() {
-		return fotoPerfil;
-	}
-	public void setFotoPerfil(ImageIcon fotoPerfil) {
-		this.fotoPerfil = fotoPerfil;
-	}
+
 	public String getEstado() {
 		return estado;
 	}

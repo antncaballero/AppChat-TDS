@@ -2,6 +2,8 @@ package umu.tds.dominio;
 
 import javax.swing.ImageIcon;
 
+import umu.tds.utils.Utils;
+
 public class ContactoIndividual extends Contacto {
 	
 	private Usuario usuarioAsociado;
@@ -13,7 +15,7 @@ public class ContactoIndividual extends Contacto {
 	
 	@Override
 	public ImageIcon getFoto() {	
-		return usuarioAsociado.getFotoPerfil();
+		return Utils.imageToImageIcon(usuarioAsociado.getFotoPerfil(), 40, 40);
 	}
 	@Override
 	public String getEstado() {

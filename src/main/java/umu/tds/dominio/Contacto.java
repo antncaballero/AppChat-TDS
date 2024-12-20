@@ -36,7 +36,7 @@ public abstract class Contacto {
 	
 	public abstract ImageIcon getFoto();
 	
-	public abstract String getEstado();	
+	public abstract String getEstado();	//TODO revisar si mover a contactor individual
 	
 	public boolean addMensaje(Mensaje mensaje) {
 		return listaMensajes.add(mensaje);

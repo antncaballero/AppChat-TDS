@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Base64;
 
@@ -12,24 +13,31 @@ import javax.swing.ImageIcon;
 
 public class Utils {
 
-	public static String convertImageToBase64(File imageFile) throws IOException {
-        // Leer el archivo de imagen en un arreglo de bytes
-        FileInputStream fileInputStream = new FileInputStream(imageFile);
-        byte[] imageBytes = fileInputStream.readAllBytes();
-        fileInputStream.close();
-        
-        // Convertir el array de bytes a una cadena Base64
-        return Base64.getEncoder().encodeToString(imageBytes);
+	public static String convertImageToBase64(File imageFile) {
+        // Leer el archivo de imagen en un arreglo de bytes        
+		byte[] imageBytes;
+		try {
+			FileInputStream fileInputStream = new FileInputStream(imageFile);   
+			imageBytes = fileInputStream.readAllBytes();
+			fileInputStream.close();
+			return Base64.getEncoder().encodeToString(imageBytes);
+		} catch (Exception e) {
+			return null;		
+		}        
     }
 
     // Método para convertir una cadena Base64 a una imagen
-    public static Image convertBase64ToImage(String base64String) throws IOException {
+    public static Image convertBase64ToImage(String base64String) {
         // Decodificar la cadena Base64 a un arreglo de bytes
         byte[] imageBytes = Base64.getDecoder().decode(base64String);
         
         // Leer los bytes como una imagen
         ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
-        return ImageIO.read(bais);
+        try {
+			return ImageIO.read(bais);
+		} catch (IOException e) {
+			return null;
+		}
     }
 
     public static ImageIcon imageToImageIcon(Image image, int width, int height) {
