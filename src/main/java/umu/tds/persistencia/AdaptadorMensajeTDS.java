@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import beans.Entidad;
 import beans.Propiedad;
@@ -31,23 +32,16 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 	
 	
 	public void registrarMensaje(Mensaje mensaje) {
-		Entidad eMensaje = null;
+		//Comprobamos si ya esta registrado
+		Optional<Entidad> eMensaje = Optional.ofNullable(servPersistencia.recuperarEntidad(mensaje.getCodigo()));
+		if (eMensaje.isPresent()) return;
 		
-		//Comprobamos que la entidad no este registrada
-		try {
-			eMensaje = servPersistencia.recuperarEntidad(mensaje.getCodigo());
-		} catch (Exception e) {}
-		
-		if (eMensaje != null) return;
-		
-	    //Creamos una entidad mensaje
-		eMensaje = new Entidad();
-		
+		//Creamos una entidad mensaje
+		eMensaje = Optional.of(new Entidad());
 		//Asignamos tipo
-		eMensaje.setNombre("mensaje");
-		
+		eMensaje.get().setNombre("mensaje");
 		//Asignamos atributos
-		eMensaje.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
+		eMensaje.get().setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
 				new Propiedad("texto", mensaje.getTexto()),
 				new Propiedad("hora", mensaje.getHora().toString()),
 				new Propiedad("emoticono", Integer.toString(mensaje.getEmoticono())),
@@ -56,10 +50,10 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 				)));
 		
 		//Registramos la entidad
-		eMensaje = servPersistencia.registrarEntidad(eMensaje);
+		eMensaje = Optional.ofNullable(servPersistencia.registrarEntidad(eMensaje.get()));
 		
 		//Asignamos el codigo unico, aprovechamos el que genera el servicio de persistencia
-		mensaje.setCodigo(eMensaje.getId());
+		mensaje.setCodigo(eMensaje.get().getId());
 		
 		//Añadimos al pool
 		PoolDAO.INSTANCE.addObject(mensaje.getCodigo(), mensaje);
@@ -111,15 +105,14 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		
 		//Recuperamos sus propiedades
 		String texto = servPersistencia.recuperarPropiedadEntidad(eMensaje, "texto");
-		String hora = servPersistencia.recuperarPropiedadEntidad(eMensaje, "hora");
-		LocalDateTime fechaHora = LocalDateTime.parse(hora);
+		LocalDateTime fechaHora = LocalDateTime.parse(servPersistencia.recuperarPropiedadEntidad(eMensaje, "hora"));
 		
-		String emoticono = servPersistencia.recuperarPropiedadEntidad(eMensaje, "emoticono");
-		String tlfEmisor = servPersistencia.recuperarPropiedadEntidad(eMensaje, "tlfEmisor");
-		String tlfReceptor = servPersistencia.recuperarPropiedadEntidad(eMensaje, "tlfReceptor");
+		int emoticono = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, "emoticono"));
+		int tlfEmisor = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, "tlfEmisor")); 
+		int tlfReceptor = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, "tlfReceptor")); 
 		
 		//Creamos el mensaje
-		Mensaje mensaje = new Mensaje(texto, fechaHora, Integer.parseInt(emoticono), Integer.parseInt(tlfEmisor), Integer.parseInt(tlfReceptor));
+		Mensaje mensaje = new Mensaje(texto, fechaHora, emoticono, tlfEmisor, tlfReceptor);
 		mensaje.setCodigo(codigo);
 		
 		//Añadimos al pool

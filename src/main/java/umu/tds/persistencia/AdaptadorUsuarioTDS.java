@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.swing.ImageIcon;
 
@@ -40,32 +41,25 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 	
 	@Override
 	public void registrarUsuario(Usuario user) {
-		Entidad eUsuario = null;
-		//Comprobamos que la entidad no este registrada
-		try {
-			eUsuario = servPersistencia.recuperarEntidad(user.getCodigo());
-		} catch (Exception e) {}
-		if (eUsuario != null) return;
+		//Comprobamos si ya esta registrado
+		Optional<Entidad> eUsuario = Optional.ofNullable(servPersistencia.recuperarEntidad(user.getCodigo()));
+		if (eUsuario.isPresent()) return;
 		
 		//Registramos atributos que son objetos
-		AdaptadorContactoIndividualTDS adaptadorContactoIndividual = AdaptadorContactoIndividualTDS.getInstancia();
-		AdaptadorGrupoTDS adaptadorGrupo = AdaptadorGrupoTDS.getInstancia();
 		for (Contacto contacto: user.getContactos()) {
 			if(contacto instanceof ContactoIndividual) {
-				adaptadorContactoIndividual.registrarContactoIndividual((ContactoIndividual) contacto);
+				AdaptadorContactoIndividualTDS.getInstancia().registrarContactoIndividual((ContactoIndividual) contacto);
 			}else if (contacto instanceof Grupo) {
-				adaptadorGrupo.registrarGrupo((Grupo) contacto);
+				AdaptadorGrupoTDS.getInstancia().registrarGrupo((Grupo) contacto);
 			}
 		}
 		
 		//Creamos una entidad usuario
-		eUsuario = new Entidad();
-		
-		//Asignamos tipo
-		eUsuario.setNombre("usuario");
-		
+		eUsuario = Optional.of(new Entidad());
+        //Asignamos tipo
+		eUsuario.get().setNombre("usuario");
 		//Registramos atributos
-		eUsuario.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
+		eUsuario.get().setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
 				new Propiedad("nombre", user.getNombre()),
 				new Propiedad("apellidos", user.getApellidos()),
 				new Propiedad("numTlf", Integer.toString(user.getNumTlf())),
@@ -79,10 +73,9 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 			    )));
 		
 		// registrar entidad cliente
-		eUsuario = Optional.ofNullable(servPersistencia.registrarEntidad(eUsuario)).get();
-		
+		eUsuario = Optional.ofNullable(servPersistencia.registrarEntidad(eUsuario.get()));
 		// asignar identificador unico al usuario, aprovechando el que genera el servicio de persistencia
-		user.setCodigo(eUsuario.getId());
+		user.setCodigo(eUsuario.get().getId());
 		
 		//Añadimos al pool
 		PoolDAO.INSTANCE.addObject(user.getCodigo(), user);
@@ -93,15 +86,13 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 	public void borrarUsuario(Usuario user) {
 		//Se recupera entidad usuario
 		Entidad eUsuario = servPersistencia.recuperarEntidad(user.getCodigo());
-		AdaptadorContactoIndividualTDS adaptadorContactoIndividual = AdaptadorContactoIndividualTDS.getInstancia();
-		AdaptadorGrupoTDS adaptadorGrupo = AdaptadorGrupoTDS.getInstancia();
 		
 		//Eliminamos sus entidades agregadas
 		for (Contacto contacto : user.getContactos()) {
 			if (contacto instanceof ContactoIndividual) {
-				adaptadorContactoIndividual.borrarContactoIndividual((ContactoIndividual) contacto);
+				AdaptadorContactoIndividualTDS.getInstancia().borrarContactoIndividual((ContactoIndividual) contacto);
 			} else{
-				adaptadorGrupo.borrarGrupo((Grupo) contacto);
+				AdaptadorGrupoTDS.getInstancia().borrarGrupo((Grupo) contacto);
 			}
 		}
 		
@@ -176,7 +167,7 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		//Añadimos al pool antes de añadir los contactos
 		PoolDAO.INSTANCE.addObject(codigo, usuario);
 		
-		//Añadiomos las propiedades que son objetos
+		//Añadimos las propiedades que son objetos
 		List<Contacto> contactos = obtenerContactosDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eUsuario, "contactos"));
 		usuario.setContactos(contactos);
 		
@@ -201,10 +192,27 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 	}
 	
 	private List<Contacto> obtenerContactosDesdeCodigos(String codigos) {
+		//TODO: Revisar si se puede hacer con un solo stream
+		
 		return Arrays.stream(codigos.split(" "))
-				.map(Integer::parseInt)
-				.map(AdaptadorContactoIndividualTDS.getInstancia()::recuperarContactoIndividual)
-				.collect(Collectors.toList());
+                .map(Integer::parseInt)
+                .map(c -> {
+                    Optional<Contacto> contactoIndividual = Optional.ofNullable(AdaptadorContactoIndividualTDS.getInstancia().recuperarContactoIndividual(c));
+                    if (contactoIndividual.isPresent()) return contactoIndividual.get();
+                    return AdaptadorGrupoTDS.getInstancia().recuperarGrupo(c);
+                })
+                .collect(Collectors.toList());
+		/*List<Contacto> listaContactoInduvidual = Arrays.stream(codigos.split(" "))
+			.map(Integer::parseInt)
+			.filter(c -> AdaptadorContactoIndividualTDS.getInstancia().recuperarContactoIndividual(c) != null)
+			.map(AdaptadorContactoIndividualTDS.getInstancia()::recuperarContactoIndividual)
+			.collect(Collectors.toList());
+		List<Contacto> listaGrupo = Arrays.stream(codigos.split(" "))
+			.map(Integer::parseInt)
+			.filter(c -> AdaptadorGrupoTDS.getInstancia().recuperarGrupo(c) != null)
+			.map(AdaptadorGrupoTDS.getInstancia()::recuperarGrupo)
+			.collect(Collectors.toList());
+		return Stream.concat(listaContactoInduvidual.stream(), listaGrupo.stream()).collect(Collectors.toList());*/
 	}
 
 	
