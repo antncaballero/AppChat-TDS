@@ -8,10 +8,13 @@ import java.awt.Color;
 
 import javax.swing.JLabel;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
@@ -19,11 +22,16 @@ import javax.swing.border.TitledBorder;
 import java.awt.Component;
 
 import javax.swing.JButton;
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.JPasswordField;
 
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class VentanaLogin {
 
@@ -110,7 +118,7 @@ public class VentanaLogin {
 		gbc_txtTelefono.gridy = 1;
 		panelCentro.add(txtTelefono, gbc_txtTelefono);
 		txtTelefono.setColumns(10);
-
+		
 		JLabel lblContrasena = new JLabel("Contraseña:");
 		lblContrasena.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		GridBagConstraints gbc_lblContrasena = new GridBagConstraints();
@@ -119,7 +127,7 @@ public class VentanaLogin {
 		gbc_lblContrasena.gridx = 1;
 		gbc_lblContrasena.gridy = 2;
 		panelCentro.add(lblContrasena, gbc_lblContrasena);
-
+		
 		JPasswordField txtContrasena = new JPasswordField();
 		txtContrasena.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		GridBagConstraints gbc_txtContrasena = new GridBagConstraints();
@@ -129,7 +137,24 @@ public class VentanaLogin {
 		gbc_txtContrasena.gridy = 2;
 		panelCentro.add(txtContrasena, gbc_txtContrasena);
 		txtContrasena.setColumns(10);
-
+		
+		JButton btnMostrar = new JButton(getIcon("src/main/resources/OjoOculto.png", 1.5f));
+		GridBagConstraints gbc_btnMostrar = new GridBagConstraints();
+		gbc_btnMostrar.insets = new Insets(0, 0, 5, 0);
+		gbc_btnMostrar.gridx = 3;
+		gbc_btnMostrar.gridy = 2;
+		panelCentro.add(btnMostrar, gbc_btnMostrar);
+		
+		btnMostrar.addActionListener(e -> {
+			if (txtContrasena.getEchoChar() == '•') {
+				txtContrasena.setEchoChar((char) 0);
+				btnMostrar.setIcon(getIcon("src/main/resources/OjoAbierto.png", 1.5f));
+			} else {
+				txtContrasena.setEchoChar('•');
+				btnMostrar.setIcon(getIcon("src/main/resources/OjoOculto.png", 1.5f));
+			}
+		});
+		
 		JPanel panelSur = new JPanel();
 		panelLogin.add(panelSur, BorderLayout.SOUTH);
 
@@ -169,6 +194,32 @@ public class VentanaLogin {
 
 		Component espacioEste = Box.createHorizontalStrut(110);
 		panelEste.add(espacioEste);
+	}
+	
+	public static ImageIcon getIcon(String imageUrl, float factor) {
+		//TODO: Pasar este método a una clase de utilidades.
+		try {
+			// Leer la imagen
+			BufferedImage img = ImageIO.read(new File(imageUrl));
+			// Obtenemos la proporcion ancho / altura.
+			float proporcion = img.getWidth() / ((float) img.getHeight());
+			// Obtenemos la Fuente (letra) por defecto especificada por el SO para un textPane.
+			Font font = UIManager.getDefaults().getFont("TextPane.font");
+			// Obtenemos el tamaño de letra.
+			int tamanoLetra = font.getSize();
+
+			// Se reeescala la iamgen.
+			Image newimg = img.getScaledInstance(
+					Math.round(factor * tamanoLetra * proporcion),  // Anchura: tamaño de la letra multiplicado por la proporcion original.
+					Math.round(factor * tamanoLetra), // altura: tamaño de la letra
+					java.awt.Image.SCALE_SMOOTH	// Método para reescalar (Calidad:SCALE_SMOOTH o rapidez SCALE_FAST)
+					);
+			// Se crea un ImageIcon
+			return new ImageIcon(newimg);
+		} catch (IOException e) {
+			// Si falla la lectura de la imagen, el botón se generará sin icono. No es necesario parar la ejecución.
+			return null;
+		}
 	}
 	
 }
