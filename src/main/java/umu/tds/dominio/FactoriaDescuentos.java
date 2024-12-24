@@ -30,6 +30,7 @@ public enum FactoriaDescuentos {
                 .filter(m-> m.getHora().isAfter(LocalDateTime.now().minusMonths(1)))
                 .count();
         return numMensajes > DESCUENTO_MENSAJES;
+        
     }
 	
 	private boolean DescuentoPorFechaAplicable(Usuario u) {

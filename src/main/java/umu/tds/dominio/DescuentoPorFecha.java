@@ -4,8 +4,12 @@ public class DescuentoPorFecha implements Descuento {
 
 	@Override
 	public double getDescuento() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 0.9;
+	}
+	
+	@Override
+	public String toString() {
+		return "Descuento por fecha";
 	}
 
 }
