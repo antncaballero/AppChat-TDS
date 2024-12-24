@@ -128,9 +128,11 @@ public class Usuario {
 	
 	public void setContactos(List<Contacto> contactos) {
 		contactos.stream()
-			.forEach(c -> this.contactos.add(c));
-		
+			.forEach(c -> this.contactos.add(c));	
 	}
 	
+	public List<Descuento> getDescuentosAplicables() {
+		return FactoriaDescuentos.INSTANCE.getDescuentosUsuario(this);
+	}
 
 }
