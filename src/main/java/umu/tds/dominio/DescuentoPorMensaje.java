@@ -2,9 +2,11 @@ package umu.tds.dominio;
 
 public class DescuentoPorMensaje implements Descuento {
 
+	private static final double DESCUENTO_MENSAJES = 0.85;
+	
 	@Override
-	public double getDescuento() {
-		return 0.85;
+	public double calcularPrecioFinal(double precioInicial) {
+		return precioInicial * DESCUENTO_MENSAJES;
 	}
 
 	@Override

@@ -2,9 +2,10 @@ package umu.tds.dominio;
 
 public class DescuentoPorFecha implements Descuento {
 
+	private static final double DESCUENTO_FECHA = 0.9;
 	@Override
-	public double getDescuento() {
-		return 0.9;
+	public double calcularPrecioFinal(double precioInicial) {
+		return precioInicial * DESCUENTO_FECHA;
 	}
 	
 	@Override

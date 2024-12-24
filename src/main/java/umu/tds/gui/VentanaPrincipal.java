@@ -41,6 +41,7 @@ import umu.tds.utils.Utils;
 public class VentanaPrincipal extends JFrame {
 
 	private JPanel contentPane;
+	private ControladorAppChat controlador = ControladorAppChat.getInstancia();
 
 	/**
 	 * Launch the application.
@@ -119,22 +120,15 @@ public class VentanaPrincipal extends JFrame {
 		comboContactos.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		
 		botonPremium.addActionListener(e -> {
-			if (ControladorAppChat.getInstancia().getUsuarioActual().isPremium()) {
+			if (controlador.getUsuarioActual().isPremium()) {
 				JOptionPane.showMessageDialog(this, "Ya eres usuario premium", "Premium",
 						JOptionPane.INFORMATION_MESSAGE);
 			} else {
-				List<Descuento> descuentos = ControladorAppChat.getInstancia().getDescuentosUsuarioActual();
+				List<Descuento> descuentos = controlador.getDescuentosUsuarioActual();
 				JDialogDescuentos dialogoDescuentos = new JDialogDescuentos(this, descuentos);
                 dialogoDescuentos.setVisible(true);
-
-                if (dialogoDescuentos.isConfirmed()) {
-                    //String descuentoSeleccionado = dialogoDescuentos.getDescuentoSeleccionado();
-                   // controlador.hacerUsuarioPremium(descuentoSeleccionado);
-                    JOptionPane.showMessageDialog(this,
-                            "¡Felicitaciones! Ahora eres usuario premium.",
-                            "Éxito",
-                            JOptionPane.INFORMATION_MESSAGE);
-                }
+                boolean exitoPago = dialogoDescuentos.isConfirmed();
+                controlador.hacerPremium(exitoPago); //si paga con éxito se hace premium, si no no hace nada
 			}
 		});
 		

@@ -4,8 +4,8 @@ public class DescuentoNulo implements Descuento {
 
 	//patrón null object
 	@Override
-	public double getDescuento() {
-		return 1;
+	public double calcularPrecioFinal(double precioInicial) {
+		return precioInicial;
 	}
 	
 	@Override
