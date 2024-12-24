@@ -1,7 +1,8 @@
 package umu.tds.dominio;
 
-public class DescuentoPorMensaje implements Descuento {
+public class DescuentoNulo implements Descuento {
 
+	//patrón null object
 	@Override
 	public double getDescuento() {
 		return 0;

@@ -12,12 +12,12 @@ public enum FactoriaDescuentos {
 	
 	public static final int DESCUENTO_MENSAJES = 100;
 	public static final LocalDate FECHA_INICIO_DESCUENTO = LocalDate.of(2024, 10, 10);
-	public static final LocalDate FECHA_FIN_DESCUENTO = LocalDate.of(2024, 10, 20);
-	
-	
-	public List<Descuento> getDescuentosUsuario(Usuario u) {
+	public static final LocalDate FECHA_FIN_DESCUENTO = LocalDate.of(2025, 1, 20);
+		
+	public List<Descuento> getDescuentosUsuario(Usuario u) {		
 		LinkedList<Descuento> descuentos = new LinkedList<>();
 		
+		descuentos.add(new DescuentoNulo()); //patrón null object
 		if(DescuentoPorMensajesAplicable(u)) descuentos.add(new DescuentoPorMensaje());
 		if(DescuentoPorFechaAplicable(u)) descuentos.add(new DescuentoPorFecha());
 		
