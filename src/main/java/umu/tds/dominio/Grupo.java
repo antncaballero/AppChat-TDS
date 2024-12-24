@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.ImageIcon;
 import umu.tds.gui.VentanaPrincipal;
+import umu.tds.utils.Utils;
 
 public class Grupo extends Contacto {
 
@@ -16,12 +17,11 @@ public class Grupo extends Contacto {
 	
 	@Override
 	public ImageIcon getFoto() {	
-		return VentanaPrincipal.getScaledIcon("src/main/resources/group.png", 50, 50);
+		return Utils.getScaledIcon("src/main/resources/group.png", 50, 50);
 	}
 	
 	@Override
-	public String getEstado() {
-		
+	public String getEstado() {	
 		return "";
 	}
 	

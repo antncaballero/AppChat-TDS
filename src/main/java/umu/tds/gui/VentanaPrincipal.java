@@ -106,11 +106,11 @@ public class VentanaPrincipal extends JFrame {
 		JPanel panelNorte = new JPanel();
 		contentPane.add(panelNorte, BorderLayout.NORTH);
 
-		JButton botonPremium = new JButton(getIcon("src/main/resources/premium.png", 3.3f));
-		JButton botonBuscar = new JButton(getIcon("src/main/resources/glass.png", 2.5f));
-		JButton botonContactos = new JButton(getIcon("src/main/resources/contacts.png", 2.5f));
-		JButton botonPerfil = new JButton(getIcon("src/main/resources/user.png", 2.5f));
-		JButton botonMandar = new JButton(getIcon("src/main/resources/send.png", 2.5f));
+		JButton botonPremium = new JButton(Utils.getIcon("src/main/resources/premium.png", 3.3f));
+		JButton botonBuscar = new JButton(Utils.getIcon("src/main/resources/glass.png", 2.5f));
+		JButton botonContactos = new JButton(Utils.getIcon("src/main/resources/contacts.png", 2.5f));
+		JButton botonPerfil = new JButton(Utils.getIcon("src/main/resources/user.png", 2.5f));
+		JButton botonMandar = new JButton(Utils.getIcon("src/main/resources/send.png", 2.5f));
 		JComboBox<String> comboContactos = new JComboBox<String>();
 		comboContactos.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		
@@ -156,7 +156,7 @@ public class VentanaPrincipal extends JFrame {
 		BubbleText burbuja3=new BubbleText(panelChat, 4, Color.GREEN, "J.Ramón", BubbleText.SENT, 12); 
 
 		TextField mensaje = new TextField();
-		JButton botonSend = new JButton(getIcon("src/main/resources/send.png", 2f));
+		JButton botonSend = new JButton(Utils.getIcon("src/main/resources/send.png", 2f));
 		botonSend.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		botonSend.setBackground(Color.WHITE);
 
@@ -207,32 +207,5 @@ public class VentanaPrincipal extends JFrame {
 		});
 	}
 
-	public static ImageIcon getIcon(String imageUrl, float factor) {
-		try {
-			// Leer la imagen
-			BufferedImage img = ImageIO.read(new File(imageUrl));
-			// Obtenemos la proporcion ancho / altura.
-			float proporcion = img.getWidth() / ((float) img.getHeight());
-			// Obtenemos la Fuente (letra) por defecto especificada por el SO para un textPane.
-			Font font = UIManager.getDefaults().getFont("TextPane.font");
-			// Obtenemos el tamaño de letra.
-			int tamanoLetra = font.getSize();
-
-			// Se reeescala la iamgen.
-			Image newimg = img.getScaledInstance(
-					Math.round(factor * tamanoLetra * proporcion),  // Anchura: tamaño de la letra multiplicado por la proporcion original.
-					Math.round(factor * tamanoLetra), // altura: tamaño de la letra
-					java.awt.Image.SCALE_SMOOTH	// Método para reescalar (Calidad:SCALE_SMOOTH o rapidez SCALE_FAST)
-					);
-			// Se crea un ImageIcon
-			return new ImageIcon(newimg);
-		} catch (IOException e) {
-			// Si falla la lectura de la imagen, el botón se generará sin icono. No es necesario parar la ejecución.
-			return null;
-		}
-	}
 	
-	public static ImageIcon getScaledIcon(String imageUrl, int width, int height) {		
-		return new ImageIcon(new ImageIcon(imageUrl).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));		
-	}
 }

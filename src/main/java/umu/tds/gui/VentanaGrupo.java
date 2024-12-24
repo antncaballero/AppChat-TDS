@@ -19,6 +19,7 @@ import javax.swing.border.TitledBorder;
 
 import umu.tds.dominio.Usuario;
 import umu.tds.gui.VentanaPrincipal.UserListModel;
+import umu.tds.utils.Utils;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -91,7 +92,7 @@ public class VentanaGrupo extends JFrame {
 		
 		JLabel user = new JLabel("Jose Luis Fenoll ");
 		user.setFont(new Font("Segoe UI", Font.BOLD, 15));
-		user.setIcon(VentanaPrincipal.getScaledIcon("src/main/resources/user.png", 40, 40));
+		user.setIcon(Utils.getScaledIcon("src/main/resources/user.png", 40, 40));
 		user.setBorder(new LineBorder(Color.BLACK, 1));
 		
 		panelNorte.add(user);
@@ -165,7 +166,7 @@ public class VentanaGrupo extends JFrame {
         gbc_verticalStrut.gridy = 3;
         panelCentro.add(verticalStrut, gbc_verticalStrut);
         
-        JButton btnAdd = new JButton(VentanaPrincipal.getScaledIcon("src/main/resources/person-add.png", 40, 40));
+        JButton btnAdd = new JButton(Utils.getScaledIcon("src/main/resources/person-add.png", 40, 40));
         btnAdd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnAdd.setBackground(Color.WHITE);
         GridBagConstraints gbc_btnAdd = new GridBagConstraints();
@@ -174,7 +175,7 @@ public class VentanaGrupo extends JFrame {
         gbc_btnAdd.gridy = 4;
         panelCentro.add(btnAdd, gbc_btnAdd);
                
-        JButton btnRemove = new JButton(VentanaPrincipal.getScaledIcon("src/main/resources/person-remove.png", 40, 40));
+        JButton btnRemove = new JButton(Utils.getScaledIcon("src/main/resources/person-remove.png", 40, 40));
         btnRemove.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnRemove.setBackground(Color.WHITE);
         GridBagConstraints gbc_btnRemove = new GridBagConstraints();

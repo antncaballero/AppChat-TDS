@@ -26,6 +26,7 @@ import javax.swing.DefaultListModel;
 
 import umu.tds.dominio.Contacto;
 import umu.tds.dominio.Mensaje;
+import umu.tds.utils.Utils;
 
 public class VentanaBusqueda extends JFrame {
 
@@ -58,7 +59,7 @@ public class VentanaBusqueda extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 		
-		JLabel labelIcono = new JLabel(VentanaPrincipal.getIcon("src/main/resources/glass.png", 4f));
+		JLabel labelIcono = new JLabel(Utils.getIcon("src/main/resources/glass.png", 4f));
 		labelIcono.setText("Búsqueda de mensajes ");
 		labelIcono.setFont(new Font("Segoe UI", Font.BOLD, 18));
 		labelIcono.setBorder(new LineBorder(Color.BLACK, 2));
