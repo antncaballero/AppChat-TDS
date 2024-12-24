@@ -15,7 +15,7 @@ public class ContactoIndividual extends Contacto {
 	
 	@Override
 	public ImageIcon getFoto() {	
-		return Utils.imageToImageIcon(usuarioAsociado.getFotoPerfil(), 40, 40);
+		return Utils.imageToImageIcon(usuarioAsociado.getFotoPerfil(), 50, 50);
 	}
 	@Override
 	public String getEstado() {

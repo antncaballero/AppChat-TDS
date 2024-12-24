@@ -34,7 +34,10 @@ import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
 import umu.tds.controlador.ControladorAppChat;
+import umu.tds.dominio.Contacto;
+import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Descuento;
+import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Usuario;
 import umu.tds.utils.Utils;
 
@@ -64,15 +67,15 @@ public class VentanaPrincipal extends JFrame {
 	 */
 
 
-
-	public static class UserListModel extends AbstractListModel<Usuario> {
-
+	public static class ContactListModel extends AbstractListModel<Contacto> {
+	//Para probar la ventana, se crean usuarios y contactos
+	
 		private static Usuario[] users = new Usuario[] {
-			    new Usuario("Pepe", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
+			    new Usuario("Pepe", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba2.jpeg"))),
 				new Usuario("Antonio", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
 				new Usuario("Jose", "López Rodríguez", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
 				new Usuario("Pepe", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
-				new Usuario("Jesús", "López", 638912458, "pass", "prueba de estado",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
+				new Usuario("Jesús", "López", 638912458, "pass", "prueba de estado",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg"))),
 				new Usuario("Manuel", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
 				new Usuario("Miguel", "Fernández", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
 				new Usuario("Miguel", "Fernández", 638912458, "pass","ocupado",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
@@ -82,19 +85,33 @@ public class VentanaPrincipal extends JFrame {
 				new Usuario("Miguel", "Fernández", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
 				new Usuario("Miguel", "Fernández", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
 		};
+		
+		private static ContactoIndividual c1 = new ContactoIndividual("Miguel clase", users[11]);
+		private static ContactoIndividual c2 = new ContactoIndividual("Miguel2", users[12]);
+		private static ContactoIndividual c3 = new ContactoIndividual("Miguel primo", users[10]);
+			
+		private static Contacto[] contactos = new Contacto[] { 
+				new ContactoIndividual("Pepe", users[0]),
+				new ContactoIndividual("Antonio", users[1]), new ContactoIndividual("Jose", users[2]),
+				new ContactoIndividual("Pepiyo", users[3]), new ContactoIndividual("Jesús", users[4]),
+				new ContactoIndividual("Manuel", users[5]), new ContactoIndividual("Miguel", users[6]),
+				new ContactoIndividual("Miguelon", users[7]), new ContactoIndividual("Miguelito", users[8]),
+				new ContactoIndividual("Miguelin", users[9]),c1,c2,c3,
+				new Grupo("Grupo de prueba", Arrays.asList(c1,c2,c3)),
+		};
 
 		@Override
 		public int getSize() {
-			return users.length;
+			return contactos.length;
 		}
 
 		@Override
-		public Usuario getElementAt(int index) {
-			return users[index];
+		public Contacto getElementAt(int index) {
+			return contactos[index];
 		}
 		
-		public static List<Usuario> getUsers() {
-			   return Arrays.asList(users);
+		public static List<Contacto> getContactos() {
+			   return Arrays.asList(contactos);
 		}
 
 	}
@@ -132,7 +149,7 @@ public class VentanaPrincipal extends JFrame {
 			}
 		});
 		
-		UserListModel.getUsers().stream().forEach(u -> comboContactos.addItem(u.getNombre() + " " + u.getApellidos()));
+		ContactListModel.getContactos().stream().forEach(u -> comboContactos.addItem(u.getNombre()));
 		
 		botonPremium.setBackground(Color.WHITE);
 		botonPremium.setBorder(BorderFactory.createEmptyBorder());
@@ -198,13 +215,13 @@ public class VentanaPrincipal extends JFrame {
 		contentPane.add(panelCentro, BorderLayout.CENTER);
 
 		
-		JList<Usuario> lista = new JList<>(new UserListModel());
-		lista.setCellRenderer(new UserCellRenderer());
+		JList<Contacto> lista = new JList<>(new ContactListModel());
+		lista.setCellRenderer(new ContactCellRenderer());
 		lista.addListSelectionListener(e -> {
 			if (!e.getValueIsAdjusting()) {
-				Usuario selectedUser = lista.getSelectedValue();
-				if (selectedUser != null) {
-					String contactoSeleccionado = selectedUser.getNombre() + " " + selectedUser.getApellidos();
+				Contacto selectedContact = lista.getSelectedValue();
+				if (selectedContact != null) {
+					String contactoSeleccionado = selectedContact.getNombre();
 					panelChat.setBorder(new TitledBorder(null, "Mensajes con " + contactoSeleccionado, TitledBorder.LEADING, TitledBorder.TOP, null, null));
 				}
 			}

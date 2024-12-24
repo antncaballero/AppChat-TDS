@@ -18,7 +18,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import umu.tds.dominio.Usuario;
-import umu.tds.gui.VentanaPrincipal.UserListModel;
+import umu.tds.gui.VentanaPrincipal.ContactListModel;
 import umu.tds.utils.Utils;
 
 import java.awt.BorderLayout;
@@ -102,16 +102,10 @@ public class VentanaGrupo extends JFrame {
 		DefaultListModel<Contacto> modelNotAdded = new DefaultListModel<>();
 		
 		
-		//Ejemplo de contactos
-		modelNotAdded.addElement(new ContactoIndividual("pepe", VentanaPrincipal.UserListModel.getUsers().get(0)));
-		modelNotAdded.addElement(new ContactoIndividual("Antonio Clase", VentanaPrincipal.UserListModel.getUsers().get(1)));
-		modelNotAdded.addElement(new ContactoIndividual("Joselu", VentanaPrincipal.UserListModel.getUsers().get(2)));
-		modelNotAdded.addElement(new ContactoIndividual("Jose trabajo", VentanaPrincipal.UserListModel.getUsers().get(3)));
-		modelNotAdded.addElement(new ContactoIndividual("Jesus", VentanaPrincipal.UserListModel.getUsers().get(4)));
-		modelNotAdded.addElement(new ContactoIndividual("Contacto1", VentanaPrincipal.UserListModel.getUsers().get(5)));
-		modelNotAdded.addElement(new ContactoIndividual("Contacto2", VentanaPrincipal.UserListModel.getUsers().get(6)));
-		modelNotAdded.addElement(new ContactoIndividual("Contacto3", VentanaPrincipal.UserListModel.getUsers().get(7)));
-		modelNotAdded.addElement(new ContactoIndividual("Contacto4", VentanaPrincipal.UserListModel.getUsers().get(8)));
+		//Ejemplo de contactos		
+		VentanaPrincipal.ContactListModel.getContactos().stream()
+			.filter(c -> c instanceof ContactoIndividual)
+			.forEach(c -> modelNotAdded.addElement(c));
 			
 		
 		JList<Contacto> listaContactosNotAdded = new JList<>(modelNotAdded);
