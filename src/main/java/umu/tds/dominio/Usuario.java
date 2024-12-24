@@ -29,6 +29,7 @@ public class Usuario {
 	private String email;
 	private boolean isPremium;
 	private List<Contacto> contactos;
+	private final LocalDate fechaRegistro;
 	
 	
 	public Usuario(String nombre, String apellidos, int numTlf, String password, String estado,
@@ -45,6 +46,7 @@ public class Usuario {
 		this.isPremium = false;
 		this.contactos = new LinkedList<>();
 		this.fotoPerfilCodificada = fotoPerfilCodificada;
+		this.fechaRegistro = LocalDate.now(); //TODO registrar esto en persistencia
 		
 	}
 	
@@ -61,7 +63,6 @@ public class Usuario {
 		Optional<Image> imagen = Optional.ofNullable(Utils.convertBase64ToImage(fotoPerfilCodificada));	
 		return (imagen.isPresent() ? imagen.get() : Utils.convertBase64ToImage(Utils.convertImageToBase64(new File("src/main/resources/user.png"))));	
 	}
-
 
 	public void setFotoPerfilCodificada(String fotoPerfilCodificada) {
 		this.fotoPerfilCodificada = fotoPerfilCodificada;
@@ -133,6 +134,10 @@ public class Usuario {
 	
 	public List<Descuento> getDescuentosAplicables() {
 		return FactoriaDescuentos.INSTANCE.getDescuentosUsuario(this);
+	}
+	
+	public LocalDate getFechaRegistro() {
+		return fechaRegistro;
 	}
 
 }
