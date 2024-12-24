@@ -95,7 +95,7 @@ public class VentanaPrincipal extends JFrame {
 	}
 	
 	public VentanaPrincipal() {
-		setTitle("AppMusic");
+		setTitle("AppChat");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 920, 620);
 		contentPane = new JPanel();
