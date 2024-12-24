@@ -17,6 +17,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,12 +32,16 @@ import javax.swing.border.TitledBorder;
 import tds.BubbleText;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
+
+import umu.tds.controlador.ControladorAppChat;
+import umu.tds.dominio.Descuento;
 import umu.tds.dominio.Usuario;
 import umu.tds.utils.Utils;
 
 public class VentanaPrincipal extends JFrame {
 
 	private JPanel contentPane;
+	private ControladorAppChat controlador = ControladorAppChat.getInstancia();
 
 	/**
 	 * Launch the application.
@@ -113,6 +118,19 @@ public class VentanaPrincipal extends JFrame {
 		JButton botonMandar = new JButton(Utils.getIcon("src/main/resources/send.png", 2.5f));
 		JComboBox<String> comboContactos = new JComboBox<String>();
 		comboContactos.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		
+		botonPremium.addActionListener(e -> {
+			if (controlador.getUsuarioActual().isPremium()) {
+				JOptionPane.showMessageDialog(this, "Ya eres usuario premium", "Premium",
+						JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				List<Descuento> descuentos = controlador.getDescuentosUsuarioActual();
+				JDialogDescuentos dialogoDescuentos = new JDialogDescuentos(this, descuentos);
+                dialogoDescuentos.setVisible(true);
+                boolean exitoPago = dialogoDescuentos.isConfirmed();
+                controlador.hacerPremium(exitoPago); //si paga con éxito se hace premium, si no no hace nada
+			}
+		});
 		
 		UserListModel.getUsers().stream().forEach(u -> comboContactos.addItem(u.getNombre() + " " + u.getApellidos()));
 		
