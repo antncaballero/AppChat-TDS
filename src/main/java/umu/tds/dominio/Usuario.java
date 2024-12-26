@@ -153,5 +153,10 @@ public class Usuario {
                 .filter(m-> m.getHora().isAfter(LocalDateTime.now().minusMonths(1)))
                 .count();
     }
+	
+	public Contacto encontrarContactoPorNombre(String nombre) {
+		return contactos.stream().filter(c -> c.getNombre().equals(nombre)).findFirst().orElse(null);
+	}
+	
 
 }

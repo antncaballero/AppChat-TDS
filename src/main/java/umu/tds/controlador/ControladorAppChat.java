@@ -8,18 +8,20 @@ import javax.swing.ImageIcon;
 import umu.tds.persistencia.FactoriaDAO;
 import umu.tds.utils.Utils;
 import umu.tds.dao.DAOException;
+import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Descuento;
 import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.RepositorioUsuarios;
 import umu.tds.dominio.Usuario;
+import umu.tds.gui.VentanaPrincipal;
 
 public class ControladorAppChat {
 
 	private static ControladorAppChat unicaInstancia = null;
 	//TODO quitar el new Usuario, esto es para hacer pruebas
-	private Usuario usuarioActual= new Usuario("Pepito", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg")));
+	private Usuario usuarioActual = new Usuario("Pepito", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg")));
 	private RepositorioUsuarios repositorioUsuarios;
 
 	private ControladorAppChat() {
@@ -58,6 +60,11 @@ public class ControladorAppChat {
 	
 	public void hacerPremium(boolean exitoPago) {
 		usuarioActual.setPremium(exitoPago);
+	}
+	
+	public Contacto buscarContactoDeUsuario(String nombre) {
+		return VentanaPrincipal.ContactListModel.getContactos().stream().filter(contacto -> contacto.getNombre().equals(nombre)).findFirst().orElse(null);
+		//TODO return usuarioActual.encontrarContactoPorNombre(nombre);
 	}
 }
 

@@ -167,9 +167,9 @@ public class VentanaPrincipal extends JFrame {
 		});
 		
 		botonContactos.addActionListener(e -> {
-			VentanaContactos ventanaContactos = new VentanaContactos();
+			VentanaContactos ventanaContactos = new VentanaContactos(this);
 			ventanaContactos.setVisible(true);
-			dispose();
+			setVisible(false);
 		});
 		
 		//ESTILOS DE LOS BOTONES DE ZONA NORTE
@@ -272,5 +272,8 @@ public class VentanaPrincipal extends JFrame {
 		});
 	}
 
-	
+	public void loadChat(Contacto contacto) {
+		// TODO
+		System.out.println("Cargando chat con " + contacto.getNombre());
+	}
 }
