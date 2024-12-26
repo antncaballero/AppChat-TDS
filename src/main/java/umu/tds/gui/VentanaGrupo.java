@@ -192,6 +192,12 @@ public class VentanaGrupo extends JFrame {
 			}
 		});
 		
+		btnCancelar.addActionListener(e -> {
+			VentanaPrincipal main = new VentanaPrincipal();
+			main.setVisible(true);
+			dispose();
+		});
+		
 	}
 
 }

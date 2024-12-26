@@ -131,8 +131,8 @@ public class VentanaPrincipal extends JFrame {
 		JButton botonPremium = new JButton(Utils.getIcon("src/main/resources/premium.png", 3.3f));
 		JButton botonBuscar = new JButton(Utils.getIcon("src/main/resources/glass.png", 2.5f));
 		JButton botonContactos = new JButton(Utils.getIcon("src/main/resources/contacts.png", 2.5f));
-		JButton botonPerfil = new JButton(Utils.getIcon("src/main/resources/user.png", 2.5f));
-		JButton botonMandar = new JButton(Utils.getIcon("src/main/resources/send.png", 2.5f));
+		JButton botonPerfil = new JButton(Utils.imageToImageIcon(controlador.getUsuarioActual().getFotoPerfil(), 40, 40));
+		JButton botonAddGrupo = new JButton(Utils.getIcon("src/main/resources/group.png", 2.7f));
 		JComboBox<String> comboContactos = new JComboBox<String>();
 		comboContactos.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		
@@ -147,6 +147,12 @@ public class VentanaPrincipal extends JFrame {
                 boolean exitoPago = dialogoDescuentos.isConfirmed();
                 controlador.hacerPremium(exitoPago); //si paga con éxito se hace premium, si no no hace nada
 			}
+		});
+		
+		botonAddGrupo.addActionListener(e -> {
+			VentanaGrupo ventanaGrupo = new VentanaGrupo();
+			ventanaGrupo.setVisible(true);
+			dispose();
 		});
 		
 		ContactListModel.getContactos().stream().forEach(u -> comboContactos.addItem(u.getNombre()));
@@ -165,12 +171,14 @@ public class VentanaPrincipal extends JFrame {
 		botonPerfil.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		botonPerfil.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		botonPerfil.setIconTextGap(10);
-		botonPerfil.setText("Antonio");
-		botonMandar.setBackground(Color.WHITE);
-		botonMandar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		botonPerfil.setText(controlador.getUsuarioActual().getNombre());
+		botonAddGrupo.setBackground(Color.WHITE);
+		botonAddGrupo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		botonAddGrupo.setText("+");
+		botonAddGrupo.setFont(new Font("Segoe UI", Font.BOLD, 25));
 		
 		panelNorte.add(comboContactos);
-		panelNorte.add(botonMandar);
+		panelNorte.add(botonAddGrupo);
 		panelNorte.add(botonBuscar);		
 		panelNorte.add(botonContactos);
 		panelNorte.add(botonPremium);
