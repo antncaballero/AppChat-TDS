@@ -166,6 +166,12 @@ public class VentanaPrincipal extends JFrame {
 			 */
 		});
 		
+		botonContactos.addActionListener(e -> {
+			VentanaContactos ventanaContactos = new VentanaContactos();
+			ventanaContactos.setVisible(true);
+			dispose();
+		});
+		
 		//ESTILOS DE LOS BOTONES DE ZONA NORTE
 		botonPremium.setBackground(Color.WHITE);
 		botonPremium.setBorder(BorderFactory.createEmptyBorder());
