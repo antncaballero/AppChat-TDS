@@ -5,9 +5,9 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import umu.tds.persistencia.DAOException;
 import umu.tds.persistencia.FactoriaDAO;
 import umu.tds.utils.Utils;
-import umu.tds.dao.DAOException;
 import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Descuento;

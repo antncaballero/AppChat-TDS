@@ -3,7 +3,7 @@ package umu.tds.dominio;
 import java.util.HashMap;
 import java.util.Map;
 
-import umu.tds.dao.DAOException;
+import umu.tds.persistencia.DAOException;
 import umu.tds.persistencia.FactoriaDAO;
 
 public class RepositorioUsuarios {

@@ -10,7 +10,6 @@ import beans.Entidad;
 import beans.Propiedad;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
-import umu.tds.dao.DAOException;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.Usuario;

@@ -1,6 +1,6 @@
 package umu.tds.persistencia;
 
-import umu.tds.dao.DAOException;
+
 
 public abstract class FactoriaDAO {
 
