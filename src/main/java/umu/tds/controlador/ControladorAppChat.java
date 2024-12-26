@@ -66,6 +66,10 @@ public class ControladorAppChat {
 		return VentanaPrincipal.ContactListModel.getContactos().stream().filter(contacto -> contacto.getNombre().equals(nombre)).findFirst().orElse(null);
 		//TODO return usuarioActual.encontrarContactoPorNombre(nombre);
 	}
+	
+	public void enviarMensaje(String mensaje, Contacto contacto) {
+		// TODO 
+	}
 }
 
 

@@ -3,6 +3,7 @@ package umu.tds.gui;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.TextField;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -44,8 +45,11 @@ import umu.tds.utils.Utils;
 public class VentanaPrincipal extends JFrame {
 
 	private JPanel contentPane;
+	private ChatPanel chatPanel;
+	private TextField fieldMensaje;
 	private ControladorAppChat controlador = ControladorAppChat.getInstancia();
-
+	private JScrollPane scrollPaneChat;
+	private JList<Contacto> lista;
 	/**
 	 * Launch the application.
 	 */
@@ -199,6 +203,7 @@ public class VentanaPrincipal extends JFrame {
 		botonAddGrupo.setFont(new Font("Segoe UI", Font.BOLD, 25));
         botonAddGrupo.setIconTextGap(5);
 		
+        //AÑADIR BOTONES A LA ZONA NORTE
         panelNorte.add(botonAnadirContacto);
         panelNorte.add(botonAddGrupo);
 		panelNorte.add(botonBuscar);		
@@ -206,53 +211,44 @@ public class VentanaPrincipal extends JFrame {
 		panelNorte.add(botonPremium);
 		panelNorte.add(botonPerfil);
 		
+		//PANEL ESTE(CHAT + ENVIAR MENSAJE)
+		JPanel panelEste = new JPanel();
+		panelEste.setLayout(new BorderLayout());
+		panelEste.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "mensajes con contactos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		
 		//PANEL DE CHATS
-		JPanel panelChat = new JPanel();
-		panelChat.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "mensajes con contactos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		contentPane.add(panelChat, BorderLayout.EAST);
-		panelChat.setLayout(new BoxLayout(panelChat,BoxLayout.Y_AXIS)); 
-		panelChat.setSize(500,600); 
-		panelChat.setMinimumSize(new Dimension(500,600)); 
-		panelChat.setMaximumSize(new Dimension(500,600)); 
-		panelChat.setPreferredSize(new Dimension(500,600));
-
-		BubbleText burbuja=new BubbleText(panelChat,"Hola grupo!!", Color.GREEN, "J.Ramón", BubbleText.SENT); 
-		BubbleText burbuja2=new BubbleText(panelChat, "Hola, ¿Está seguro de que la burbuja usa varias lineas si es necesario?", Color.LIGHT_GRAY, "Alumno", BubbleText.RECEIVED); 		
-		BubbleText burbuja3=new BubbleText(panelChat, 4, Color.GREEN, "J.Ramón", BubbleText.SENT, 12); 
-
-		TextField mensaje = new TextField();
+		chatPanel = new ChatPanel();
+		scrollPaneChat = new JScrollPane(chatPanel);
+		
+	
+		//boton y campo de envio de mensajes
+		fieldMensaje = new TextField();
 		JButton botonSend = new JButton(Utils.getIcon("src/main/resources/send.png", 2f));
 		botonSend.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		botonSend.setBackground(Color.WHITE);
-
-		panelChat.setLayout(new BorderLayout());
-
-		JPanel burbujasPanel = new JPanel();
-		burbujasPanel.setLayout(new BoxLayout(burbujasPanel, BoxLayout.Y_AXIS));
-		burbujasPanel.add(burbuja);
-		burbujasPanel.add(burbuja2);
-		burbujasPanel.add(burbuja3);
-
 		JPanel messagePanel = new JPanel(new BorderLayout());
-		messagePanel.add(mensaje, BorderLayout.CENTER);
+		messagePanel.add(fieldMensaje, BorderLayout.CENTER);
 		messagePanel.add(botonSend, BorderLayout.EAST);
 
-		panelChat.add(burbujasPanel, BorderLayout.CENTER);
-		panelChat.add(messagePanel, BorderLayout.SOUTH);
-
+        //añadir chatPanel y messagePanel al panelEste, y panelEste al contentPane
+		panelEste.add(scrollPaneChat, BorderLayout.CENTER);
+		panelEste.add(messagePanel, BorderLayout.SOUTH);
+		contentPane.add(panelEste, BorderLayout.EAST);
+		
+		//LISTA DE CONTACTOS
 		JPanel panelCentro = new JPanel();
 		panelCentro.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "Mis chats", TitledBorder.LEADING, TitledBorder.TOP));
 		contentPane.add(panelCentro, BorderLayout.CENTER);
-
-		//LISTA DE CONTACTOS
-		JList<Contacto> lista = new JList<>(new ContactListModel());
+		
+		lista = new JList<>(new ContactListModel());
 		lista.setCellRenderer(new ContactCellRenderer());
 		lista.addListSelectionListener(e -> {
 			if (!e.getValueIsAdjusting()) {
 				Contacto selectedContact = lista.getSelectedValue();
 				if (selectedContact != null) {
 					String contactoSeleccionado = selectedContact.getNombre();
-					panelChat.setBorder(new TitledBorder(null, "Mensajes con " + contactoSeleccionado, TitledBorder.LEADING, TitledBorder.TOP, null, null));
+					panelEste.setBorder(new TitledBorder(null, "Mensajes con " + contactoSeleccionado, TitledBorder.LEADING, TitledBorder.TOP, null, null));
+					loadChat(selectedContact);
 				}
 			}
 		});
@@ -260,7 +256,6 @@ public class VentanaPrincipal extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(lista);
 		scrollPane.setSize(380,490); 
 		scrollPane.setMinimumSize(new Dimension(380,490)); 
-		scrollPane.setMaximumSize(new Dimension(380,490)); 
 		scrollPane.setPreferredSize(new Dimension(380,490));
 		scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelCentro.add(scrollPane);
@@ -270,10 +265,32 @@ public class VentanaPrincipal extends JFrame {
 			ventanaBusqueda.setVisible(true);
 			dispose();
 		});
+		
+		botonSend.addActionListener(e -> {
+			String mensaje = fieldMensaje.getText();
+			if (!mensaje.isEmpty()) {
+				Contacto contacto = lista.getSelectedValue();
+				if (contacto != null) {
+					enviarMensaje(mensaje, contacto);
+				}
+			}
+		});
+	
 	}
 
 	public void loadChat(Contacto contacto) {
 		// TODO
 		System.out.println("Cargando chat con " + contacto.getNombre());
+	}
+	
+	public void enviarMensaje(String mensaje, Contacto contacto) {
+		controlador.enviarMensaje(mensaje, contacto);
+		chatPanel.enviarMensaje(mensaje);
+		fieldMensaje.setText("");
+		System.out.println("Mensaje enviado: " + mensaje + " || a " + contacto.getNombre());
+		
+		//Scroll automático al final del chat
+		chatPanel.scrollRectToVisible(new Rectangle(0, chatPanel.getHeight(), 1, 1));
+		
 	}
 }

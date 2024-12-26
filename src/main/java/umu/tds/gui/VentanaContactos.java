@@ -73,7 +73,6 @@ public class VentanaContactos extends JFrame {
 			if (contactosPanel.getTable().getSelectedRow() == -1) return;
 			
 			JTable t = contactosPanel.getTable();
-			//System.out.println(t.getValueAt(t.getSelectedRow(), 0));
 			Contacto contactoSeleccionado = controlador.buscarContactoDeUsuario(t.getValueAt(t.getSelectedRow(), 0).toString());
 			parent.loadChat(contactoSeleccionado);
 			parent.setVisible(true);
