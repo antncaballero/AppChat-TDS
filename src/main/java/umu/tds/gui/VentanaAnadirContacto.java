@@ -151,6 +151,12 @@ public class VentanaAnadirContacto {
 			main.setVisible(true);
 			frame.dispose();
 		});
+		
+		btnCancelar.addActionListener(e -> {
+			VentanaPrincipal main = new VentanaPrincipal();
+			main.setVisible(true);
+			frame.dispose();
+		});
 
 		JPanel panelOeste = new JPanel();
 		panelLogin.add(panelOeste, BorderLayout.WEST);

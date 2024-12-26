@@ -127,15 +127,16 @@ public class VentanaPrincipal extends JFrame {
 
 		JPanel panelNorte = new JPanel();
 		contentPane.add(panelNorte, BorderLayout.NORTH);
-
+		
+		//BOTONES DE ZONA NORTE
 		JButton botonPremium = new JButton(Utils.getIcon("src/main/resources/premium.png", 3.3f));
 		JButton botonBuscar = new JButton(Utils.getIcon("src/main/resources/glass.png", 2.5f));
 		JButton botonContactos = new JButton(Utils.getIcon("src/main/resources/contacts.png", 2.5f));
 		JButton botonPerfil = new JButton(Utils.imageToImageIcon(controlador.getUsuarioActual().getFotoPerfil(), 40, 40));
 		JButton botonAddGrupo = new JButton(Utils.getIcon("src/main/resources/group.png", 2.7f));
-		JComboBox<String> comboContactos = new JComboBox<String>();
-		comboContactos.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		JButton botonAnadirContacto = new JButton(Utils.getIcon("src/main/resources/user.png", 2.5f));
 		
+		//EVENTOS DE LOS BOTONES DE ZONA NORTE
 		botonPremium.addActionListener(e -> {
 			if (controlador.getUsuarioActual().isPremium()) {
 				JOptionPane.showMessageDialog(this, "Ya eres usuario premium", "Premium",
@@ -155,8 +156,17 @@ public class VentanaPrincipal extends JFrame {
 			dispose();
 		});
 		
-		ContactListModel.getContactos().stream().forEach(u -> comboContactos.addItem(u.getNombre()));
+		botonAnadirContacto.addActionListener(e -> {
+			VentanaAnadirContacto ventanaAnadirContacto = new VentanaAnadirContacto();
+			ventanaAnadirContacto.setVisible(true);
+			dispose();
+			/*TODO: podriamos ver si chat seleccionado esta en la lista de contactos y añadirlo si no esta,
+					habría que ver como diferenciar si se quiere añadir al contacto del chat seleccionado
+			 		o si se quiere añadir un contacto nuevo que no tiene nada que ver con los chats que hay
+			 */
+		});
 		
+		//ESTILOS DE LOS BOTONES DE ZONA NORTE
 		botonPremium.setBackground(Color.WHITE);
 		botonPremium.setBorder(BorderFactory.createEmptyBorder());
 		botonBuscar.setBackground(Color.WHITE);
@@ -175,16 +185,22 @@ public class VentanaPrincipal extends JFrame {
 		botonAddGrupo.setBackground(Color.WHITE);
 		botonAddGrupo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		botonAddGrupo.setText("+");
+		botonAnadirContacto.setText("+");
+		botonAnadirContacto.setBackground(Color.WHITE);
+		botonAnadirContacto.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		botonAnadirContacto.setFont(new Font("Segoe UI", Font.BOLD, 25));
+		botonAnadirContacto.setIconTextGap(5);
 		botonAddGrupo.setFont(new Font("Segoe UI", Font.BOLD, 25));
+        botonAddGrupo.setIconTextGap(5);
 		
-		panelNorte.add(comboContactos);
-		panelNorte.add(botonAddGrupo);
+        panelNorte.add(botonAnadirContacto);
+        panelNorte.add(botonAddGrupo);
 		panelNorte.add(botonBuscar);		
 		panelNorte.add(botonContactos);
 		panelNorte.add(botonPremium);
 		panelNorte.add(botonPerfil);
 		
-
+		//PANEL DE CHATS
 		JPanel panelChat = new JPanel();
 		panelChat.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "mensajes con contactos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		contentPane.add(panelChat, BorderLayout.EAST);
@@ -222,7 +238,7 @@ public class VentanaPrincipal extends JFrame {
 		panelCentro.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "Mis chats", TitledBorder.LEADING, TitledBorder.TOP));
 		contentPane.add(panelCentro, BorderLayout.CENTER);
 
-		
+		//LISTA DE CONTACTOS
 		JList<Contacto> lista = new JList<>(new ContactListModel());
 		lista.setCellRenderer(new ContactCellRenderer());
 		lista.addListSelectionListener(e -> {
