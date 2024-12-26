@@ -29,4 +29,8 @@ public class ContactoIndividual extends Contacto {
 	public void setUsuarioAsociado(Usuario usuarioAsociado) {
 		this.usuarioAsociado = usuarioAsociado;
 	}
+	
+	public int getNumTlf() {
+        return usuarioAsociado.getNumTlf();
+    }
 }
