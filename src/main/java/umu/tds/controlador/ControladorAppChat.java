@@ -57,7 +57,7 @@ public class ControladorAppChat {
 	}
 	
 	public void hacerPremium(boolean exitoPago) {
-		if (exitoPago) usuarioActual.setPremium(true);
+		usuarioActual.setPremium(exitoPago);
 	}
 }
 

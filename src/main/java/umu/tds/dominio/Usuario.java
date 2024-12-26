@@ -33,7 +33,7 @@ public class Usuario {
 	
 	
 	public Usuario(String nombre, String apellidos, int numTlf, String password, String estado,
-			LocalDate fechaNacimiento, String email, String fotoPerfilCodificada) {
+			LocalDate fechaNacimiento, String email, String fotoPerfilCodificada, LocalDate fechaRegistro) {
 		super();
 		this.codigo = 0;
 		this.nombre = nombre;
@@ -46,7 +46,13 @@ public class Usuario {
 		this.isPremium = false;
 		this.contactos = new LinkedList<>();
 		this.fotoPerfilCodificada = fotoPerfilCodificada;
-		this.fechaRegistro = LocalDate.now(); //TODO registrar esto en persistencia
+		this.fechaRegistro = fechaRegistro;
+		
+	}
+	
+	public Usuario(String nombre, String apellidos, int numTlf, String password, String estado,
+			LocalDate fechaNacimiento, String email, String fotoPerfilCodificada) {
+		this(nombre, apellidos, numTlf, password, estado, fechaNacimiento, email, fotoPerfilCodificada, LocalDate.now());
 		
 	}
 	

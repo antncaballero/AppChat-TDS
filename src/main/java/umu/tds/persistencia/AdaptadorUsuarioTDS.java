@@ -69,7 +69,8 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 				new Propiedad("fechaNacimiento", user.getFechaNacimiento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))),
 				new Propiedad("email", user.getEmail()),
 				new Propiedad("isPremium", String.valueOf(user.isPremium())),
-				new Propiedad("contactos", obtenerCodigosContactos(user.getContactos()))
+				new Propiedad("contactos", obtenerCodigosContactos(user.getContactos())),
+				new Propiedad("fechaRegisto", user.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))) 
 			    )));
 		
 		// registrar entidad cliente
@@ -132,6 +133,8 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 				prop.setValor(String.valueOf(user.isPremium()));
 			} else if (prop.getNombre().equals("contactos")) {
 				prop.setValor(obtenerCodigosContactos(user.getContactos()));
+			} else if (prop.getNombre().equals("fechaRegistro")) {
+				prop.setValor(user.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 			}
 			
 			//actualizamos la entidad
@@ -158,9 +161,10 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		LocalDate fechaNacimiento = LocalDate.parse(servPersistencia.recuperarPropiedadEntidad(eUsuario, "fechaNacimiento"), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		String email = servPersistencia.recuperarPropiedadEntidad(eUsuario, "email");
 		boolean isPremium = Boolean.parseBoolean(servPersistencia.recuperarPropiedadEntidad(eUsuario, "isPremium"));
+		LocalDate fechaRegistro = LocalDate.parse(servPersistencia.recuperarPropiedadEntidad(eUsuario, "fechaRegistro"), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		
 		//Creamos el usuario
-		Usuario usuario = new Usuario(nombre, apellidos, numTlf, password, estado, fechaNacimiento, email, fotoPerfilCodificada);
+		Usuario usuario = new Usuario(nombre, apellidos, numTlf, password, estado, fechaNacimiento, email, fotoPerfilCodificada, fechaRegistro);
 		usuario.setPremium(isPremium);
 		usuario.setCodigo(codigo);
 		
