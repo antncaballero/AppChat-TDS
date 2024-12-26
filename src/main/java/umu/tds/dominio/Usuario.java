@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -145,5 +146,12 @@ public class Usuario {
 	public LocalDate getFechaRegistro() {
 		return fechaRegistro;
 	}
+	
+	public int getNumMensajesUltimoMes() {
+        return (int) contactos.stream()
+                .flatMap(c -> c.getListaMensajes().stream())
+                .filter(m-> m.getHora().isAfter(LocalDateTime.now().minusMonths(1)))
+                .count();
+    }
 
 }

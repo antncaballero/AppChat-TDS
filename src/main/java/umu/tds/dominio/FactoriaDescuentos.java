@@ -10,7 +10,7 @@ import java.util.List;
 public enum FactoriaDescuentos {
 	INSTANCE;
 	
-	public static final int DESCUENTO_MENSAJES = 100;
+	public static final int NUM_MENSAJES_DESCUENTO = 100;
 	public static final LocalDate FECHA_INICIO_DESCUENTO = LocalDate.of(2024, 10, 10);
 	public static final LocalDate FECHA_FIN_DESCUENTO = LocalDate.of(2025, 1, 20);
 		
@@ -24,13 +24,8 @@ public enum FactoriaDescuentos {
 		return descuentos;
 	}
 	
-	private boolean DescuentoPorMensajesAplicable(Usuario u) {
-        int numMensajes=(int) u.getContactos().stream()
-                .flatMap(c -> c.getListaMensajes().stream())
-                .filter(m-> m.getHora().isAfter(LocalDateTime.now().minusMonths(1)))
-                .count();
-        return numMensajes > DESCUENTO_MENSAJES;
-        
+	private boolean DescuentoPorMensajesAplicable(Usuario u) {      
+        return u.getNumMensajesUltimoMes() > NUM_MENSAJES_DESCUENTO;      
     }
 	
 	private boolean DescuentoPorFechaAplicable(Usuario u) {
