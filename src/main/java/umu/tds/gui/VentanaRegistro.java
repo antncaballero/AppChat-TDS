@@ -213,15 +213,9 @@ public class VentanaRegistro extends JFrame {
 		label_7.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		panelCentro.add(label_7, gbcPasswordLabel2);
 
-		GridBagConstraints gbcPasswordField2 = new GridBagConstraints();
-		gbcPasswordField2.anchor = GridBagConstraints.WEST;
-		gbcPasswordField2.insets = new Insets(5, 5, 5, 0);
-		gbcPasswordField2.gridx = 4;
-		gbcPasswordField2.gridy = 3;
-		passwordField2 = new JPasswordField(20);
+		passwordField2 = new JPasswordField(15);
 		passwordField2.setBorder(new LineBorder(Color.BLACK, 1));
 		passwordField2.setHorizontalAlignment(SwingConstants.LEFT);
-		panelCentro.add(passwordField2, gbcPasswordField2);
 		passwordField2.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent evt) {
                 passwordField2.setBorder(new LineBorder(Color.BLACK, 2));
@@ -231,6 +225,34 @@ public class VentanaRegistro extends JFrame {
                 passwordField2.setBorder(new LineBorder(Color.BLACK, 1));
             }
         });
+		
+		JPanel btnMostrarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+		
+		JButton btnMostrar = new JButton(Utils.getIcon("src/main/resources/OjoOculto.png", 1.5f));
+		btnMostrar.setFont(new Font("Segoe UI", Font.BOLD, 13));
+		btnMostrar.addActionListener(e -> {
+			if (passwordField1.getEchoChar() == '•') {
+				passwordField1.setEchoChar((char) 0);
+				passwordField2.setEchoChar((char) 0);
+				btnMostrar.setIcon(Utils.getIcon("src/main/resources/OjoAbierto.png", 1.5f));
+			} else {
+				passwordField1.setEchoChar('•');
+				passwordField2.setEchoChar('•');
+				btnMostrar.setIcon(Utils.getIcon("src/main/resources/OjoOculto.png", 1.5f));
+			}
+		});
+		
+		btnMostrarPanel.add(passwordField2);
+		btnMostrarPanel.add(btnMostrar);
+		
+		GridBagConstraints gbcbtnMostrarPanel = new GridBagConstraints();
+		gbcbtnMostrarPanel.anchor = GridBagConstraints.WEST;
+		gbcbtnMostrarPanel.insets = new Insets(5, 5, 5, 0);
+		gbcbtnMostrarPanel.gridx = 4;
+		gbcbtnMostrarPanel.gridy = 3;
+		
+		panelCentro.add(btnMostrarPanel, gbcbtnMostrarPanel);
+		
 		// Etiqueta y campo de "Fecha"
 		GridBagConstraints gbcFechaLabel = new GridBagConstraints();
 		gbcFechaLabel.anchor = GridBagConstraints.WEST;
@@ -339,8 +361,7 @@ public class VentanaRegistro extends JFrame {
 	            }
 	        }
 	    });
-		panelCentro.add(editorPane, gbcEditorPane);
-
+		
 		// Etiqueta y área de texto de "Saludo"
 		GridBagConstraints gbcSaludoLabel = new GridBagConstraints();
 		gbcSaludoLabel.anchor = GridBagConstraints.WEST;
