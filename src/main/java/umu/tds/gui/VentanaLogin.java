@@ -32,6 +32,7 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -118,7 +119,8 @@ public class VentanaLogin {
 
 		txtTelefono = new JTextField();
 		txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		txtTelefono.addFocusListener(new java.awt.event.FocusAdapter() {
+		txtTelefono.setBorder(new LineBorder(Color.BLACK, 1));
+		txtTelefono.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent evt) {
             	txtTelefono.setBorder(new LineBorder(Color.BLACK, 2));
             }
@@ -145,7 +147,8 @@ public class VentanaLogin {
 		
 		txtContrasena = new JPasswordField();
 		txtContrasena.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		txtContrasena.addFocusListener(new java.awt.event.FocusAdapter() {
+		txtContrasena.setBorder(new LineBorder(Color.BLACK, 1));
+		txtContrasena.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent evt) {
             	txtContrasena.setBorder(new LineBorder(Color.BLACK, 2));
             }

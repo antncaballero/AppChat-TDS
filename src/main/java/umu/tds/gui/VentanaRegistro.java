@@ -6,7 +6,10 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.List;
+import java.util.Optional;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -18,9 +21,18 @@ import com.toedter.calendar.JDateChooser;
 
 import umu.tds.controlador.ControladorAppChat;
 import umu.tds.utils.Utils;
+import org.apache.commons.validator.routines.EmailValidator;
+
 
 public class VentanaRegistro extends JFrame {
 	private JTextField emailField;
+	private JTextField nombreField;
+	private JTextField apellidosField;
+	private JTextField telefonoField;
+	private JPasswordField passwordField1;
+	private JPasswordField passwordField2;
+	private JDateChooser dateChooser;
+	
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -68,8 +80,17 @@ public class VentanaRegistro extends JFrame {
 		gbcNombreField.insets = new Insets(5, 5, 5, 0);
 		gbcNombreField.gridx = 2;
 		gbcNombreField.gridy = 0;
-		JTextField nombreField = new JTextField(55);
+		nombreField = new JTextField(55);
+		nombreField.setBorder(new LineBorder(Color.BLACK, 1));
 		panelCentro.add(nombreField, gbcNombreField);
+		nombreField.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent evt) {
+            	nombreField.setBorder(new LineBorder(Color.BLACK, 2));
+            }
+            public void focusLost(FocusEvent evt) {
+            	nombreField.setBorder(new LineBorder(Color.BLACK, 1));
+            }
+        });
 
 		// Etiqueta y campo de "Apellidos"
 		GridBagConstraints gbcApellidosLabel = new GridBagConstraints();
@@ -88,8 +109,18 @@ public class VentanaRegistro extends JFrame {
 		gbcApellidosField.insets = new Insets(5, 5, 5, 0);
 		gbcApellidosField.gridx = 2;
 		gbcApellidosField.gridy = 1;
-		JTextField apellidosField = new JTextField(55);
+		apellidosField = new JTextField(55);
+		apellidosField.setBorder(new LineBorder(Color.BLACK, 1));
 		panelCentro.add(apellidosField, gbcApellidosField);
+		apellidosField.addFocusListener(new FocusAdapter() {
+			public void focusGained(FocusEvent evt) {
+				apellidosField.setBorder(new LineBorder(Color.BLACK, 2));
+			}
+
+			public void focusLost(FocusEvent evt) {
+				apellidosField.setBorder(new LineBorder(Color.BLACK, 1));
+			}
+		});
 
 		// Etiqueta y campo de "Teléfono"
 		GridBagConstraints gbcTelefonoLabel = new GridBagConstraints();
@@ -107,8 +138,18 @@ public class VentanaRegistro extends JFrame {
 		gbcTelefonoField.insets = new Insets(5, 5, 5, 5);
 		gbcTelefonoField.gridx = 2;
 		gbcTelefonoField.gridy = 2;
-		JTextField telefonoField = new JTextField(20);
+		telefonoField = new JTextField(20);
+		telefonoField.setBorder(new LineBorder(Color.BLACK, 1));
 		panelCentro.add(telefonoField, gbcTelefonoField);
+		telefonoField.addFocusListener(new FocusAdapter() {
+			public void focusGained(FocusEvent evt) {
+				telefonoField.setBorder(new LineBorder(Color.BLACK, 2));
+			}
+
+			public void focusLost(FocusEvent evt) {
+				telefonoField.setBorder(new LineBorder(Color.BLACK, 1));
+			}
+		});
 		
 		JLabel lblEmail = new JLabel("Email:");
 		lblEmail.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -119,7 +160,16 @@ public class VentanaRegistro extends JFrame {
 		panelCentro.add(lblEmail, gbc_lblEmail);
 		
 		emailField = new JTextField(20);
+		emailField.setBorder(new LineBorder(Color.BLACK, 1));
 		GridBagConstraints gbc_emailField = new GridBagConstraints();
+		emailField.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent evt) {
+            	emailField.setBorder(new LineBorder(Color.BLACK, 2));
+            }
+            public void focusLost(FocusEvent evt) {
+            	emailField.setBorder(new LineBorder(Color.BLACK, 1));
+            }
+        });
 		gbc_emailField.anchor = GridBagConstraints.WEST;
 		gbc_emailField.insets = new Insets(0, 0, 5, 0);
 		gbc_emailField.gridx = 4;
@@ -142,8 +192,18 @@ public class VentanaRegistro extends JFrame {
 		gbcPasswordField1.insets = new Insets(5, 5, 5, 5);
 		gbcPasswordField1.gridx = 2;
 		gbcPasswordField1.gridy = 3;
-		JPasswordField passwordField1 = new JPasswordField(20);
+		passwordField1 = new JPasswordField(20);
+		passwordField1.setBorder(new LineBorder(Color.BLACK, 1));
 		panelCentro.add(passwordField1, gbcPasswordField1);
+		passwordField1.addFocusListener(new FocusAdapter() {
+			public void focusGained(FocusEvent evt) {
+				passwordField1.setBorder(new LineBorder(Color.BLACK, 2));
+			}
+
+			public void focusLost(FocusEvent evt) {
+				passwordField1.setBorder(new LineBorder(Color.BLACK, 1));
+			}
+		});
 
 		GridBagConstraints gbcPasswordLabel2 = new GridBagConstraints();
 		gbcPasswordLabel2.insets = new Insets(5, 5, 5, 5);
@@ -158,10 +218,19 @@ public class VentanaRegistro extends JFrame {
 		gbcPasswordField2.insets = new Insets(5, 5, 5, 0);
 		gbcPasswordField2.gridx = 4;
 		gbcPasswordField2.gridy = 3;
-		JPasswordField passwordField2 = new JPasswordField(20);
+		passwordField2 = new JPasswordField(20);
+		passwordField2.setBorder(new LineBorder(Color.BLACK, 1));
 		passwordField2.setHorizontalAlignment(SwingConstants.LEFT);
 		panelCentro.add(passwordField2, gbcPasswordField2);
+		passwordField2.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent evt) {
+                passwordField2.setBorder(new LineBorder(Color.BLACK, 2));
+            }
 
+            public void focusLost(FocusEvent evt) {
+                passwordField2.setBorder(new LineBorder(Color.BLACK, 1));
+            }
+        });
 		// Etiqueta y campo de "Fecha"
 		GridBagConstraints gbcFechaLabel = new GridBagConstraints();
 		gbcFechaLabel.anchor = GridBagConstraints.WEST;
@@ -178,7 +247,8 @@ public class VentanaRegistro extends JFrame {
 		gbcFechaField.insets = new Insets(5, 5, 5, 5);
 		gbcFechaField.gridx = 2;
 		gbcFechaField.gridy = 4;
-		JDateChooser dateChooser = new JDateChooser();
+		dateChooser = new JDateChooser();
+		dateChooser.setBorder(new LineBorder(Color.BLACK, 1));
 		dateChooser.setDateFormatString("dd/MM/yyyy");
 		dateChooser.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		dateChooser.setPreferredSize(new Dimension(165, 20));
@@ -289,6 +359,7 @@ public class VentanaRegistro extends JFrame {
 		JTextArea saludoField = new JTextArea(3, 20);
 		saludoField.setText("Hi there..");
 		panelCentro.add(new JScrollPane(saludoField), gbcSaludoField);
+		
 
 		getContentPane().add(panelCentro);
 
@@ -322,29 +393,106 @@ public class VentanaRegistro extends JFrame {
 		JButton aceptarButton = new JButton("Aceptar");
 		panelSur.add(aceptarButton);
 		aceptarButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
-		aceptarButton.addActionListener(e -> {
-			VentanaLogin window = new VentanaLogin();
-			window.setVisible(true);
-			dispose();			
-		});
 	
 		aceptarButton.addActionListener(e -> {		
-			String fotoPerfilCodificada = imageLabel.getIcon() != null ?
-					Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription())) :
-					Utils.convertImageToBase64(new File("src/main/resources/user.png"));
+			Optional<String> error = Optional.ofNullable(validarEntrada(nombreField.getText(), 
+					apellidosField.getText(), telefonoField.getText(), emailField.getText(), 
+					String.valueOf(passwordField1.getPassword()), String.valueOf(passwordField2.getPassword())));
 			
-			LocalDate fechaNacimiento = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			if (error.isEmpty()) {
+				String fotoPerfilCodificada = imageLabel.getIcon() != null 
+						? Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription())) 
+						: Utils.convertImageToBase64(new File("src/main/resources/user.png"));
+				
+				LocalDate fechaNacimiento = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				
+				boolean success = ControladorAppChat.getInstancia().registrarUsuario(
+						nombreField.getText(), apellidosField.getText(), Integer.parseInt(telefonoField.getText()),
+						new String(passwordField1.getPassword()), saludoField.getText(), fechaNacimiento,
+						emailField.getText(), fotoPerfilCodificada);
+				
+				JOptionPane.showMessageDialog(VentanaRegistro.this, success ? "Te has registrado con éxito" : "El usuario ya existe");
+				if (success) {
+					VentanaLogin window = new VentanaLogin();
+					window.setVisible(true);
+					dispose();
+				}
+			} else {
+				Toolkit.getDefaultToolkit().beep();
+				mostrarError(error.get(), nombreField.getText(), apellidosField.getText(), telefonoField.getText(),
+						emailField.getText(), String.valueOf(passwordField1.getPassword()),
+						String.valueOf(passwordField2.getPassword()));
+			}
 			
-			boolean success = ControladorAppChat.getInstancia().registrarUsuario(
-					nombreField.getText(), apellidosField.getText(), Integer.parseInt(telefonoField.getText()),
-					new String(passwordField1.getPassword()), saludoField.getText(), fechaNacimiento,
-					emailField.getText(), fotoPerfilCodificada
-					);
-			
-			JOptionPane.showMessageDialog(VentanaRegistro.this, success ? "Te has registrado con éxito" : "El usuario ya existe");
 		});
 		
+	}
+	/**
+	 * Método para validar la entrada del usuario.
+	 * 
+	 * @param nombre
+	 * @param apellidos
+	 * @param tlf
+	 * @param email
+	 * @param pass1
+	 * @param pass2
+	 * La fecha no se pasa como parametro porque antes debemos comprobar que sea distinta de null.
+	 * Si no lo hacemos así, el programa lanzará una excepción.
+	 * @return
+	 */
+	private String validarEntrada(String nombre, String apellidos, String tlf, String email, 
+			String pass1, String pass2) {
+		String error = null;
+		
+		if (nombre.isEmpty() || apellidos.isEmpty() || tlf.isEmpty() || email.isEmpty() || pass1.isEmpty()
+				|| pass2.isEmpty() || dateChooser.getDate() == null) {
+			error = "Debes rellenar los siguientes campos: \n\t";
+			if (nombre.isEmpty()) error += "nombre, ";
+			if (apellidos.isEmpty()) error += "apellidos, ";
+			if (tlf.isEmpty()) error += "teléfono, ";
+			if (email.isEmpty()) error += "email, ";
+			if (pass1.isEmpty()) error += "contraseña, ";
+			if (pass2.isEmpty()) error += "confirmación de contraseña, ";
+		    if (dateChooser.getDate() == null) error += "fecha de nacimiento, ";
+		    error = error.substring(0, error.length() - 2);
+		} else if (!pass1.equals(pass2)) {
+			error = "Las contraseñas no coinciden";
+		} else if (!tlf.matches("[0-9]{9}")) {
+			error = "El teléfono debe tener 9 dígitos";
+		} else if (!EmailValidator.getInstance().isValid(email)) {
+			error = "El email debe ser compatible con el estándar RFC 5322";	
+		}
+		
+		return error;
+	}
 	
+	/**
+	 * Método para mostrar un mensaje y configurar bordes.
+	 * 
+	 * @param mensaje
+	 * @param nombre
+	 * @param apellidos
+	 * @param tlf
+	 * @param email
+	 * @param pass1
+	 * @param pass2
+	 * @param fecha
+	 */
+	private void mostrarError(String mensaje, String nombre, String apellidos, String tlf, String email, 
+			String pass1, String pass2) {
+		nombreField.setBorder(nombre.isEmpty() ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
+		apellidosField.setBorder(apellidos.isEmpty() ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
+		telefonoField.setBorder(tlf.isEmpty() || !tlf.matches("[0-9]{9}") ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
+		emailField.setBorder(email.isEmpty() || !EmailValidator.getInstance().isValid(email) ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
+		passwordField1.setBorder(pass1.isEmpty() || !pass1.equals(pass2) ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
+		passwordField2.setBorder(pass2.isEmpty() || !pass2.equals(pass1) ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
+		dateChooser.setBorder(dateChooser.getDate() == null ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
+		
+		JOptionPane.showMessageDialog(VentanaRegistro.this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
+	
+	
+	
+	
 }
