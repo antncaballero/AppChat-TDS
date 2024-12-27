@@ -284,18 +284,9 @@ public class VentanaRegistro extends JFrame {
 		JLabel label_6 = new JLabel("Imagen:");
 		label_6.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		panelCentro.add(label_6, gbcImagenLabel);
-	
-		GridBagConstraints gbcEditorPane = new GridBagConstraints();
-		gbcEditorPane.insets = new Insets(5, 5, 0, 0);
-		gbcEditorPane.gridx = 4;
-		gbcEditorPane.gridy = 5;
-		gbcEditorPane.fill = GridBagConstraints.BOTH;
-		gbcEditorPane.anchor = GridBagConstraints.CENTER;
 		
 		JLabel imageLabel = new JLabel();
 		imageLabel.setVisible(false);
-		panelCentro.add(imageLabel, gbcEditorPane);
-		
 		
 		JEditorPane editorPane = new JEditorPane();
 		editorPane.setContentType("text/html");
@@ -321,7 +312,18 @@ public class VentanaRegistro extends JFrame {
 				}
 			}
 		});
-		panelCentro.add(editorPane, gbcEditorPane);
+		
+		JPanel panelArrastrar = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+		panelArrastrar.add(imageLabel);
+		panelArrastrar.add(editorPane);
+		
+		GridBagConstraints gbcEditorPane = new GridBagConstraints();
+		gbcEditorPane.insets = new Insets(5, 5, 0, 0);
+		gbcEditorPane.gridx = 4;
+		gbcEditorPane.gridy = 5;
+		gbcEditorPane.fill = GridBagConstraints.BOTH;
+		gbcEditorPane.anchor = GridBagConstraints.CENTER;
+		panelCentro.add(panelArrastrar, gbcEditorPane);
 		
 		JPanel panelBotones = new JPanel();
 		GridBagConstraints gbc_panelBotones = new GridBagConstraints();
