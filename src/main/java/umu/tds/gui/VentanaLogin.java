@@ -18,6 +18,7 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import umu.tds.utils.Utils;
 
 import java.awt.Component;
 
@@ -138,7 +139,7 @@ public class VentanaLogin {
 		panelCentro.add(txtContrasena, gbc_txtContrasena);
 		txtContrasena.setColumns(10);
 		
-		JButton btnMostrar = new JButton(getIcon("src/main/resources/OjoOculto.png", 1.5f));
+		JButton btnMostrar = new JButton(Utils.getIcon("src/main/resources/OjoOculto.png", 1.5f));
 		GridBagConstraints gbc_btnMostrar = new GridBagConstraints();
 		gbc_btnMostrar.insets = new Insets(0, 0, 5, 0);
 		gbc_btnMostrar.gridx = 3;
@@ -148,10 +149,10 @@ public class VentanaLogin {
 		btnMostrar.addActionListener(e -> {
 			if (txtContrasena.getEchoChar() == '•') {
 				txtContrasena.setEchoChar((char) 0);
-				btnMostrar.setIcon(getIcon("src/main/resources/OjoAbierto.png", 1.5f));
+				btnMostrar.setIcon(Utils.getIcon("src/main/resources/OjoAbierto.png", 1.5f));
 			} else {
 				txtContrasena.setEchoChar('•');
-				btnMostrar.setIcon(getIcon("src/main/resources/OjoOculto.png", 1.5f));
+				btnMostrar.setIcon(Utils.getIcon("src/main/resources/OjoOculto.png", 1.5f));
 			}
 		});
 		
@@ -194,32 +195,6 @@ public class VentanaLogin {
 
 		Component espacioEste = Box.createHorizontalStrut(110);
 		panelEste.add(espacioEste);
-	}
-	
-	public static ImageIcon getIcon(String imageUrl, float factor) {
-		//TODO: Pasar este método a una clase de utilidades.
-		try {
-			// Leer la imagen
-			BufferedImage img = ImageIO.read(new File(imageUrl));
-			// Obtenemos la proporcion ancho / altura.
-			float proporcion = img.getWidth() / ((float) img.getHeight());
-			// Obtenemos la Fuente (letra) por defecto especificada por el SO para un textPane.
-			Font font = UIManager.getDefaults().getFont("TextPane.font");
-			// Obtenemos el tamaño de letra.
-			int tamanoLetra = font.getSize();
-
-			// Se reeescala la iamgen.
-			Image newimg = img.getScaledInstance(
-					Math.round(factor * tamanoLetra * proporcion),  // Anchura: tamaño de la letra multiplicado por la proporcion original.
-					Math.round(factor * tamanoLetra), // altura: tamaño de la letra
-					java.awt.Image.SCALE_SMOOTH	// Método para reescalar (Calidad:SCALE_SMOOTH o rapidez SCALE_FAST)
-					);
-			// Se crea un ImageIcon
-			return new ImageIcon(newimg);
-		} catch (IOException e) {
-			// Si falla la lectura de la imagen, el botón se generará sin icono. No es necesario parar la ejecución.
-			return null;
-		}
 	}
 	
 }
