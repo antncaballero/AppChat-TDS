@@ -321,6 +321,7 @@ public class VentanaRegistro extends JFrame {
 				}
 			}
 		});
+		panelCentro.add(editorPane, gbcEditorPane);
 		
 		JPanel panelBotones = new JPanel();
 		GridBagConstraints gbc_panelBotones = new GridBagConstraints();
