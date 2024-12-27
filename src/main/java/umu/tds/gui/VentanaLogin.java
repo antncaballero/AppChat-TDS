@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 
@@ -30,13 +31,18 @@ import javax.swing.JPasswordField;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.FocusEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 public class VentanaLogin {
 
 	private JFrame frame;
+	private JTextField txtTelefono;
+	private JPasswordField txtContrasena;
 
 	/**
 	 * Launch the application.
@@ -110,8 +116,16 @@ public class VentanaLogin {
 		gbc_lblTelefono.gridy = 1;
 		panelCentro.add(lblTelefono, gbc_lblTelefono);
 
-		JTextField txtTelefono = new JTextField();
+		txtTelefono = new JTextField();
 		txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		txtTelefono.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(FocusEvent evt) {
+            	txtTelefono.setBorder(new LineBorder(Color.BLACK, 2));
+            }
+            public void focusLost(FocusEvent evt) {
+            	txtTelefono.setBorder(new LineBorder(Color.BLACK, 1));
+            }
+        });
 		GridBagConstraints gbc_txtTelefono = new GridBagConstraints();
 		gbc_txtTelefono.insets = new Insets(0, 0, 5, 5);
 		gbc_txtTelefono.fill = GridBagConstraints.HORIZONTAL;
@@ -129,8 +143,16 @@ public class VentanaLogin {
 		gbc_lblContrasena.gridy = 2;
 		panelCentro.add(lblContrasena, gbc_lblContrasena);
 		
-		JPasswordField txtContrasena = new JPasswordField();
+		txtContrasena = new JPasswordField();
 		txtContrasena.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		txtContrasena.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(FocusEvent evt) {
+            	txtContrasena.setBorder(new LineBorder(Color.BLACK, 2));
+            }
+            public void focusLost(FocusEvent evt) {
+            	txtContrasena.setBorder(new LineBorder(Color.BLACK, 1));
+            }
+         });
 		GridBagConstraints gbc_txtContrasena = new GridBagConstraints();
 		gbc_txtContrasena.insets = new Insets(0, 0, 5, 5);
 		gbc_txtContrasena.fill = GridBagConstraints.HORIZONTAL;
@@ -179,9 +201,22 @@ public class VentanaLogin {
 		btnAceptar.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		panelSur.add(btnAceptar);
 		btnAceptar.addActionListener(e -> {
-			VentanaPrincipal main = new VentanaPrincipal();
-			main.setVisible(true);
-			frame.dispose();
+			//Antes de llamar al controlador, validamos la entrada
+			String tlf = txtTelefono.getText();
+			String pass = String.valueOf(txtContrasena.getPassword());
+			Optional<String> error = Optional.ofNullable(validarEntrada(tlf, pass));
+
+		    if (error.isEmpty()) {
+		    	//TODO: Convocar a la capa de control para comprobar que el usuario está registrado
+				//ControladorAppChat.getInstancia().login(txtTelefono.getText(), String.valueOf(pass));
+				//De momento, abrimos la ventana principal
+				VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
+				ventanaPrincipal.setVisible(true);
+				frame.dispose();
+		    }else { //Las entradas no son válidas, mostramos mensaje de error y configuramos bordes
+		    	Toolkit.getDefaultToolkit().beep();
+		        mostrarError(error.get(), tlf, pass);
+		    }
 		});
 
 		JPanel panelOeste = new JPanel();
@@ -196,5 +231,53 @@ public class VentanaLogin {
 		Component espacioEste = Box.createHorizontalStrut(110);
 		panelEste.add(espacioEste);
 	}
+
+	/**
+	 * Método para validar la entrada del usuario.
+	 * 
+	 * @param tlf
+	 * @param pass
+	 * @return
+	 */
+	private String validarEntrada(String tlf, String pass) {
+	    if ((tlf.isEmpty() || !tlf.matches("\\d{9}")) && pass.isEmpty()) {
+	        return "Falta por introducir un teléfono de 9 dígitos y una contraseña";
+	    }
+	    if ((!tlf.isEmpty() && tlf.matches("\\d{9}")) && pass.isEmpty()) {
+	        return "Falta por introducir una contraseña";
+	    }
+	    if ((tlf.isEmpty() || !tlf.matches("\\d{9}"))  && !pass.isEmpty()) {
+	        return "Falta por introducir un teléfono de 9 dígitos";
+	    }
+	    return null; // No hay errores
+	}
+
+	/**
+	 * Método para mostrar un mensaje de error y configurar bordes.
+	 * 
+	 * @param mensaje
+	 * @param tlf
+	 * @param pass
+	 */
+	private void mostrarError(String mensaje, String tlf, String pass) {
+	    // Cambiar bordes según tipo de error
+	    txtTelefono.setBorder(tlf.isEmpty() || !tlf.matches("[0-9]{9}") 
+	                          ? new LineBorder(Color.RED, 2) 
+	                          : new LineBorder(Color.BLACK, 1));
+	    
+	    txtContrasena.setBorder(pass.isEmpty() 
+	                            ? new LineBorder(Color.RED, 2) 
+	                            : new LineBorder(Color.BLACK, 1));
+	    
+	    // Mostrar mensaje de error
+	    JOptionPane.showMessageDialog(frame, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+	}
 	
 }
+
+
+
+
+
+
+
