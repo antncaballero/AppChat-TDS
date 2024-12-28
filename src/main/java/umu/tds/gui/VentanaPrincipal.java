@@ -176,6 +176,11 @@ public class VentanaPrincipal extends JFrame {
 			setVisible(false);
 		});
 		
+		botonPerfil.addActionListener(e -> {
+			VentanaPerfil ventanaPerfil = new VentanaPerfil();
+			ventanaPerfil.setVisible(true);
+			dispose();
+		});
 		//ESTILOS DE LOS BOTONES DE ZONA NORTE
 		botonPremium.setBackground(Color.WHITE);
 		botonPremium.setBorder(BorderFactory.createEmptyBorder());

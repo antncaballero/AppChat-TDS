@@ -5,6 +5,10 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import umu.tds.persistencia.AdaptadorContactoIndividualTDS;
+import umu.tds.persistencia.AdaptadorGrupoTDS;
+import umu.tds.persistencia.AdaptadorMensajeTDS;
+import umu.tds.persistencia.AdaptadorUsuarioTDS;
 import umu.tds.persistencia.DAOException;
 import umu.tds.persistencia.FactoriaDAO;
 import umu.tds.utils.Utils;
@@ -20,6 +24,7 @@ import umu.tds.gui.VentanaPrincipal;
 public class ControladorAppChat {
 
 	private static ControladorAppChat unicaInstancia = null;
+
 	//TODO quitar el new Usuario, esto es para hacer pruebas
 	private Usuario usuarioActual = new Usuario("Pepito", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg")));
 
@@ -31,20 +36,20 @@ public class ControladorAppChat {
 			unicaInstancia = new ControladorAppChat();
 		return unicaInstancia;
 	}
-	
+
 	public Usuario getUsuarioActual() {
-        return usuarioActual;
-    }
-	
+		return usuarioActual;
+	}
+
 	public List<Descuento> getDescuentosUsuarioActual() {
 		return usuarioActual.getDescuentosAplicables();
 	}
-	
+
 	public boolean registrarUsuario(String nombre, String apellidos, int numTlf, String password, String estado,
 			LocalDate fechaNacimiento, String email, String fotoPerfilCodificada) {
-		
+
 		Usuario user = new Usuario(nombre, apellidos, numTlf, password, estado, fechaNacimiento, email, fotoPerfilCodificada);
-		
+
 		if (!RepositorioUsuarios.INSTANCE.contains(user)) {
 			try {
 				FactoriaDAO.getInstancia().getUsuarioDAO().registrarUsuario(user);
@@ -56,19 +61,41 @@ public class ControladorAppChat {
 		}
 		else return false;
 	}
-	
+
 	public void hacerPremium(boolean exitoPago) {
 		usuarioActual.setPremium(exitoPago);
 	}
-	
+
 	public Contacto buscarContactoDeUsuario(String nombre) {
 		return VentanaPrincipal.ContactListModel.getContactos().stream().filter(contacto -> contacto.getNombre().equals(nombre)).findFirst().orElse(null);
 		//TODO return usuarioActual.encontrarContactoPorNombre(nombre);
 	}
-	
+
 	public void enviarMensaje(String mensaje, Contacto contacto) {
 		// TODO 
 	}
+
+	/**
+	 * Metodo que cambia el estado del usuario actual
+	 * @param estado
+	 * @param grupo
+	 */
+	public void cambiarEstado(String estado) {
+		usuarioActual.setEstado(estado);
+		//adaptadorUsuario.modificarUsuario(usuarioActual);
+	}
+
+	/**
+	 * Metodo que cambia la foto de perfil del usuario actual
+	 * @param foto
+	 * @param grupo
+	 */
+	public void cambiarFotoPerfil(String fotoCodificada) {
+		usuarioActual.setFotoPerfilCodificada(fotoCodificada);
+		//adaptadorUsuario.modificarUsuario(usuarioActual);
+	}
+
+
 }
 
 
