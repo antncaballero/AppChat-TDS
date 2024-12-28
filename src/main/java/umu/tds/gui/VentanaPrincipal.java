@@ -252,6 +252,8 @@ public class VentanaPrincipal extends JFrame {
 				}
 			}
 		});
+		
+		
 
 		JScrollPane scrollPane = new JScrollPane(lista);
 		scrollPane.setSize(380,490); 
@@ -281,6 +283,7 @@ public class VentanaPrincipal extends JFrame {
 	public void loadChat(Contacto contacto) {
 		// TODO
 		System.out.println("Cargando chat con " + contacto.getNombre());
+		lista.setSelectedValue(contacto, true);
 	}
 	
 	public void enviarMensaje(String mensaje, Contacto contacto) {
