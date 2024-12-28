@@ -22,7 +22,6 @@ public class ControladorAppChat {
 	private static ControladorAppChat unicaInstancia = null;
 	//TODO quitar el new Usuario, esto es para hacer pruebas
 	private Usuario usuarioActual = new Usuario("Pepito", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg")));
-	private RepositorioUsuarios repositorioUsuarios;
 
 	private ControladorAppChat() {
 	}
@@ -46,13 +45,13 @@ public class ControladorAppChat {
 		
 		Usuario user = new Usuario(nombre, apellidos, numTlf, password, estado, fechaNacimiento, email, fotoPerfilCodificada);
 		
-		if (!repositorioUsuarios.contains(user)) {
+		if (!RepositorioUsuarios.INSTANCE.contains(user)) {
 			try {
 				FactoriaDAO.getInstancia().getUsuarioDAO().registrarUsuario(user);
 			} catch (DAOException e) {
 				e.printStackTrace();
 			}
-			repositorioUsuarios.add(user);			
+			RepositorioUsuarios.INSTANCE.add(user);			
 			return true;
 		}
 		else return false;
