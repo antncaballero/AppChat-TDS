@@ -135,7 +135,7 @@ public class VentanaPerfil extends JFrame {
 	        if (result == JFileChooser.APPROVE_OPTION) {
 	            File selectedFile = fileChooser.getSelectedFile();
 	            if (selectedFile != null) {
-	                ImageIcon imageIcon = new ImageIcon(new ImageIcon(selectedFile.getPath()).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+	                ImageIcon imageIcon = Utils.getScaledIcon(selectedFile.getPath(), 80, 80);
 	                imageIcon.setDescription(selectedFile.getPath());
 	                imageLabel.setIcon(imageIcon);
 	                editorPane.setVisible(false);
@@ -162,9 +162,16 @@ public class VentanaPerfil extends JFrame {
 		});
 		
 		btnAplicar.addActionListener(e -> {
-			//controlador.cambiarEstado(textArea.getText());
-			//controlador.cambiarFotoPerfil(Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription())));
+			
+			String estado = textArea.getText() == null ? "" : textArea.getText();
+			String fotoCodificada = imageLabel.getIcon() != null ? 
+					Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription())) 
+					: Utils.convertImageToBase64(new File("src/main/resources/user.png"));
+			
+			controlador.cambiarEstado(estado);
+			controlador.cambiarFotoPerfil(fotoCodificada);
 		});
+		
         getContentPane().add(panelCentro, BorderLayout.CENTER);
     }
 }
