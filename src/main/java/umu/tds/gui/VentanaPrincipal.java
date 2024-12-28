@@ -139,6 +139,7 @@ public class VentanaPrincipal extends JFrame {
 		JButton botonPerfil = new JButton(Utils.imageToImageIcon(controlador.getUsuarioActual().getFotoPerfil(), 40, 40));
 		JButton botonAddGrupo = new JButton(Utils.getIcon("src/main/resources/group.png", 2.7f));
 		JButton botonAnadirContacto = new JButton(Utils.getIcon("src/main/resources/user.png", 2.5f));
+		JButton btnGenerarPdf = new JButton("+ PDF");
 		
 		//EVENTOS DE LOS BOTONES DE ZONA NORTE
 		botonPremium.addActionListener(e -> {
@@ -181,6 +182,23 @@ public class VentanaPrincipal extends JFrame {
 			ventanaPerfil.setVisible(true);
 			dispose();
 		});
+		
+		btnGenerarPdf.addActionListener(e -> {
+			
+			if (lista.getSelectedValue() == null) {
+				JOptionPane.showMessageDialog(this, "Selecciona un chat para generar PDF", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			boolean success = controlador.generatePDF(lista.getSelectedValue());
+			if (success) {
+				JOptionPane.showMessageDialog(this, "PDF generado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(this, "Debes ser un usuario premium para generar PDFs", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		});
+		
 		//ESTILOS DE LOS BOTONES DE ZONA NORTE
 		botonPremium.setBackground(Color.WHITE);
 		botonPremium.setBorder(BorderFactory.createEmptyBorder());
@@ -207,8 +225,13 @@ public class VentanaPrincipal extends JFrame {
 		botonAnadirContacto.setIconTextGap(5);
 		botonAddGrupo.setFont(new Font("Segoe UI", Font.BOLD, 25));
         botonAddGrupo.setIconTextGap(5);
+        btnGenerarPdf.setBackground(Color.WHITE);
+        btnGenerarPdf.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnGenerarPdf.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        
 		
         //AÑADIR BOTONES A LA ZONA NORTE
+        panelNorte.add(btnGenerarPdf);
         panelNorte.add(botonAnadirContacto);
         panelNorte.add(botonAddGrupo);
 		panelNorte.add(botonBuscar);		
