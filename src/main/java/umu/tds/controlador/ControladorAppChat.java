@@ -3,6 +3,7 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import static umu.tds.dominio.PDFService.*;
+import java.util.Optional;
 import javax.swing.ImageIcon;
 
 import umu.tds.persistencia.AdaptadorContactoIndividualTDS;
@@ -31,7 +32,7 @@ public class ControladorAppChat {
 	private static ControladorAppChat unicaInstancia = null;
 
 	//TODO quitar el new Usuario, esto es para hacer pruebas
-	private Usuario usuarioActual = new Usuario("Pepito", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg")));
+	private Usuario usuarioActual;/* = new Usuario("Pepito", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg")));*/
 
 	//Adaptadores
 	private UsuarioDAO adaptadorUsuario;
@@ -48,8 +49,8 @@ public class ControladorAppChat {
 	//Constructor privado
 	private ControladorAppChat() {
 		
-		//inicializarAdaptadores();
-		//inicializarRepositorios();
+		inicializarAdaptadores();
+		inicializarRepositorios();
 		inicializarServicios();
 		
 	}
@@ -95,17 +96,22 @@ public class ControladorAppChat {
 		return usuarioActual.getDescuentosAplicables();
 	}
 
+	public boolean iniciarSesion(int numTlf, String password) {
+		Optional<Usuario> usuario = Optional.ofNullable(repositorioUsuarios.getUsuarioPorTlf(numTlf));
+		if (usuario.isPresent() && usuario.get().getPassword().equals(password)) {
+			usuarioActual = usuario.get();
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean registrarUsuario(String nombre, String apellidos, int numTlf, String password, String estado,
 			LocalDate fechaNacimiento, String email, String fotoPerfilCodificada) {
 
 		Usuario user = new Usuario(nombre, apellidos, numTlf, password, estado, fechaNacimiento, email, fotoPerfilCodificada);
 
 		if (!repositorioUsuarios.contains(user)) {
-			try {
-				FactoriaDAO.getInstancia().getUsuarioDAO().registrarUsuario(user);
-			} catch (DAOException e) {
-				e.printStackTrace();
-			}
+			adaptadorUsuario.registrarUsuario(user);
 			repositorioUsuarios.add(user);			
 			return true;
 		}
