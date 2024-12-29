@@ -2,7 +2,9 @@ package umu.tds.dominio;
 
 import java.util.Collections;
 import java.util.List;
-import javax.swing.ImageIcon;
+import java.awt.Image;
+
+
 import umu.tds.gui.VentanaPrincipal;
 import umu.tds.utils.Utils;
 
@@ -16,8 +18,8 @@ public class Grupo extends Contacto {
 	}
 	
 	@Override
-	public ImageIcon getFoto() {	
-		return Utils.getScaledIcon("src/main/resources/group.png", 50, 50);
+	public Image getFoto() {	
+		return Utils.getImage("src/main/resources/group.png");
 	}
 	
 	@Override

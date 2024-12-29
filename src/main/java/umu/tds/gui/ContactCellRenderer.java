@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 import umu.tds.dominio.Contacto;
+import umu.tds.utils.Utils;
 
 public class ContactCellRenderer extends JPanel implements ListCellRenderer<Contacto> {
 	
@@ -52,7 +53,7 @@ public class ContactCellRenderer extends JPanel implements ListCellRenderer<Cont
 			boolean isSelected, boolean cellHasFocus) {
 		nameLabel.setText(contacto.getNombre());
 		estadoLabel.setText(contacto.getEstado());
-		imageLabel.setIcon(contacto.getFoto());
+		imageLabel.setIcon(Utils.imageToImageIcon(contacto.getFoto(), 50, 50));
 		
 		if (isSelected) setBackground(Color.lightGray);
 		else setBackground(list.getBackground());

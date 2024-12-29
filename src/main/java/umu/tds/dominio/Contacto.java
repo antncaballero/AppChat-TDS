@@ -1,10 +1,10 @@
 package umu.tds.dominio;
 
+import java.awt.Image;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 
 public abstract class Contacto {
 	
@@ -39,7 +39,7 @@ public abstract class Contacto {
         return Collections.unmodifiableList(listaMensajes);
     }
 	
-	public abstract ImageIcon getFoto();
+	public abstract Image getFoto();
 	
 	public abstract String getEstado();	//TODO revisar si mover a contactor individual
 	
