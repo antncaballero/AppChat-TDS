@@ -17,12 +17,12 @@ public class TDSFactoriaDAO extends FactoriaDAO{
 
 	@Override
 	public UsuarioDAO getUsuarioDAO() {
-		return (UsuarioDAO) AdaptadorUsuarioTDS.getUnicaInstancia();
+		return (UsuarioDAO) AdaptadorUsuarioTDS.getInstancia();
 	}
 
 	@Override
 	public MensajeDAO getMensajeDAO() {
-		return (MensajeDAO) AdaptadorMensajeTDS.getUnicaInstancia();
+		return (MensajeDAO) AdaptadorMensajeTDS.getInstancia();
 	}
 
 	

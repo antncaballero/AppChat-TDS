@@ -40,7 +40,7 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 		if (eGrupo.isPresent()) return;
 		
         grupo.getParticipantes().forEach(AdaptadorContactoIndividualTDS.getInstancia()::registrarContactoIndividual);
-        grupo.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::registrarMensaje);
+        grupo.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getInstancia()::registrarMensaje);
 		
         eGrupo = Optional.of(new Entidad());
         eGrupo.get().setNombre("grupo");
@@ -59,7 +59,7 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 	public void borrarGrupo(Grupo grupo) {
 
 		Entidad eGrupo;
-		grupo.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::borrarMensaje);
+		grupo.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getInstancia()::borrarMensaje);
 		grupo.getParticipantes().forEach(AdaptadorContactoIndividualTDS.getInstancia()::borrarContactoIndividual);
 
 		eGrupo = servPersistencia.recuperarEntidad(grupo.getCodigo());
@@ -119,7 +119,7 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 		return Arrays.stream(codigos.split(" "))
 				.filter(c -> !c.isEmpty())
                 .map(Integer::parseInt)
-                .map(AdaptadorMensajeTDS.getUnicaInstancia()::recuperarMensaje)
+                .map(AdaptadorMensajeTDS.getInstancia()::recuperarMensaje)
                 .collect(Collectors.toList());
 
 	}

@@ -17,7 +17,7 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 	private static ServicioPersistencia servPersistencia;
 	private static AdaptadorMensajeTDS unicaInstancia = null;
 	
-	public static AdaptadorMensajeTDS getUnicaInstancia() {
+	public static AdaptadorMensajeTDS getInstancia() {
 		if (unicaInstancia == null) {
 			return new AdaptadorMensajeTDS();
 		} else {

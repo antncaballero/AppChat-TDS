@@ -51,8 +51,8 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 		}
 		*/
 		
-		AdaptadorUsuarioTDS.getUnicaInstancia().registrarUsuario(contactoIndividual.getUsuarioAsociado());	
-		contactoIndividual.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::registrarMensaje);
+		AdaptadorUsuarioTDS.getInstancia().registrarUsuario(contactoIndividual.getUsuarioAsociado());	
+		contactoIndividual.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getInstancia()::registrarMensaje);
 	
 		//Creamos la entidad y añadimos propiedades
 		eContactoIndividual = Optional.of(new Entidad());
@@ -73,7 +73,7 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 	public void borrarContactoIndividual(ContactoIndividual contactoIndividual) {
 		
 		Entidad eContact;		
-		contactoIndividual.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::borrarMensaje);
+		contactoIndividual.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getInstancia()::borrarMensaje);
 
 		eContact = servPersistencia.recuperarEntidad(contactoIndividual.getCodigo());
 		servPersistencia.borrarEntidad(eContact);
@@ -116,7 +116,7 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 		
 		PoolDAO.INSTANCE.addObject(codigo, contactoIndividual);
 		
-		UsuarioDAO usuarioDAO = AdaptadorUsuarioTDS.getUnicaInstancia();
+		UsuarioDAO usuarioDAO = AdaptadorUsuarioTDS.getInstancia();
 		usuarioAsociado = usuarioDAO.recuperarUsuario(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, PROPIEDAD_USUARIO_ASOCIADO)));
 		contactoIndividual.setUsuarioAsociado(usuarioAsociado);
 		
@@ -145,7 +145,7 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 		return Arrays.asList(codigos.split(" ")).stream()
 				.filter(c -> !c.isEmpty())
 				.map(Integer::parseInt)
-				.map(AdaptadorMensajeTDS.getUnicaInstancia()::recuperarMensaje)
+				.map(AdaptadorMensajeTDS.getInstancia()::recuperarMensaje)
 				.collect(Collectors.toList());
 	}
 

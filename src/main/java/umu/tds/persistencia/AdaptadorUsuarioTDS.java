@@ -40,7 +40,7 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 	private static ServicioPersistencia servPersistencia;
 	private static AdaptadorUsuarioTDS unicaInstancia = null;
 	
-	public static AdaptadorUsuarioTDS getUnicaInstancia() {
+	public static AdaptadorUsuarioTDS getInstancia() {
 		if (unicaInstancia == null) {
 			return new AdaptadorUsuarioTDS();
 		}else {
