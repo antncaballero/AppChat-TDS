@@ -437,7 +437,7 @@ public class VentanaRegistro extends JFrame {
 				
 				JOptionPane.showMessageDialog(VentanaRegistro.this, success ? "Te has registrado con éxito" : "El usuario ya existe");
 				if (success) {
-					VentanaLogin window = new VentanaLogin();
+					VentanaLogin window = new VentanaLogin(telefonoField.getText());
 					window.setVisible(true);
 					dispose();
 				}

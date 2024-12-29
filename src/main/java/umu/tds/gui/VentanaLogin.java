@@ -19,6 +19,7 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import umu.tds.controlador.ControladorAppChat;
 import umu.tds.utils.Utils;
 
 import java.awt.Component;
@@ -66,6 +67,11 @@ public class VentanaLogin {
 	 */
 	public VentanaLogin() {
 		initialize();
+	}
+	
+	public VentanaLogin(String tlf) {
+		initialize();
+		txtTelefono.setText(tlf);
 	}
 
 	/**
@@ -210,12 +216,14 @@ public class VentanaLogin {
 			Optional<String> error = Optional.ofNullable(validarEntrada(tlf, pass));
 
 		    if (error.isEmpty()) {
-		    	//TODO: Convocar a la capa de control para comprobar que el usuario está registrado
-				//ControladorAppChat.getInstancia().login(txtTelefono.getText(), String.valueOf(pass));
-				//De momento, abrimos la ventana principal
-				VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
-				ventanaPrincipal.setVisible(true);
-				frame.dispose();
+		    	boolean success = ControladorAppChat.getInstancia().iniciarSesion(Integer.parseInt(tlf), pass);
+		    	JOptionPane.showMessageDialog(frame, success ? "Bienvenido a AppChat" : "Usuario no registrado");
+		    	if (success) {
+		    		VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
+					ventanaPrincipal.setVisible(true);
+					frame.dispose();
+				}
+		    	
 		    }else { //Las entradas no son válidas, mostramos mensaje de error y configuramos bordes
 		    	Toolkit.getDefaultToolkit().beep();
 		        mostrarError(error.get(), tlf, pass);
