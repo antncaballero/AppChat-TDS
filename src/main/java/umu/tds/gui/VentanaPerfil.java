@@ -164,10 +164,12 @@ public class VentanaPerfil extends JFrame {
 		btnAplicar.addActionListener(e -> {
 			
 			String estado = textArea.getText() == null ? "" : textArea.getText();
-			String fotoCodificada = imageLabel.getIcon() != null ? 
-					Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription())) 
-					: Utils.convertImageToBase64(new File("src/main/resources/user.png"));
-			
+			String fotoCodificada = null;
+			 
+			if (imageLabel.getIcon() == null) fotoCodificada = Utils.convertImageToBase64(new File("src/main/resources/user.png"));
+			else if (((ImageIcon) imageLabel.getIcon()).getDescription() != null) fotoCodificada = Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription()));
+			else fotoCodificada = controlador.getUsuarioActual().getFotoPerfilCodificada();;
+				
 			controlador.cambiarEstado(estado);
 			controlador.cambiarFotoPerfil(fotoCodificada);
 		});
