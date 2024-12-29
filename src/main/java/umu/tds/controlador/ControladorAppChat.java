@@ -2,7 +2,8 @@ package umu.tds.controlador;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
-import static umu.tds.dominio.PDFService.*;
+
+
 import java.util.Optional;
 import javax.swing.ImageIcon;
 
