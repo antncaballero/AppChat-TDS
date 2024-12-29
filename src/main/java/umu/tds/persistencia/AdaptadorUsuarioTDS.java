@@ -24,6 +24,19 @@ import umu.tds.dominio.Usuario;
 
 public class AdaptadorUsuarioTDS implements UsuarioDAO {
 	
+	private static final String PROPIEDAD_NOMBRE = "nombre";
+	private static final String PROPIEDAD_APELLIDOS = "apellidos";
+	private static final String PROPIEDAD_NUM_TLF = "numTlf";
+	private static final String PROPIEDAD_PASSWORD = "password";
+	private static final String PROPIEDAD_FOTO_PERFIL_CODIFICADA = "fotoPerfilCodificada";
+	private static final String PROPIEDAD_ESTADO = "estado";
+	private static final String PROPIEDAD_FECHA_NACIMIENTO = "fechaNacimiento";
+	private static final String PROPIEDAD_EMAIL = "email";
+	private static final String PROPIEDAD_IS_PREMIUM = "isPremium";
+	private static final String PROPIEDAD_CONTACTOS = "contactos";
+	private static final String PROPIEDAD_FECHA_REGISTRO = "fechaRegistro";
+	
+	
 	private static ServicioPersistencia servPersistencia;
 	private static AdaptadorUsuarioTDS unicaInstancia = null;
 	
@@ -60,17 +73,17 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		eUsuario.get().setNombre("usuario");
 		//Registramos atributos
 		eUsuario.get().setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
-				new Propiedad("nombre", user.getNombre()),
-				new Propiedad("apellidos", user.getApellidos()),
-				new Propiedad("numTlf", Integer.toString(user.getNumTlf())),
-				new Propiedad("password", user.getPassword()),
-				new Propiedad("fotoPerfilCodificada", user.getFotoPerfilCodificada()),
-				new Propiedad("estado", user.getEstado()),
-				new Propiedad("fechaNacimiento", user.getFechaNacimiento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))),
-				new Propiedad("email", user.getEmail()),
-				new Propiedad("isPremium", String.valueOf(user.isPremium())),
-				new Propiedad("contactos", obtenerCodigosContactos(user.getContactos())),
-				new Propiedad("fechaRegisto", user.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))) 
+				new Propiedad(PROPIEDAD_NOMBRE, user.getNombre()),
+				new Propiedad(PROPIEDAD_APELLIDOS, user.getApellidos()),
+				new Propiedad(PROPIEDAD_NUM_TLF, Integer.toString(user.getNumTlf())),
+				new Propiedad(PROPIEDAD_PASSWORD, user.getPassword()),
+				new Propiedad(PROPIEDAD_FOTO_PERFIL_CODIFICADA, user.getFotoPerfilCodificada()),
+				new Propiedad(PROPIEDAD_ESTADO, user.getEstado()),
+				new Propiedad(PROPIEDAD_FECHA_NACIMIENTO, user.getFechaNacimiento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))),
+				new Propiedad(PROPIEDAD_EMAIL, user.getEmail()),
+				new Propiedad(PROPIEDAD_IS_PREMIUM, String.valueOf(user.isPremium())),
+				new Propiedad(PROPIEDAD_CONTACTOS, obtenerCodigosContactos(user.getContactos())),
+				new Propiedad(PROPIEDAD_FECHA_REGISTRO, user.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))) 
 			    )));
 		
 		// registrar entidad cliente
@@ -113,27 +126,27 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		
 		//Se recorren sus propiedades y se actualiza su valor
 		for (Propiedad prop : eUsuario.getPropiedades()) {
-			if (prop.getNombre().equals("nombre")) {
+			if (prop.getNombre().equals(PROPIEDAD_NOMBRE)) {
 				prop.setValor(user.getNombre());
-			} else if (prop.getNombre().equals("apellidos")) {
+			} else if (prop.getNombre().equals(PROPIEDAD_APELLIDOS)) {
 				prop.setValor(user.getApellidos());
-			} else if (prop.getNombre().equals("numTlf")) {
+			} else if (prop.getNombre().equals(PROPIEDAD_NUM_TLF)) {
 				prop.setValor(Integer.toString(user.getNumTlf()));
-			} else if (prop.getNombre().equals("password")) {
+			} else if (prop.getNombre().equals(PROPIEDAD_PASSWORD)) {
 				prop.setValor(user.getPassword());
-			} else if (prop.getNombre().equals("fotoPerfilCodificada")) {
+			} else if (prop.getNombre().equals(PROPIEDAD_FOTO_PERFIL_CODIFICADA)) {
 				prop.setValor(String.valueOf(user.getFotoPerfilCodificada()));
-			} else if (prop.getNombre().equals("estado")) {
+			} else if (prop.getNombre().equals(PROPIEDAD_ESTADO)) {
 				prop.setValor(user.getEstado());
-			} else if (prop.getNombre().equals("fechaNacimiento")) {
+			} else if (prop.getNombre().equals(PROPIEDAD_FECHA_NACIMIENTO)) {
 				prop.setValor(user.getFechaNacimiento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-			} else if (prop.getNombre().equals("email")) {
+			} else if (prop.getNombre().equals(PROPIEDAD_EMAIL)) {
 				prop.setValor(user.getEmail());
-			} else if (prop.getNombre().equals("isPremium")) {
+			} else if (prop.getNombre().equals(PROPIEDAD_IS_PREMIUM)) {
 				prop.setValor(String.valueOf(user.isPremium()));
-			} else if (prop.getNombre().equals("contactos")) {
+			} else if (prop.getNombre().equals(PROPIEDAD_CONTACTOS)) {
 				prop.setValor(obtenerCodigosContactos(user.getContactos()));
-			} else if (prop.getNombre().equals("fechaRegistro")) {
+			} else if (prop.getNombre().equals(PROPIEDAD_FECHA_REGISTRO)) {
 				prop.setValor(user.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 			}
 			
@@ -152,16 +165,16 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		Entidad eUsuario = servPersistencia.recuperarEntidad(codigo);
 		
 		//Recuperamos sus propiedades que no son objetos
-		String nombre = servPersistencia.recuperarPropiedadEntidad(eUsuario, "nombre");
-		String apellidos = servPersistencia.recuperarPropiedadEntidad(eUsuario, "apellidos");
-		int numTlf = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eUsuario, "numTlf"));
-		String password = servPersistencia.recuperarPropiedadEntidad(eUsuario, "password");
-		String fotoPerfilCodificada = servPersistencia.recuperarPropiedadEntidad(eUsuario, "fotoPerfilCodificada");
-		String estado = servPersistencia.recuperarPropiedadEntidad(eUsuario, "estado");
-		LocalDate fechaNacimiento = LocalDate.parse(servPersistencia.recuperarPropiedadEntidad(eUsuario, "fechaNacimiento"), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		String email = servPersistencia.recuperarPropiedadEntidad(eUsuario, "email");
-		boolean isPremium = Boolean.parseBoolean(servPersistencia.recuperarPropiedadEntidad(eUsuario, "isPremium"));
-		LocalDate fechaRegistro = LocalDate.parse(servPersistencia.recuperarPropiedadEntidad(eUsuario, "fechaRegistro"), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		String nombre = servPersistencia.recuperarPropiedadEntidad(eUsuario,PROPIEDAD_NOMBRE);
+		String apellidos = servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_APELLIDOS);
+		int numTlf = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_NUM_TLF));
+		String password = servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_PASSWORD);
+		String fotoPerfilCodificada = servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_FOTO_PERFIL_CODIFICADA);
+		String estado = servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_ESTADO);
+		LocalDate fechaNacimiento = LocalDate.parse(servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_FECHA_NACIMIENTO), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		String email = servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_EMAIL);
+		boolean isPremium = Boolean.parseBoolean(servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_IS_PREMIUM));
+		LocalDate fechaRegistro = LocalDate.parse(servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_FECHA_REGISTRO), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		
 		//Creamos el usuario
 		Usuario usuario = new Usuario(nombre, apellidos, numTlf, password, estado, fechaNacimiento, email, fotoPerfilCodificada, fechaRegistro);
@@ -172,7 +185,7 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		PoolDAO.INSTANCE.addObject(codigo, usuario);
 		
 		//Añadimos las propiedades que son objetos
-		List<Contacto> contactos = obtenerContactosDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eUsuario, "contactos"));
+		List<Contacto> contactos = obtenerContactosDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_CONTACTOS));
 		usuario.setContactos(contactos);
 		
 		//Devolvemos el usuario
@@ -199,6 +212,7 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		//TODO: Revisar si se puede hacer con un solo stream
 		
 		return Arrays.stream(codigos.split(" "))
+				.filter(codigo -> !codigo.isEmpty())  //filtro cadenas vacias
                 .map(Integer::parseInt)
                 .map(c -> {
                     Optional<Contacto> contactoIndividual = Optional.ofNullable(AdaptadorContactoIndividualTDS.getInstancia().recuperarContactoIndividual(c));

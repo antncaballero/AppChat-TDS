@@ -16,6 +16,10 @@ import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Mensaje;
 
 public class AdaptadorGrupoTDS implements GrupoDAO{
+	
+	private static final String PROPIEDAD_NOMBRE = "nombre";
+	private static final String PROPIEDAD_PARTICIPANTES = "participantes";
+	private static final String PROPIEDAD_MENSAJES_RECIBIDOS = "listaMensajes";
 
 	private static ServicioPersistencia servPersistencia;
 	private static AdaptadorGrupoTDS unicaInstancia = null;
@@ -36,15 +40,15 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 		if (eGrupo.isPresent()) return;
 		
         grupo.getParticipantes().forEach(AdaptadorContactoIndividualTDS.getInstancia()::registrarContactoIndividual);
-        grupo.getListaMensajes().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::registrarMensaje);
+        grupo.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::registrarMensaje);
 		
         eGrupo = Optional.of(new Entidad());
         eGrupo.get().setNombre("grupo");
 		eGrupo.get().setPropiedades(
 				new ArrayList<Propiedad>(Arrays.asList(
-						new Propiedad("nombre", grupo.getNombre()),
-						new Propiedad("participantes", obtenerCodigosContactosIndividual(grupo.getParticipantes())),
-						new Propiedad("listaMensajes", obtenerCodigosMensajes(grupo.getListaMensajes())))
+						new Propiedad(PROPIEDAD_NOMBRE, grupo.getNombre()),
+						new Propiedad(PROPIEDAD_PARTICIPANTES, obtenerCodigosContactosIndividual(grupo.getParticipantes())),
+						new Propiedad(PROPIEDAD_MENSAJES_RECIBIDOS, obtenerCodigosMensajes(grupo.getMensajesRecibidos())))
         ));
 		
 		eGrupo = Optional.ofNullable(servPersistencia.registrarEntidad(eGrupo.get()));
@@ -55,7 +59,7 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 	public void borrarGrupo(Grupo grupo) {
 
 		Entidad eGrupo;
-		grupo.getListaMensajes().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::borrarMensaje);
+		grupo.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::borrarMensaje);
 		grupo.getParticipantes().forEach(AdaptadorContactoIndividualTDS.getInstancia()::borrarContactoIndividual);
 
 		eGrupo = servPersistencia.recuperarEntidad(grupo.getCodigo());
@@ -69,18 +73,13 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 		
 		Entidad eGrupo = servPersistencia.recuperarEntidad(grupo.getCodigo());
 		for (Propiedad p : eGrupo.getPropiedades()) {
-            switch (p.getNombre()) {
-            case "nombre":
-                p.setValor(grupo.getNombre());
-                break;
-            case "participantes":
-                p.setValor(obtenerCodigosContactosIndividual(grupo.getParticipantes()));
-                break;
-            case "listaMensajes":
-                p.setValor(obtenerCodigosMensajes(grupo.getListaMensajes()));
-                break;  
-            }
-            servPersistencia.modificarEntidad(eGrupo);
+			if (p.getNombre().equals(PROPIEDAD_NOMBRE)) {
+				p.setValor(grupo.getNombre());
+			}else if (p.getNombre().equals(PROPIEDAD_PARTICIPANTES)) {
+				p.setValor(obtenerCodigosContactosIndividual(grupo.getParticipantes()));
+			}else if (p.getNombre().equals(PROPIEDAD_MENSAJES_RECIBIDOS)) {
+				p.setValor(obtenerCodigosMensajes(grupo.getMensajesRecibidos()));
+			}
 		}
 }
 
@@ -90,17 +89,17 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 		
 		Entidad eGrupo = servPersistencia.recuperarEntidad(codigo);
 	
-		String nombre = servPersistencia.recuperarPropiedadEntidad(eGrupo, "nombre");
+		String nombre = servPersistencia.recuperarPropiedadEntidad(eGrupo, PROPIEDAD_NOMBRE);
 
 		Grupo grupo = new Grupo(nombre, new LinkedList<ContactoIndividual>());
 		grupo.setCodigo(codigo);
 		
 		PoolDAO.INSTANCE.addObject(codigo, grupo);
 		
-		String participantes = servPersistencia.recuperarPropiedadEntidad(eGrupo, "participantes");
+		String participantes = servPersistencia.recuperarPropiedadEntidad(eGrupo, PROPIEDAD_PARTICIPANTES);
 		obtenerIntegrantesDesdeCodigos(participantes).forEach(grupo::addParticipante);
 		
-		String mensajes = servPersistencia.recuperarPropiedadEntidad(eGrupo, "listaMensajes");
+		String mensajes = servPersistencia.recuperarPropiedadEntidad(eGrupo, PROPIEDAD_MENSAJES_RECIBIDOS);
 		obtenerMensajesDesdeCodigos(mensajes).forEach(grupo::addMensaje);
 		
 		return grupo;
@@ -118,6 +117,7 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 	//TODO esto esta en el adaptador individual, revisar si podriamos crear un adaptador abstracto con este metodo o si lo podriamos mover a mensajes o utils
 	private List<Mensaje> obtenerMensajesDesdeCodigos(String codigos) {
 		return Arrays.stream(codigos.split(" "))
+				.filter(c -> !c.isEmpty())
                 .map(Integer::parseInt)
                 .map(AdaptadorMensajeTDS.getUnicaInstancia()::recuperarMensaje)
                 .collect(Collectors.toList());
@@ -140,6 +140,7 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 	
 	private List<ContactoIndividual> obtenerIntegrantesDesdeCodigos(String codigos) {
 		return Arrays.stream(codigos.split(" "))
+				.filter(c -> !c.isEmpty())
 				.map(Integer::parseInt)
 				.map(AdaptadorContactoIndividualTDS.getInstancia()::recuperarContactoIndividual)
 				.collect(Collectors.toList());

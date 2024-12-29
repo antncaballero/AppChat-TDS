@@ -30,7 +30,12 @@ public abstract class Contacto {
 		this.codigo = codigo;
 	}
 	
-	public List<Mensaje> getListaMensajes() {
+	/**
+	 * Devuelve una lista de mensajes recibidos por el contacto, del usuario que lo tiene agregado
+	 * 
+	 * @return lista de mensajes
+	 */
+	public List<Mensaje> getMensajesRecibidos() {
         return Collections.unmodifiableList(listaMensajes);
     }
 	

@@ -149,7 +149,7 @@ public class Usuario {
 	
 	public int getNumMensajesUltimoMes() {
         return (int) contactos.stream()
-                .flatMap(c -> c.getListaMensajes().stream())
+                .flatMap(c -> c.getMensajesRecibidos().stream())
                 .filter(m-> m.getHora().isAfter(LocalDateTime.now().minusMonths(1)))
                 .count();
     }

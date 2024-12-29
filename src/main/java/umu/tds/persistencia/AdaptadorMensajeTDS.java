@@ -29,8 +29,6 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
 	
-	
-	
 	public void registrarMensaje(Mensaje mensaje) {
 		//Comprobamos si ya esta registrado
 		Optional<Entidad> eMensaje = Optional.ofNullable(servPersistencia.recuperarEntidad(mensaje.getCodigo()));

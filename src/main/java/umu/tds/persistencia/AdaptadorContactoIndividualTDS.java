@@ -16,6 +16,11 @@ import umu.tds.dominio.Usuario;
 
 public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 	
+	private static final String PROPIEDAD_NOMBRE = "nombre";
+	private static final String PROPIEDAD_USUARIO_ASOCIADO = "usuarioAsociado";
+	private static final String PROPIEDAD_MENSAJES_RECIBIDOS = "listaMensajes";
+	
+	
 	private static ServicioPersistencia servPersistencia;
 	private static AdaptadorContactoIndividualTDS unicaInstancia = null;
 	
@@ -47,16 +52,16 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 		*/
 		
 		AdaptadorUsuarioTDS.getUnicaInstancia().registrarUsuario(contactoIndividual.getUsuarioAsociado());	
-		contactoIndividual.getListaMensajes().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::registrarMensaje);
+		contactoIndividual.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::registrarMensaje);
 	
 		//Creamos la entidad y añadimos propiedades
 		eContactoIndividual = Optional.of(new Entidad());
 		eContactoIndividual.get().setNombre("contactoIndividual");
 		eContactoIndividual.get().setPropiedades(
 			    new ArrayList<Propiedad>(Arrays.asList(
-			        new Propiedad("nombre", contactoIndividual.getNombre()),
-			        new Propiedad("usuarioAsociado", String.valueOf(contactoIndividual.getUsuarioAsociado().getCodigo())),
-			        new Propiedad("listaMensajes", obtenerCodigosMensajes(contactoIndividual.getListaMensajes()))
+			        new Propiedad(PROPIEDAD_NOMBRE, contactoIndividual.getNombre()),
+			        new Propiedad(PROPIEDAD_USUARIO_ASOCIADO, String.valueOf(contactoIndividual.getUsuarioAsociado().getCodigo())),
+			        new Propiedad(PROPIEDAD_MENSAJES_RECIBIDOS, obtenerCodigosMensajes(contactoIndividual.getMensajesRecibidos()))
 			    ))
 		);
 		
@@ -68,7 +73,7 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 	public void borrarContactoIndividual(ContactoIndividual contactoIndividual) {
 		
 		Entidad eContact;		
-		contactoIndividual.getListaMensajes().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::borrarMensaje);
+		contactoIndividual.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getUnicaInstancia()::borrarMensaje);
 
 		eContact = servPersistencia.recuperarEntidad(contactoIndividual.getCodigo());
 		servPersistencia.borrarEntidad(eContact);
@@ -81,29 +86,18 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 
 	public void modificarContactoIndividual(ContactoIndividual contactoIndividual) {
 		
-		Entidad eContactoIndividual;
-		eContactoIndividual = servPersistencia.recuperarEntidad(contactoIndividual.getCodigo());
+		Entidad eContactoIndividual = servPersistencia.recuperarEntidad(contactoIndividual.getCodigo());
 		
 		for (Propiedad p : eContactoIndividual.getPropiedades()) {
-			if (p.getNombre().equals("nombre")) {
+			if (p.getNombre().equals(PROPIEDAD_NOMBRE)) {
 				p.setValor(contactoIndividual.getNombre());
-			} else if (p.getNombre().equals("usuarioAsociado")) {
+			} else if (p.getNombre().equals(PROPIEDAD_USUARIO_ASOCIADO)) {
 				p.setValor(String.valueOf(contactoIndividual.getUsuarioAsociado().getCodigo()));
-			} else if (p.getNombre().equals("listaMensajes")) {
-				p.setValor(obtenerCodigosMensajes(contactoIndividual.getListaMensajes()));
+			} else if (p.getNombre().equals(PROPIEDAD_MENSAJES_RECIBIDOS)) {
+				p.setValor(obtenerCodigosMensajes(contactoIndividual.getMensajesRecibidos()));
 			}
 			servPersistencia.modificarPropiedad(p);
-		}
-			
-	/*	
-		//TODO Ver si esto funciona igual
-		 
-		eContactoIndividual.getPropiedades().get(0).setValor(contactoIndividual.getNombre());
-		eContactoIndividual.getPropiedades().get(1).setValor(String.valueOf(contactoIndividual.getUsuarioAsociado().getCodigo()));
-		eContactoIndividual.getPropiedades().get(2).setValor(obtenerCodigosMensajes(contactoIndividual.getListaMensajes()));
-
-		servPersistencia.modificarEntidad(eContactoIndividual);
-	*/	
+		}	
 	}
 	
 
@@ -115,7 +109,7 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 		Usuario usuarioAsociado = null;
 		
 		Entidad eContactoIndividual = servPersistencia.recuperarEntidad(codigo);
-		String nombre = servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, "nombre");
+		String nombre = servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, PROPIEDAD_NOMBRE);
 		
 		ContactoIndividual contactoIndividual = new ContactoIndividual(nombre, usuarioAsociado);
 		contactoIndividual.setCodigo(codigo);
@@ -123,10 +117,10 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 		PoolDAO.INSTANCE.addObject(codigo, contactoIndividual);
 		
 		UsuarioDAO usuarioDAO = AdaptadorUsuarioTDS.getUnicaInstancia();
-		usuarioAsociado = usuarioDAO.recuperarUsuario(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, "usuarioAsociado")));
+		usuarioAsociado = usuarioDAO.recuperarUsuario(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, PROPIEDAD_USUARIO_ASOCIADO)));
 		contactoIndividual.setUsuarioAsociado(usuarioAsociado);
 		
-		obtenerMensajesDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, "mensajesRecibidos"))
+		obtenerMensajesDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, PROPIEDAD_MENSAJES_RECIBIDOS))
 			.forEach(contactoIndividual::addMensaje);
 
 		return contactoIndividual;
@@ -149,6 +143,7 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 	
 	private List<Mensaje> obtenerMensajesDesdeCodigos(String codigos) {
 		return Arrays.asList(codigos.split(" ")).stream()
+				.filter(c -> !c.isEmpty())
 				.map(Integer::parseInt)
 				.map(AdaptadorMensajeTDS.getUnicaInstancia()::recuperarMensaje)
 				.collect(Collectors.toList());

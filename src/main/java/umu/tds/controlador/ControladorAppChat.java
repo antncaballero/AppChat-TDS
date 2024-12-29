@@ -33,7 +33,7 @@ public class ControladorAppChat {
 	private static ControladorAppChat unicaInstancia = null;
 
 	//TODO quitar el new Usuario, esto es para hacer pruebas
-	private Usuario usuarioActual;/* = new Usuario("Pepito", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg")));*/
+	private Usuario usuarioActual; //= new Usuario("Pepito", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg")));
 
 	//Adaptadores
 	private UsuarioDAO adaptadorUsuario;
