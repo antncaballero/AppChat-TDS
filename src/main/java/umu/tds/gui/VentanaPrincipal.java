@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -41,6 +42,8 @@ import umu.tds.dominio.Descuento;
 import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Usuario;
 import umu.tds.utils.Utils;
+import static umu.tds.dominio.PDFService.*;
+
 
 public class VentanaPrincipal extends JFrame {
 
@@ -123,7 +126,7 @@ public class VentanaPrincipal extends JFrame {
 	public VentanaPrincipal() {
 		setTitle("AppChat");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 920, 620);
+		setBounds(100, 100, 930, 620);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -182,23 +185,33 @@ public class VentanaPrincipal extends JFrame {
 			ventanaPerfil.setVisible(true);
 			dispose();
 		});
-		
+
 		btnGenerarPdf.addActionListener(e -> {
-			
+			//SI NO HAY NINGÚN CHAT SELECCIONADO O NO ERES PREMIUM NO SE PUEDE
 			if (lista.getSelectedValue() == null) {
-				JOptionPane.showMessageDialog(this, "Selecciona un chat para generar PDF", "Error",
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Selecciona un chat para generar PDF", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			
-			boolean success = controlador.generatePDF(lista.getSelectedValue());
-			if (success) {
-				JOptionPane.showMessageDialog(this, "PDF generado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-			} else {
-				JOptionPane.showMessageDialog(this, "Debes ser un usuario premium para generar PDFs", "Error", JOptionPane.ERROR_MESSAGE);
+			if (!controlador.getUsuarioActual().isPremium()) {
+				JOptionPane.showMessageDialog(this, "Debes ser usuario premium para generar PDF", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
 			}
+
+			JFileChooser directoryChooser = new JFileChooser();
+			directoryChooser.setDialogTitle("Seleccionar directorio para guardar el archivo PDF");
+			directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); // Solo directorios
+			int userSelection = directoryChooser.showSaveDialog(null);
+
+			if (userSelection == JFileChooser.APPROVE_OPTION) {	            
+				File directorio = directoryChooser.getSelectedFile();	        	
+				if (controlador.generatePDF(lista.getSelectedValue(), directorio)) {
+					JOptionPane.showMessageDialog(this, "PDF generado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(this, "Error al generar PDF", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}	   
 		});
-		
+
 		//ESTILOS DE LOS BOTONES DE ZONA NORTE
 		botonPremium.setBackground(Color.WHITE);
 		botonPremium.setBorder(BorderFactory.createEmptyBorder());

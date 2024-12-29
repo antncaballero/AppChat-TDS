@@ -2,7 +2,7 @@ package umu.tds.controlador;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
-
+import static umu.tds.dominio.PDFService.*;
 import javax.swing.ImageIcon;
 
 import umu.tds.persistencia.AdaptadorContactoIndividualTDS;
@@ -47,9 +47,11 @@ public class ControladorAppChat {
 	
 	//Constructor privado
 	private ControladorAppChat() {
-		inicializarAdaptadores();
-		inicializarRepositorios();
+		
+		//inicializarAdaptadores();
+		//inicializarRepositorios();
 		inicializarServicios();
+		
 	}
 	
 	//Inicialización de los adaptadores, repositorios y servicios
@@ -143,10 +145,8 @@ public class ControladorAppChat {
 		//adaptadorUsuario.modificarUsuario(usuarioActual);
 	}
 	
-	public boolean generatePDF(Contacto contacto) {		
-		if (!usuarioActual.isPremium()) return false;
-		pdfService.generatePDF(contacto);
-		return true;
+	public boolean generatePDF(Contacto contacto, File directorio) {		
+		return pdfService.generatePDF(directorio, contacto);		
 	}
 
 
