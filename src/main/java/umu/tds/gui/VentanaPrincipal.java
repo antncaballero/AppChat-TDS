@@ -1,6 +1,7 @@
 package umu.tds.gui;
 
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractListModel;
@@ -53,6 +55,7 @@ public class VentanaPrincipal extends JFrame {
 	private ControladorAppChat controlador = ControladorAppChat.getInstancia();
 	private JScrollPane scrollPaneChat;
 	private JList<Contacto> lista;
+	private String tlfContacto;
 	/**
 	 * Launch the application.
 	 */
@@ -79,7 +82,7 @@ public class VentanaPrincipal extends JFrame {
 	
 		private static Usuario[] users = new Usuario[] {
 			    new Usuario("Pepe", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba2.jpeg"))),
-				new Usuario("Antonio", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
+				new Usuario("Antonio", "López", 202202202, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
 				new Usuario("Jose", "López Rodríguez", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
 				new Usuario("Pepe", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
 				new Usuario("Jesús", "López", 638912458, "pass", "prueba de estadoprueba de estadoprueba de estadoprueba de estadoprueba de estadoprueba de estado",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg"))),
@@ -98,13 +101,13 @@ public class VentanaPrincipal extends JFrame {
 		private static ContactoIndividual c3 = new ContactoIndividual("Miguel primo", users[10]);
 			
 		private static Contacto[] contactos = new Contacto[] { 
-				new ContactoIndividual("Pepe", users[0]),
-				new ContactoIndividual("Antonio", users[1]), new ContactoIndividual("Jose", users[2]),
+				new ContactoIndividual("638912458", users[0]),
+				new ContactoIndividual("202202202", users[1]), new ContactoIndividual("Jose", users[2]),
 				new ContactoIndividual("Pepiyo", users[3]), new ContactoIndividual("Jesús", users[4]),
 				new ContactoIndividual("Manuel", users[5]), new ContactoIndividual("Miguel", users[6]),
 				new ContactoIndividual("Miguelon", users[7]), new ContactoIndividual("Miguelito", users[8]),
 				new ContactoIndividual("Miguelin", users[9]),c1,c2,c3,
-				new Grupo("Grupo de prueba", Arrays.asList(c1,c2,c3)),
+				//new Grupo("Grupo de prueba", Arrays.asList(c1,c2,c3)),
 		};
 
 		@Override
@@ -270,10 +273,17 @@ public class VentanaPrincipal extends JFrame {
 		JPanel messagePanel = new JPanel(new BorderLayout());
 		messagePanel.add(fieldMensaje, BorderLayout.CENTER);
 		messagePanel.add(botonSend, BorderLayout.EAST);
+		
+		JPanel anadirContacto = new JPanel(new FlowLayout());
+		JButton btnAnadirContacto = new JButton(Utils.getIcon("src/main/resources/person-add.png", 2.0f));
+		anadirContacto.add(btnAnadirContacto);
+		anadirContacto.setVisible(false);
+		
 
-        //añadir chatPanel y messagePanel al panelEste, y panelEste al contentPane
+        //añadir chatPanel y messagePanel al panelEste y boton añadirContacto, y panelEste al contentPane
 		panelEste.add(scrollPaneChat, BorderLayout.CENTER);
 		panelEste.add(messagePanel, BorderLayout.SOUTH);
+		panelEste.add(anadirContacto, BorderLayout.NORTH);
 		contentPane.add(panelEste, BorderLayout.EAST);
 		
 		//LISTA DE CONTACTOS
@@ -289,6 +299,11 @@ public class VentanaPrincipal extends JFrame {
 				if (selectedContact != null) {
 					String contactoSeleccionado = selectedContact.getNombre();
 					panelEste.setBorder(new TitledBorder(null, "Mensajes con " + contactoSeleccionado, TitledBorder.LEADING, TitledBorder.TOP, null, null));
+					boolean esRegistrado = selectedContact instanceof ContactoIndividual 
+							? ControladorAppChat.getInstancia().esContactoRegistrado(selectedContact)
+							: false;
+					anadirContacto.setVisible(esRegistrado);
+					tlfContacto = esRegistrado ? selectedContact.getNombre() : null;
 					loadChat(selectedContact);
 				}
 			}
@@ -317,6 +332,12 @@ public class VentanaPrincipal extends JFrame {
 					enviarMensaje(mensaje, contacto);
 				}
 			}
+		});
+		
+		btnAnadirContacto.addActionListener(e -> {
+			VentanaAnadirContacto ventanaAnadir = new VentanaAnadirContacto(tlfContacto);
+			ventanaAnadir.setVisible(true);
+			dispose();
 		});
 	
 	}

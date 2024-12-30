@@ -20,6 +20,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import umu.tds.controlador.ControladorAppChat;
+import umu.tds.persistencia.AppChatLoader;
 import umu.tds.utils.Utils;
 
 import java.awt.Component;
