@@ -158,5 +158,12 @@ public class Usuario {
 		return contactos.stream().filter(c -> c.getNombre().equals(nombre)).findFirst().orElse(null);
 	}
 	
+	public Contacto encontrarContactoPorNumTlf(int numTlf) {
+		return contactos.stream().filter(c -> ((ContactoIndividual) c).getNumTlf() == numTlf).findFirst().orElse(null);
+	}
+	
+	public void addContacto(Contacto contacto) {
+		contactos.add(contacto);
+	}
 
 }
