@@ -139,7 +139,7 @@ public class ControladorAppChat {
 	 */
 	public void cambiarEstado(String estado) {
 		usuarioActual.setEstado(estado);
-		//adaptadorUsuario.modificarUsuario(usuarioActual);
+		adaptadorUsuario.modificarUsuario(usuarioActual);
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class ControladorAppChat {
 	 */
 	public void cambiarFotoPerfil(String fotoCodificada) {
 		usuarioActual.setFotoPerfilCodificada(fotoCodificada);
-		//adaptadorUsuario.modificarUsuario(usuarioActual);
+		adaptadorUsuario.modificarUsuario(usuarioActual);
 	}
 	
 	public boolean generatePDF(Contacto contacto, File directorio) {		

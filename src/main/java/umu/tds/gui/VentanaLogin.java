@@ -134,6 +134,11 @@ public class VentanaLogin {
             	txtTelefono.setBorder(new LineBorder(Color.BLACK, 1));
             }
         });
+		
+		txtTelefono.addActionListener(e -> {
+			acionAceptar();
+		});
+		
 		GridBagConstraints gbc_txtTelefono = new GridBagConstraints();
 		gbc_txtTelefono.insets = new Insets(0, 0, 5, 5);
 		gbc_txtTelefono.fill = GridBagConstraints.HORIZONTAL;
@@ -162,6 +167,10 @@ public class VentanaLogin {
             	txtContrasena.setBorder(new LineBorder(Color.BLACK, 1));
             }
          });
+		txtContrasena.addActionListener(e -> {
+			acionAceptar();
+		});
+		
 		GridBagConstraints gbc_txtContrasena = new GridBagConstraints();
 		gbc_txtContrasena.insets = new Insets(0, 0, 5, 5);
 		gbc_txtContrasena.fill = GridBagConstraints.HORIZONTAL;
@@ -210,24 +219,7 @@ public class VentanaLogin {
 		btnAceptar.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		panelSur.add(btnAceptar);
 		btnAceptar.addActionListener(e -> {
-			//Antes de llamar al controlador, validamos la entrada
-			String tlf = txtTelefono.getText();
-			String pass = String.valueOf(txtContrasena.getPassword());
-			Optional<String> error = Optional.ofNullable(validarEntrada(tlf, pass));
-
-		    if (error.isEmpty()) {
-		    	boolean success = ControladorAppChat.getInstancia().iniciarSesion(Integer.parseInt(tlf), pass);
-		    	JOptionPane.showMessageDialog(frame, success ? "Bienvenido a AppChat" : "Usuario no registrado");
-		    	if (success) {
-		    		VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
-					ventanaPrincipal.setVisible(true);
-					frame.dispose();
-				}
-		    	
-		    }else { //Las entradas no son válidas, mostramos mensaje de error y configuramos bordes
-		    	Toolkit.getDefaultToolkit().beep();
-		        mostrarError(error.get(), tlf, pass);
-		    }
+			acionAceptar();
 		});
 
 		JPanel panelOeste = new JPanel();
@@ -241,6 +233,27 @@ public class VentanaLogin {
 
 		Component espacioEste = Box.createHorizontalStrut(110);
 		panelEste.add(espacioEste);
+	}
+	
+	private void acionAceptar() {
+		//Antes de llamar al controlador, validamos la entrada
+		String tlf = txtTelefono.getText();
+		String pass = String.valueOf(txtContrasena.getPassword());
+		Optional<String> error = Optional.ofNullable(validarEntrada(tlf, pass));
+
+	    if (error.isEmpty()) {
+	    	boolean success = ControladorAppChat.getInstancia().iniciarSesion(Integer.parseInt(tlf), pass);
+	    	JOptionPane.showMessageDialog(frame, success ? "Bienvenido a AppChat" : "Usuario no registrado");
+	    	if (success) {
+	    		VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
+				ventanaPrincipal.setVisible(true);
+				frame.dispose();
+			}
+	    	
+	    }else { //Las entradas no son válidas, mostramos mensaje de error y configuramos bordes
+	    	Toolkit.getDefaultToolkit().beep();
+	        mostrarError(error.get(), tlf, pass);
+	    }
 	}
 
 	/**
