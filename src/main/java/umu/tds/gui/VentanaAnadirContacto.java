@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.BoxLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -15,6 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import umu.tds.controlador.ControladorAppChat;
 
 import java.awt.Component;
 
@@ -24,12 +26,15 @@ import javax.swing.JPasswordField;
 
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.Dimension;
 
 public class VentanaAnadirContacto {
 
 	private JFrame frame;
-
+	private JTextField txtTelefono;
+	private JTextField txtNombre;
+	private JButton btnAceptar;
 	/**
 	 * Launch the application.
 	 */
@@ -51,6 +56,11 @@ public class VentanaAnadirContacto {
 	 */
 	public VentanaAnadirContacto() {
 		initialize();
+	}
+	
+	public VentanaAnadirContacto(String tlf) {
+		initialize();
+		txtTelefono.setText(tlf);
 	}
 
 	/**
@@ -102,7 +112,7 @@ public class VentanaAnadirContacto {
 		gbc_lblNombre.gridy = 1;
 		panelCentro.add(lblNombre, gbc_lblNombre);
 
-		JTextField txtNombre = new JTextField();
+		txtNombre = new JTextField();
 		txtNombre.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		GridBagConstraints gbc_txtNombre = new GridBagConstraints();
@@ -122,7 +132,7 @@ public class VentanaAnadirContacto {
 		gbc_lblTelefono.gridy = 2;
 		panelCentro.add(lblTelefono, gbc_lblTelefono);
 
-		JPasswordField txtTelefono = new JPasswordField();
+		txtTelefono = new JTextField();
 		txtTelefono.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		GridBagConstraints gbc_txtTelefono = new GridBagConstraints();
@@ -143,19 +153,30 @@ public class VentanaAnadirContacto {
 		Component rigidArea = Box.createRigidArea(new Dimension(30, 20));
 		panelSur.add(rigidArea);
 
-		JButton btnAceptar = new JButton("Aceptar");
+		btnAceptar = new JButton("Aceptar");
 		btnAceptar.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		panelSur.add(btnAceptar);
-		btnAceptar.addActionListener(e -> {
-			VentanaPrincipal main = new VentanaPrincipal();
-			main.setVisible(true);
-			frame.dispose();
-		});
 		
 		btnCancelar.addActionListener(e -> {
 			VentanaPrincipal main = new VentanaPrincipal();
 			main.setVisible(true);
 			frame.dispose();
+		});
+		
+		btnAceptar.addActionListener(e -> {
+			boolean succes = ControladorAppChat.getInstancia().anadirContactoNuevo(txtNombre.getText(), txtTelefono.getText());
+			if (!succes) {
+				Toolkit.getDefaultToolkit().beep();
+				JOptionPane.showMessageDialog(frame, "The contact is already saved or its user does not exist",
+						"Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(frame, "Contact added successfully", "Info",
+						JOptionPane.INFORMATION_MESSAGE);
+				VentanaPrincipal main = new VentanaPrincipal();
+				main.setVisible(true);
+				frame.dispose();
+			}
+			
 		});
 
 		JPanel panelOeste = new JPanel();
