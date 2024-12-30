@@ -32,4 +32,8 @@ public class ContactoIndividual extends Contacto {
 	public int getNumTlf() {
         return usuarioAsociado.getNumTlf();
     }
+	
+	public boolean nombreEsIgualNumTlf() {
+		return this.getNombre().equals(String.valueOf(this.getNumTlf())) ? true : false;
+	}
 }
