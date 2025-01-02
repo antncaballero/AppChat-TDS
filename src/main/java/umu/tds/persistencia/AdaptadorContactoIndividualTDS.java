@@ -42,15 +42,6 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 		
 		//Registramos sus objetos asociados
 		
-		/* TODO revisar si habría que poner esto
-		try {
-			FactoriaDAO.getInstancia().getUsuarioDAO().registrarUsuario(contactoIndividual.getUsuarioAsociado());
-		} catch (DAOException e) {
-	
-			e.printStackTrace();
-		}
-		*/
-		
 		AdaptadorUsuarioTDS.getInstancia().registrarUsuario(contactoIndividual.getUsuarioAsociado());	
 		contactoIndividual.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getInstancia()::registrarMensaje);
 	
@@ -67,15 +58,16 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 		
 		//Registramos la entidad
 		eContactoIndividual = Optional.ofNullable(servPersistencia.registrarEntidad(eContactoIndividual.get()));
-		contactoIndividual.setCodigo(eContactoIndividual.get().getId());		
+		contactoIndividual.setCodigo(eContactoIndividual.get().getId());
+				
+		PoolDAO.INSTANCE.addObject(contactoIndividual.getCodigo(), contactoIndividual);
 	}
 
 	public void borrarContactoIndividual(ContactoIndividual contactoIndividual) {
-		
-		Entidad eContact;		
+				
 		contactoIndividual.getMensajesRecibidos().forEach(AdaptadorMensajeTDS.getInstancia()::borrarMensaje);
 
-		eContact = servPersistencia.recuperarEntidad(contactoIndividual.getCodigo());
+		Entidad eContact = servPersistencia.recuperarEntidad(contactoIndividual.getCodigo());
 		servPersistencia.borrarEntidad(eContact);
 		
 		// Si está en el pool, borramos del pool
@@ -116,8 +108,7 @@ public class AdaptadorContactoIndividualTDS implements ContactoIndividualDAO{
 		
 		PoolDAO.INSTANCE.addObject(codigo, contactoIndividual);
 		
-		UsuarioDAO usuarioDAO = AdaptadorUsuarioTDS.getInstancia();
-		usuarioAsociado = usuarioDAO.recuperarUsuario(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, PROPIEDAD_USUARIO_ASOCIADO)));
+		usuarioAsociado = AdaptadorUsuarioTDS.getInstancia().recuperarUsuario(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, PROPIEDAD_USUARIO_ASOCIADO)));
 		contactoIndividual.setUsuarioAsociado(usuarioAsociado);
 		
 		obtenerMensajesDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eContactoIndividual, PROPIEDAD_MENSAJES_RECIBIDOS))

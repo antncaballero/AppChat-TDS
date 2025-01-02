@@ -108,9 +108,6 @@ public class VentanaBusqueda extends JFrame {
 		panelBuscar.setPreferredSize(new Dimension(800, 120));
 		
 		DefaultListModel<Mensaje> mensajesBuscados = new DefaultListModel<>();
-		mensajesBuscados.addElement(new Mensaje("¡Hola! ¿Cómo estás?", LocalDateTime.of(2023, 11, 1, 9, 30), 1, 123456789, 987654321));
-		mensajesBuscados.addElement(new Mensaje("¿Quieres salir a cenar esta noche?", LocalDateTime.of(2023, 11, 1, 17, 45), 2, 123456789, 987654321));
-		mensajesBuscados.addElement(new Mensaje("¡Felicidades en tu nuevo trabajo!", LocalDateTime.of(2023, 11, 2, 10, 15), 3, 234567890, 123456789));
 		/*
 		mensajesBuscados.addElement(new Mensaje("¿A qué hora paso por ti?", LocalDateTime.of(2023, 11, 3, 14, 0), 0, 345678901, 234567890));
 		mensajesBuscados.addElement(new Mensaje("¡Nos vemos mañana! Nos vemos mañana! Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!", LocalDateTime.of(2023, 11, 3, 20, 30), 4, 456789012, 345678901));
@@ -160,9 +157,9 @@ public class VentanaBusqueda extends JFrame {
 				JPanel panel = new JPanel();
 				panel.setBorder(new LineBorder(Color.BLACK, 1));
 				panel.setLayout(new BorderLayout());
-				JLabel labelEmisor = new JLabel(" " + Integer.toString(msj.getTlfEmisor()));
+				JLabel labelEmisor = new JLabel(" " + msj.getEmisor().getNombre());
 				labelEmisor.setFont(new Font("Segoe UI", Font.BOLD, 15));
-				JLabel labelReceptor = new JLabel(Integer.toString(msj.getTlfReceptor()) + " ");
+				JLabel labelReceptor = new JLabel(msj.getReceptor().getNombre() + " ");
 				labelReceptor.setFont(new Font("Segoe UI", Font.BOLD, 15));
 				JLabel labelTexto = new JLabel(" " + msj.getTexto());
 				labelTexto.setFont(new Font("Segoe UI", Font.PLAIN, 15));

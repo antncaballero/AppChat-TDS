@@ -8,17 +8,15 @@ public class Mensaje {
 	private String texto;
 	private LocalDateTime hora;
 	private int emoticono;
-	private int tlfEmisor;
-	private int tlfReceptor;
+	private Usuario emisor;
+	private Contacto receptor;
 	
-	public Mensaje(String texto, LocalDateTime hora, int emoticono, int tlfEmisor, int tlfReceptor) {
-		super();
-		this.codigo = 0;
+	public Mensaje(String texto, LocalDateTime hora, int emoticono, Usuario emisor, Contacto receptor) {
 		this.texto = texto;
 		this.hora = hora;
 		this.emoticono = emoticono;
-		this.tlfEmisor = tlfEmisor;
-		this.tlfReceptor = tlfReceptor;
+		this.emisor = emisor;
+		this.receptor = receptor;
 	}
 	
 	public int getCodigo() {
@@ -45,16 +43,24 @@ public class Mensaje {
 	public void setEmoticono(int emoticono) {
 		this.emoticono = emoticono;
 	}
-	public int getTlfEmisor() {
-		return tlfEmisor;
+
+	public Usuario getEmisor() {
+		return emisor;
 	}
-	public void setTlfEmisor(int tlfEmisor) {
-		this.tlfEmisor = tlfEmisor;
+
+	public Contacto getReceptor() {
+		return receptor;
 	}
-	public int getTlfReceptor() {
-		return tlfReceptor;
+
+	public void setReceptor(Contacto receptor) {
+		this.receptor = receptor;
 	}
-	public void setTlfReceptor(int tlfReceptor) {
-		this.tlfReceptor = tlfReceptor;
+
+	public void setEmisor(Usuario emisor) {
+		this.emisor = emisor;
+	}
+	
+	public int compareTo(Mensaje mensaje) {
+		return hora.compareTo(mensaje.hora);
 	}
 }

@@ -10,9 +10,18 @@ import beans.Entidad;
 import beans.Propiedad;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
+import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Mensaje;
+import umu.tds.dominio.Usuario;
 
 public class AdaptadorMensajeTDS implements MensajeDAO {
+	
+	private static final String PROPIEDAD_EMISOR = "emisor";
+	private static final String PROPIEDAD_RECEPTOR = "receptor";
+	private static final String PROPIEDAD_HORA = "hora";
+	private static final String PROPIEDAD_TEXTO = "texto";
+	private static final String PROPIEDAD_EMOTICONO = "emoticono";
+	
 	
 	private static ServicioPersistencia servPersistencia;
 	private static AdaptadorMensajeTDS unicaInstancia = null;
@@ -39,14 +48,15 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		//Asignamos tipo
 		eMensaje.get().setNombre("mensaje");
 		//Asignamos atributos
-		eMensaje.get().setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
-				new Propiedad("texto", mensaje.getTexto()),
-				new Propiedad("hora", mensaje.getHora().toString()),
-				new Propiedad("emoticono", Integer.toString(mensaje.getEmoticono())),
-				new Propiedad("tlfEmisor", Integer.toString(mensaje.getTlfEmisor())),
-				new Propiedad("tlfReceptor", Integer.toString(mensaje.getTlfReceptor()))
-				)));
-		
+		eMensaje.get().setPropiedades(
+			    new ArrayList<Propiedad>(Arrays.asList(
+			        new Propiedad(PROPIEDAD_TEXTO, mensaje.getTexto()),
+			        new Propiedad(PROPIEDAD_HORA, mensaje.getHora().toString()),
+			        new Propiedad(PROPIEDAD_EMOTICONO, Integer.toString(mensaje.getEmoticono())),
+			        new Propiedad(PROPIEDAD_EMISOR, Integer.toString(mensaje.getEmisor().getCodigo())),
+			        new Propiedad(PROPIEDAD_RECEPTOR, Integer.toString(mensaje.getReceptor().getCodigo()))
+			     ))
+		);
 		//Registramos la entidad
 		eMensaje = Optional.ofNullable(servPersistencia.registrarEntidad(eMensaje.get()));
 		
@@ -76,18 +86,17 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 
 		//Se recorren sus propiedades y se actualiza su valor
 		for (Propiedad prop : eMensaje.getPropiedades()) {
-			if (prop.getNombre().equals("texto")) {
+			if (prop.getNombre().equals(PROPIEDAD_TEXTO)) {
 				prop.setValor(mensaje.getTexto());
-			} else if (prop.getNombre().equals("hora")) {
+			} else if (prop.getNombre().equals(PROPIEDAD_HORA)) {
 				prop.setValor(mensaje.getHora().toString());
-			} else if (prop.getNombre().equals("emoticono")) {
+			} else if (prop.getNombre().equals(PROPIEDAD_EMOTICONO)) {
 				prop.setValor(Integer.toString(mensaje.getEmoticono()));
-			} else if (prop.getNombre().equals("tlfEmisor")) {
-				prop.setValor(Integer.toString(mensaje.getTlfEmisor()));
-			} else if (prop.getNombre().equals("tlfReceptor")) {
-				prop.setValor(Integer.toString(mensaje.getTlfReceptor()));
+			} else if (prop.getNombre().equals(PROPIEDAD_EMISOR)) {
+				prop.setValor(Integer.toString(mensaje.getEmisor().getCodigo()));
+			} else if (prop.getNombre().equals(PROPIEDAD_RECEPTOR)) {
+				prop.setValor(Integer.toString(mensaje.getReceptor().getCodigo()));
 			}
-			// Actualizamos la entidad
 			servPersistencia.modificarEntidad(eMensaje);
 		}		
 	}
@@ -97,24 +106,27 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		if (PoolDAO.INSTANCE.contains(codigo))
 			return (Mensaje) PoolDAO.INSTANCE.getObject(codigo);
 		
-		
 		//Sino, recuperamos la entidad
 		Entidad eMensaje = servPersistencia.recuperarEntidad(codigo);
 		
 		//Recuperamos sus propiedades
 		String texto = servPersistencia.recuperarPropiedadEntidad(eMensaje, "texto");
-		LocalDateTime fechaHora = LocalDateTime.parse(servPersistencia.recuperarPropiedadEntidad(eMensaje, "hora"));
-		
-		int emoticono = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, "emoticono"));
-		int tlfEmisor = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, "tlfEmisor")); 
-		int tlfReceptor = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, "tlfReceptor")); 
+		LocalDateTime fechaHora = LocalDateTime.parse(servPersistencia.recuperarPropiedadEntidad(eMensaje, "hora"));		
+		int emoticono = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_EMOTICONO));		
+		Usuario emisor = null;
+		ContactoIndividual receptor = null;
 		
 		//Creamos el mensaje
-		Mensaje mensaje = new Mensaje(texto, fechaHora, emoticono, tlfEmisor, tlfReceptor);
+		Mensaje mensaje = new Mensaje(texto, fechaHora, emoticono, emisor, receptor);
 		mensaje.setCodigo(codigo);
 		
-		//Añadimos al pool
+		//Añadimos al pool antes de llamar a otros adaptadores
 		PoolDAO.INSTANCE.addObject(codigo, mensaje);
+		
+		emisor = AdaptadorUsuarioTDS.getInstancia().recuperarUsuario(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_EMISOR)));
+		receptor = AdaptadorContactoIndividualTDS.getInstancia().recuperarContactoIndividual(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_RECEPTOR)));
+		mensaje.setEmisor(emisor);
+		mensaje.setReceptor(receptor);
 		
 		//Devolvemos el mensaje
 		return mensaje;
