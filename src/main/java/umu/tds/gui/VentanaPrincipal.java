@@ -77,54 +77,6 @@ public class VentanaPrincipal extends JFrame {
 	 */
 
 
-	public static class ContactListModel extends AbstractListModel<Contacto> {
-	//Para probar la ventana, se crean usuarios y contactos
-	
-		private static Usuario[] users = new Usuario[] {
-			    new Usuario("Pepe", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba2.jpeg"))),
-				new Usuario("Antonio", "López", 202202202, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
-				new Usuario("Jose", "López Rodríguez", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
-				new Usuario("Pepe", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
-				new Usuario("Jesús", "López", 638912458, "pass", "prueba de estadoprueba de estadoprueba de estadoprueba de estadoprueba de estadoprueba de estado",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg"))),
-				new Usuario("Manuel", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
-				new Usuario("Miguel", "Fernández", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
-				new Usuario("Miguel", "Fernández", 638912458, "pass","ocupado",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
-				new Usuario("Miguel", "Fernández", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
-				new Usuario("Miguel", "Fernández", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
-				new Usuario("Miguel", "Fernández", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
-				new Usuario("Miguel", "Fernández", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
-				new Usuario("Miguel", "Fernández", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png"))),
-		};
-		
-		private static ContactoIndividual c1 = new ContactoIndividual("Miguel clase", users[11]);
-		private static ContactoIndividual c2 = new ContactoIndividual("Miguel2", users[12]);
-		private static ContactoIndividual c3 = new ContactoIndividual("Miguel primo", users[10]);
-			
-		private static Contacto[] contactos = new Contacto[] { 
-				new ContactoIndividual("638912458", users[0]),
-				new ContactoIndividual("202202202", users[1]), new ContactoIndividual("Jose", users[2]),
-				new ContactoIndividual("Pepiyo", users[3]), new ContactoIndividual("Jesús", users[4]),
-				new ContactoIndividual("Manuel", users[5]), new ContactoIndividual("Miguel", users[6]),
-				new ContactoIndividual("Miguelon", users[7]), new ContactoIndividual("Miguelito", users[8]),
-				new ContactoIndividual("Miguelin", users[9]),c1,c2,c3,
-				//new Grupo("Grupo de prueba", Arrays.asList(c1,c2,c3)),
-		};
-
-		@Override
-		public int getSize() {
-			return contactos.length;
-		}
-
-		@Override
-		public Contacto getElementAt(int index) {
-			return contactos[index];
-		}
-		
-		public static List<Contacto> getContactos() {
-			   return Arrays.asList(contactos);
-		}
-
-	}
 	
 	public VentanaPrincipal() {
 		setTitle("AppChat");
@@ -291,7 +243,20 @@ public class VentanaPrincipal extends JFrame {
 		panelCentro.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "Mis chats", TitledBorder.LEADING, TitledBorder.TOP));
 		contentPane.add(panelCentro, BorderLayout.CENTER);
 		
-		lista = new JList<>(new ContactListModel());
+		
+		AbstractListModel<Contacto> model = new AbstractListModel<Contacto>() {
+			@Override
+			public int getSize() {
+				return controlador.getUsuarioActual().getContactos().size();
+			}
+
+			@Override
+			public Contacto getElementAt(int index) {
+				return controlador.getUsuarioActual().getContactos().get(index);
+			}
+		};
+		
+		lista = new JList<>(model);
 		lista.setCellRenderer(new ContactCellRenderer());
 		lista.addListSelectionListener(e -> {
 			if (!e.getValueIsAdjusting()) {

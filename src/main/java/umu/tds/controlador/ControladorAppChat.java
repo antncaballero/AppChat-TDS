@@ -123,9 +123,8 @@ public class ControladorAppChat {
 		usuarioActual.setPremium(exitoPago);
 	}
 
-	public Contacto buscarContactoDeUsuario(String nombre) {
-		return VentanaPrincipal.ContactListModel.getContactos().stream().filter(contacto -> contacto.getNombre().equals(nombre)).findFirst().orElse(null);
-		//TODO return usuarioActual.encontrarContactoPorNombre(nombre);
+	public Contacto buscarContactoDeUsuario(String nombre) {		
+		return usuarioActual.encontrarContactoPorNombre(nombre);
 	}
 	
 	public boolean esContactoRegistrado(Contacto contacto) {

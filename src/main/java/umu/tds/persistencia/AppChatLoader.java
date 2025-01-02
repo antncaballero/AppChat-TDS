@@ -73,11 +73,13 @@ public class AppChatLoader {
 		u1.addContacto(c9);
 		adaptadorUsuario.modificarUsuario(u1);
 		
+		
 		//Contactos individuales de Antonio
 		
 		ContactoIndividual c10 = new ContactoIndividual("Pepe", u1);
 		adaptadorContactoIndividual.registrarContactoIndividual(c10);
 		u2.addContacto(c10);
+		adaptadorUsuario.modificarUsuario(u2);
 		
 		//Grupo de familia de Pepe
 		
@@ -93,6 +95,7 @@ public class AppChatLoader {
 		u1.addContacto(g1);
 		adaptadorUsuario.modificarUsuario(u1);
 		
+		/*
 		//Mensajes de prueba
 		
 		Mensaje m1 = new Mensaje("Hola", 0, u1, c1);
@@ -115,7 +118,7 @@ public class AppChatLoader {
 		adaptadorContactoIndividual.modificarContactoIndividual(c1);
 		adaptadorContactoIndividual.modificarContactoIndividual(c10);
 		
-		
+		*/
 		
 	}
 

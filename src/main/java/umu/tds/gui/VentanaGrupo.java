@@ -20,7 +20,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import umu.tds.dominio.Usuario;
-import umu.tds.gui.VentanaPrincipal.ContactListModel;
 import umu.tds.utils.Utils;
 
 import java.awt.BorderLayout;
@@ -107,10 +106,11 @@ public class VentanaGrupo extends JFrame {
 		
 		
 		//Ejemplo de contactos		
-		VentanaPrincipal.ContactListModel.getContactos().stream()
-			.filter(c -> c instanceof ContactoIndividual)
-			.map(c -> (ContactoIndividual) c)
-			.forEach(c -> modelNotAdded.addElement(c));
+		ControladorAppChat.getInstancia().getUsuarioActual().getContactos().forEach(c -> {
+			if (c instanceof ContactoIndividual) {
+				modelNotAdded.addElement((ContactoIndividual) c);
+			}
+		});
 			
 		
 		JList<ContactoIndividual> listaContactosNotAdded = new JList<>(modelNotAdded);

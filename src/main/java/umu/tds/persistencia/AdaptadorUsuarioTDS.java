@@ -34,6 +34,7 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 	private static final String PROPIEDAD_EMAIL = "email";
 	private static final String PROPIEDAD_IS_PREMIUM = "isPremium";
 	private static final String PROPIEDAD_CONTACTOS = "contactos";
+	private static final String PROPIEDAD_GRUPOS = "grupos";
 	private static final String PROPIEDAD_FECHA_REGISTRO = "fechaRegistro";
 	
 	
@@ -72,6 +73,10 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
         //Asignamos tipo
 		eUsuario.get().setNombre("usuario");
 		//Registramos atributos
+		
+		List<Contacto> grupos = user.getContactos().stream().filter(c -> c instanceof Grupo).collect(Collectors.toList());
+		List<Contacto> contactosInd = user.getContactos().stream().filter(c -> c instanceof ContactoIndividual).collect(Collectors.toList());
+		
 		eUsuario.get().setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
 				new Propiedad(PROPIEDAD_NOMBRE, user.getNombre()),
 				new Propiedad(PROPIEDAD_APELLIDOS, user.getApellidos()),
@@ -82,7 +87,8 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 				new Propiedad(PROPIEDAD_FECHA_NACIMIENTO, user.getFechaNacimiento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))),
 				new Propiedad(PROPIEDAD_EMAIL, user.getEmail()),
 				new Propiedad(PROPIEDAD_IS_PREMIUM, String.valueOf(user.isPremium())),
-				new Propiedad(PROPIEDAD_CONTACTOS, obtenerCodigosContactos(user.getContactos())),
+				new Propiedad(PROPIEDAD_CONTACTOS, obtenerCodigosContactos(contactosInd)),
+				new Propiedad(PROPIEDAD_GRUPOS, obtenerCodigosContactos(grupos)),
 				new Propiedad(PROPIEDAD_FECHA_REGISTRO, user.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))) 
 			    )));
 		
@@ -124,6 +130,9 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		//Se recupera entidad
 		Entidad eUsuario = servPersistencia.recuperarEntidad(user.getCodigo());
 		
+		List<Contacto> grupos = user.getContactos().stream().filter(c -> c instanceof Grupo).collect(Collectors.toList());
+		List<Contacto> contactosInd = user.getContactos().stream().filter(c -> c instanceof ContactoIndividual).collect(Collectors.toList());
+		
 		//Se recorren sus propiedades y se actualiza su valor
 		for (Propiedad prop : eUsuario.getPropiedades()) {
 			if (prop.getNombre().equals(PROPIEDAD_NOMBRE)) {
@@ -145,11 +154,12 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 			} else if (prop.getNombre().equals(PROPIEDAD_IS_PREMIUM)) {
 				prop.setValor(String.valueOf(user.isPremium()));
 			} else if (prop.getNombre().equals(PROPIEDAD_CONTACTOS)) {
-				prop.setValor(obtenerCodigosContactos(user.getContactos()));
+				prop.setValor(obtenerCodigosContactos(contactosInd));
+			} else if (prop.getNombre().equals(PROPIEDAD_GRUPOS)) {
+				prop.setValor(obtenerCodigosContactos(grupos));
 			} else if (prop.getNombre().equals(PROPIEDAD_FECHA_REGISTRO)) {
 				prop.setValor(user.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-			}
-			
+			}			
 			//actualizamos la entidad
 			servPersistencia.modificarEntidad(eUsuario);
 		}
@@ -185,7 +195,10 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		PoolDAO.INSTANCE.addObject(codigo, usuario);
 		
 		//Añadimos las propiedades que son objetos
-		List<Contacto> contactos = obtenerContactosDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_CONTACTOS));
+		List<Contacto> contactos = obtenerContactosIndividualesDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_CONTACTOS));
+		List<Contacto> grupos = obtenerGruposDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_GRUPOS));		
+		contactos.addAll(grupos);
+		
 		usuario.setContactos(contactos);
 		
 		//Devolvemos el usuario
@@ -208,29 +221,20 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 				.trim();
 	}
 	
-	private List<Contacto> obtenerContactosDesdeCodigos(String codigos) {
-		//TODO: Revisar si se puede hacer con un solo stream
-		
+	private List<Contacto> obtenerContactosIndividualesDesdeCodigos(String codigos) {		
 		return Arrays.stream(codigos.split(" "))
 				.filter(codigo -> !codigo.isEmpty())  //filtro cadenas vacias
                 .map(Integer::parseInt)
-                .map(c -> {
-                    Optional<Contacto> contactoIndividual = Optional.ofNullable(AdaptadorContactoIndividualTDS.getInstancia().recuperarContactoIndividual(c));
-                    if (contactoIndividual.isPresent()) return contactoIndividual.get();
-                    return AdaptadorGrupoTDS.getInstancia().recuperarGrupo(c);
-                })
-                .collect(Collectors.toList());
-		/*List<Contacto> listaContactoInduvidual = Arrays.stream(codigos.split(" "))
-			.map(Integer::parseInt)
-			.filter(c -> AdaptadorContactoIndividualTDS.getInstancia().recuperarContactoIndividual(c) != null)
-			.map(AdaptadorContactoIndividualTDS.getInstancia()::recuperarContactoIndividual)
-			.collect(Collectors.toList());
-		List<Contacto> listaGrupo = Arrays.stream(codigos.split(" "))
-			.map(Integer::parseInt)
-			.filter(c -> AdaptadorGrupoTDS.getInstancia().recuperarGrupo(c) != null)
-			.map(AdaptadorGrupoTDS.getInstancia()::recuperarGrupo)
-			.collect(Collectors.toList());
-		return Stream.concat(listaContactoInduvidual.stream(), listaGrupo.stream()).collect(Collectors.toList());*/
+                .map(AdaptadorContactoIndividualTDS.getInstancia()::recuperarContactoIndividual)
+                .collect(Collectors.toList());		
+	}
+	
+	private List<Contacto> obtenerGruposDesdeCodigos(String codigos) {
+		return Arrays.stream(codigos.split(" "))
+				.filter(c -> !c.isEmpty())
+				.map(Integer::parseInt)
+				.map(AdaptadorGrupoTDS.getInstancia()::recuperarGrupo)
+				.collect(Collectors.toList());
 	}
 
 	
