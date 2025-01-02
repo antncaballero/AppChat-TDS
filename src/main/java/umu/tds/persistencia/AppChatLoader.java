@@ -2,6 +2,7 @@ package umu.tds.persistencia;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -18,7 +19,7 @@ import umu.tds.utils.Utils;
  */
 public class AppChatLoader {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		
 		AdaptadorContactoIndividualTDS adaptadorContactoIndividual = AdaptadorContactoIndividualTDS.getInstancia();
 		AdaptadorGrupoTDS adaptadorGrupo = AdaptadorGrupoTDS.getInstancia();
@@ -95,30 +96,34 @@ public class AppChatLoader {
 		u1.addContacto(g1);
 		adaptadorUsuario.modificarUsuario(u1);
 		
-		/*
+		
 		//Mensajes de prueba
 		
-		Mensaje m1 = new Mensaje("Hola", 0, u1, c1);
-		Mensaje m2 = new Mensaje("Holaa", 0, u1, c1);
-		Mensaje m3 = new Mensaje("Holaaa", 0, u2, c10);
-		Mensaje m4 = new Mensaje("Que tal", 0, u2, c10);
-		Mensaje m5 = new Mensaje("Bien", 0, u1, c1);
+		Mensaje m1 = new Mensaje("Hola", LocalDateTime.of(2024, 10, 8, 8, 8, 8), 0, u1, c1);
+		Mensaje m2 = new Mensaje("Holaa", LocalDateTime.of(2024, 10, 9, 9, 9, 9),0, u1, c1);
+		Mensaje m3 = new Mensaje("Holaaa",LocalDateTime.of(2024, 10, 10, 10, 10, 10), 0, u2, c10);
+		Mensaje m4 = new Mensaje("Que tal", LocalDateTime.of(2024, 10, 10, 10, 10, 11),0, u2, c10);
+		Mensaje m5 = new Mensaje("Bien", LocalDateTime.of(2024, 12, 10, 10, 10, 11), 0, u1, c1);
+		Mensaje m6 = new Mensaje("", 1, u1, c1);
+		
 		adaptadorMensaje.registrarMensaje(m1);
 		adaptadorMensaje.registrarMensaje(m2);
 		adaptadorMensaje.registrarMensaje(m3);
 		adaptadorMensaje.registrarMensaje(m4);
 		adaptadorMensaje.registrarMensaje(m5);
+		adaptadorMensaje.registrarMensaje(m6);
 				
 		u1.enviarMensaje(m1, c1);
 		u1.enviarMensaje(m2, c1);
 		u2.enviarMensaje(m3, c10);
 		u2.enviarMensaje(m4, c10);
 		u1.enviarMensaje(m5, c1);
+		u2.enviarMensaje(m6, c10);
 		
 		adaptadorContactoIndividual.modificarContactoIndividual(c1);
 		adaptadorContactoIndividual.modificarContactoIndividual(c10);
 		
-		*/
+		
 		
 	}
 

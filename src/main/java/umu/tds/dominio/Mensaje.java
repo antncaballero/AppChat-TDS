@@ -2,7 +2,7 @@ package umu.tds.dominio;
 
 import java.time.LocalDateTime;
 
-public class Mensaje {
+public class Mensaje implements Comparable<Mensaje> {
 	
 	private int codigo;
 	private String texto;
@@ -64,6 +64,7 @@ public class Mensaje {
 		this.emisor = emisor;
 	}
 	
+	@Override
 	public int compareTo(Mensaje mensaje) {
 		return hora.compareTo(mensaje.hora);
 	}

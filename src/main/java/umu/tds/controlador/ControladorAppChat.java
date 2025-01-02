@@ -33,7 +33,7 @@ public class ControladorAppChat {
 	private static ControladorAppChat unicaInstancia = null;
 
 	//TODO quitar el new Usuario, esto es para hacer pruebas
-	private Usuario usuarioActual;// = new Usuario("Pepito", "López", 656398015, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg")));
+	private Usuario usuarioActual;
 
 	//Adaptadores
 	private UsuarioDAO adaptadorUsuario;
@@ -134,6 +134,13 @@ public class ControladorAppChat {
 	public void enviarMensaje(String texto, Contacto contacto) {
 		Mensaje mensajeNuevo = new Mensaje(texto, 0 , usuarioActual, contacto);
 		usuarioActual.enviarMensaje(mensajeNuevo, contacto);
+		adaptadorMensaje.registrarMensaje(mensajeNuevo);
+		
+		if (contacto instanceof ContactoIndividual) {
+			adaptadorContactoIndividual.modificarContactoIndividual((ContactoIndividual) contacto);
+		} else {
+			adaptadorGrupo.modificarGrupo((Grupo) contacto);
+		}
 	}
 	
 	public void enviarEmoticono(int emoticono, Contacto contacto) {

@@ -143,15 +143,8 @@ public class VentanaPrincipal extends JFrame {
 
 		btnGenerarPdf.addActionListener(e -> {
 			//SI NO HAY NINGÚN CHAT SELECCIONADO O NO ERES PREMIUM NO SE PUEDE
-			if (lista.getSelectedValue() == null) {
-				JOptionPane.showMessageDialog(this, "Selecciona un chat para generar PDF", "Error", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			if (!controlador.getUsuarioActual().isPremium()) {
-				JOptionPane.showMessageDialog(this, "Debes ser usuario premium para generar PDF", "Error", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
+			if (!validarBotonGenerarPdf()) return;
+			
 			JFileChooser directoryChooser = new JFileChooser();
 			directoryChooser.setDialogTitle("Seleccionar directorio para guardar el archivo PDF");
 			directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); // Solo directorios
@@ -282,6 +275,7 @@ public class VentanaPrincipal extends JFrame {
 		scrollPane.setPreferredSize(new Dimension(380,490));
 		scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelCentro.add(scrollPane);
+		panelCentro.setMaximumSize(new Dimension(380, 490));
 		
 		botonBuscar.addActionListener(e -> {
 			VentanaBusqueda ventanaBusqueda = new VentanaBusqueda();
@@ -307,18 +301,26 @@ public class VentanaPrincipal extends JFrame {
 	
 	}
 
+	private boolean validarBotonGenerarPdf() {
+		if (lista.getSelectedValue() == null) {
+			JOptionPane.showMessageDialog(this, "Selecciona un chat para generar PDF", "Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}else if (!controlador.getUsuarioActual().isPremium()) {
+			JOptionPane.showMessageDialog(this, "Debes ser usuario premium para generar PDF", "Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		return true;
+	}
+
 	public void loadChat(Contacto contacto) {
-		// TODO
-		System.out.println("Cargando chat con " + contacto.getNombre());
 		lista.setSelectedValue(contacto, true);
+		chatPanel.mostrarChat(contacto);
 	}
 	
 	public void enviarMensaje(String mensaje, Contacto contacto) {
 		controlador.enviarMensaje(mensaje, contacto);
 		chatPanel.enviarMensaje(mensaje);
 		fieldMensaje.setText("");
-		System.out.println("Mensaje enviado: " + mensaje + " || a " + contacto.getNombre());
-		
 		//Scroll automático al final del chat
 		chatPanel.scrollRectToVisible(new Rectangle(0, chatPanel.getHeight(), 1, 1));
 		
