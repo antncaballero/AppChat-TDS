@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,6 +34,8 @@ import java.awt.Component;
 import javax.swing.SwingConstants;
 import java.awt.FlowLayout;
 import javax.swing.Box;
+
+import umu.tds.controlador.ControladorAppChat;
 import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
 
@@ -98,20 +102,21 @@ public class VentanaGrupo extends JFrame {
 		panelNorte.add(user);
 		
 		
-		DefaultListModel<Contacto> modelAdded = new DefaultListModel<>();
-		DefaultListModel<Contacto> modelNotAdded = new DefaultListModel<>();
+		DefaultListModel<ContactoIndividual> modelAdded = new DefaultListModel<>();
+		DefaultListModel<ContactoIndividual> modelNotAdded = new DefaultListModel<>();
 		
 		
 		//Ejemplo de contactos		
 		VentanaPrincipal.ContactListModel.getContactos().stream()
 			.filter(c -> c instanceof ContactoIndividual)
+			.map(c -> (ContactoIndividual) c)
 			.forEach(c -> modelNotAdded.addElement(c));
 			
 		
-		JList<Contacto> listaContactosNotAdded = new JList<>(modelNotAdded);
+		JList<ContactoIndividual> listaContactosNotAdded = new JList<>(modelNotAdded);
 		listaContactosNotAdded.setCellRenderer(new ContactCellRenderer());
 		
-		JList<Contacto> listaContactosAdded = new JList<>(modelAdded);
+		JList<ContactoIndividual> listaContactosAdded = new JList<>(modelAdded);
 		listaContactosAdded.setCellRenderer(new ContactCellRenderer());
 				
 		JScrollPane scrollContactos = new JScrollPane(listaContactosNotAdded);
@@ -196,6 +201,12 @@ public class VentanaGrupo extends JFrame {
 			VentanaPrincipal main = new VentanaPrincipal();
 			main.setVisible(true);
 			dispose();
+		});
+		
+		btnAceptar.addActionListener(e -> {
+			List<ContactoIndividual> contactos = new LinkedList<>();
+			modelAdded.elements().asIterator().forEachRemaining(contactos::add);
+			ControladorAppChat.getInstancia().crearGrupo(nombregrupo.getText(), contactos);
 		});
 		
 	}

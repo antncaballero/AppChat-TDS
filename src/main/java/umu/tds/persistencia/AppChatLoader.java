@@ -2,10 +2,13 @@ package umu.tds.persistencia;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import umu.tds.controlador.ControladorAppChat;
 import umu.tds.dominio.ContactoIndividual;
+import umu.tds.dominio.Grupo;
+import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.Usuario;
 import umu.tds.utils.Utils;
 
@@ -22,6 +25,7 @@ public class AppChatLoader {
 		AdaptadorMensajeTDS adaptadorMensaje = AdaptadorMensajeTDS.getInstancia();
 		AdaptadorUsuarioTDS adaptadorUsuario = AdaptadorUsuarioTDS.getInstancia();
 		
+		//Usuarios de prueba
 		Usuario u1 = new Usuario("Pepe", "López", 123456789, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba2.jpeg")));
 		Usuario u2 = new Usuario("Antonio", "López", 111111111, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
 		Usuario u3 = new Usuario("Jose", "López Rodríguez", 222222222, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
@@ -32,55 +36,86 @@ public class AppChatLoader {
 		Usuario u8 = new Usuario("Miguel", "Fernández Giménez", 777777777, "pass", "ocupado", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
 		Usuario u9 = new Usuario("Miguel", "López", 888888888, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
 		Usuario u10 = new Usuario("Miguel", "Giménez", 999999999, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
-		Usuario u11 = new Usuario("Pepe", "López", 638912458, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba2.jpeg")));
-		Usuario u12 = new Usuario("Antonio", "López", 202202202, "pass",LocalDate.of(2004, 7, 5),"name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
 		
-		LinkedList<Usuario> listaUsuarios = new LinkedList<Usuario>();
-		//listaUsuarios.add(u1);
-		//listaUsuarios.add(u2);
-		listaUsuarios.add(u3);
-		//listaUsuarios.add(u4);
-		//listaUsuarios.add(u5);
-		//listaUsuarios.add(u6);
-		//listaUsuarios.add(u7);
-		//listaUsuarios.add(u8);
-		//listaUsuarios.add(u9);
-		//listaUsuarios.add(u10);
-		//listaUsuarios.add(u11);
-		//listaUsuarios.add(u12);
+		Usuario[] usuarios = {u1, u2, u3, u4, u5, u6, u7, u8, u9, u10};
+		Arrays.stream(usuarios).forEach(adaptadorUsuario::registrarUsuario);
+			
+		//Contactos individuales de Pepe
 		
-		ContactoIndividual c1 = new ContactoIndividual("u1", u1);
-		ContactoIndividual c2 = new ContactoIndividual("u2", u2);
-		ContactoIndividual c3 = new ContactoIndividual("u3", u3);
-		ContactoIndividual c4 = new ContactoIndividual("u4", u4);
-		ContactoIndividual c5 = new ContactoIndividual("u5", u5);
-		ContactoIndividual c6 = new ContactoIndividual("u6", u6);
-		ContactoIndividual c7 = new ContactoIndividual("u7", u7);
-		ContactoIndividual c8 = new ContactoIndividual("u8", u8);
-		ContactoIndividual c9 = new ContactoIndividual("u9", u9);
-		ContactoIndividual c10 = new ContactoIndividual("u10", u10);
-		ContactoIndividual c11 = new ContactoIndividual("638912458", u11);
-		ContactoIndividual c12 = new ContactoIndividual("202202202", u12);
+		ContactoIndividual c1 = new ContactoIndividual("Antonio", u2);
+		ContactoIndividual c2 = new ContactoIndividual("Jose", u3);
+		ContactoIndividual c3 = new ContactoIndividual("Pepe Hijo", u4);
+		ContactoIndividual c4 = new ContactoIndividual("Jesús", u5);
+		ContactoIndividual c5 = new ContactoIndividual("Manuel", u6);
+		ContactoIndividual c6 = new ContactoIndividual("Miguel", u7);
+		ContactoIndividual c7 = new ContactoIndividual("Miguel Primo", u8);
+		ContactoIndividual c8 = new ContactoIndividual("Miguel sobrino", u9);
+		ContactoIndividual c9 = new ContactoIndividual("Miguelito", u10);
+		
+		adaptadorContactoIndividual.registrarContactoIndividual(c1);
+		adaptadorContactoIndividual.registrarContactoIndividual(c2);
+		adaptadorContactoIndividual.registrarContactoIndividual(c3);
+		adaptadorContactoIndividual.registrarContactoIndividual(c4);
+		adaptadorContactoIndividual.registrarContactoIndividual(c5);
+		adaptadorContactoIndividual.registrarContactoIndividual(c6);
+		adaptadorContactoIndividual.registrarContactoIndividual(c7);
+		adaptadorContactoIndividual.registrarContactoIndividual(c8);
+		adaptadorContactoIndividual.registrarContactoIndividual(c9);
+		
+		u1.addContacto(c1);
+		u1.addContacto(c2);
+		u1.addContacto(c3);
+		u1.addContacto(c4);
+		u1.addContacto(c5);
+		u1.addContacto(c6);
+		u1.addContacto(c7);
+		u1.addContacto(c8);
+		u1.addContacto(c9);
+		adaptadorUsuario.modificarUsuario(u1);
+		
+		//Contactos individuales de Antonio
+		
+		ContactoIndividual c10 = new ContactoIndividual("Pepe", u1);
+		adaptadorContactoIndividual.registrarContactoIndividual(c10);
+		u2.addContacto(c10);
+		
+		//Grupo de familia de Pepe
+		
+		LinkedList<ContactoIndividual> participantes = new LinkedList<>();
+		participantes.add(c6);
+		participantes.add(c7);
+		participantes.add(c8);
+		participantes.add(c9);
+			
+		Grupo g1 = new Grupo("Familia", participantes);
+		adaptadorGrupo.registrarGrupo(g1);
+		
+		u1.addContacto(g1);
+		adaptadorUsuario.modificarUsuario(u1);
+		
+		//Mensajes de prueba
+		
+		Mensaje m1 = new Mensaje("Hola", 0, u1, c1);
+		Mensaje m2 = new Mensaje("Holaa", 0, u1, c1);
+		Mensaje m3 = new Mensaje("Holaaa", 0, u2, c10);
+		Mensaje m4 = new Mensaje("Que tal", 0, u2, c10);
+		Mensaje m5 = new Mensaje("Bien", 0, u1, c1);
+		adaptadorMensaje.registrarMensaje(m1);
+		adaptadorMensaje.registrarMensaje(m2);
+		adaptadorMensaje.registrarMensaje(m3);
+		adaptadorMensaje.registrarMensaje(m4);
+		adaptadorMensaje.registrarMensaje(m5);
+				
+		u1.enviarMensaje(m1, c1);
+		u1.enviarMensaje(m2, c1);
+		u2.enviarMensaje(m3, c10);
+		u2.enviarMensaje(m4, c10);
+		u1.enviarMensaje(m5, c1);
+		
+		adaptadorContactoIndividual.modificarContactoIndividual(c1);
+		adaptadorContactoIndividual.modificarContactoIndividual(c10);
 		
 		
-		LinkedList<ContactoIndividual> listaContactosIndividuales = new LinkedList<ContactoIndividual>();
-		listaContactosIndividuales.add(c1);
-		listaContactosIndividuales.add(c2);
-		listaContactosIndividuales.add(c3);
-		listaContactosIndividuales.add(c4);
-		listaContactosIndividuales.add(c5);
-		listaContactosIndividuales.add(c6);
-		listaContactosIndividuales.add(c7);
-		listaContactosIndividuales.add(c8);
-		listaContactosIndividuales.add(c9);
-		listaContactosIndividuales.add(c10);	
-		listaContactosIndividuales.add(c11);
-		listaContactosIndividuales.add(c12);
-		
-		//listaContactosIndividuales.forEach(contacto -> adaptadorContactoIndividual.registrarContactoIndividual(contacto));
-		
-		listaUsuarios.forEach(usuario -> adaptadorUsuario.registrarUsuario(usuario)); 
-
 		
 	}
 

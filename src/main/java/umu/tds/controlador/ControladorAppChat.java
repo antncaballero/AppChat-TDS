@@ -132,12 +132,14 @@ public class ControladorAppChat {
 		return ((ContactoIndividual) contacto).nombreEsIgualNumTlf();
 	}
 	
-	public void enviarMensaje(String mensaje, Contacto contacto) {
-		usuarioActual.enviarMensaje(mensaje, contacto);
+	public void enviarMensaje(String texto, Contacto contacto) {
+		Mensaje mensajeNuevo = new Mensaje(texto, 0 , usuarioActual, contacto);
+		usuarioActual.enviarMensaje(mensajeNuevo, contacto);
 	}
 	
 	public void enviarEmoticono(int emoticono, Contacto contacto) {
-		usuarioActual.enviarEmoticono(emoticono, contacto);
+		Mensaje emoticonoNuevo = new Mensaje("", emoticono, usuarioActual, contacto);
+		usuarioActual.enviarMensaje(emoticonoNuevo, contacto);
 	}
 
 	/**
@@ -204,6 +206,14 @@ public class ControladorAppChat {
 	
 	public List<Contacto> getContactosUsuarioActual() {
 		return usuarioActual.getContactos();
+	}
+	
+	public void crearGrupo(String nombre, List<ContactoIndividual> contactos) {
+		Grupo grupo = new Grupo(nombre, contactos);
+		adaptadorGrupo.registrarGrupo(grupo);
+		usuarioActual.addContacto(grupo);
+		adaptadorUsuario.modificarUsuario(usuarioActual);
+		//TODO habría que modificar los participantes?
 	}
 
 }
