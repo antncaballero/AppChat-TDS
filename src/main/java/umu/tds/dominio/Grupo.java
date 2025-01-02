@@ -35,4 +35,18 @@ public class Grupo extends Contacto {
 		return participantes.add(contacto);
 	}
 	
+	@Override
+	public void addMensaje(Mensaje mensaje) {
+		super.addMensaje(mensaje);
+		participantes.forEach(p -> p.addMensaje(mensaje));
+	}
+
+	@Override
+	public List<Mensaje> getTodosLosMensajes(Usuario usuario) {
+		return this.getMensajesRecibidos();
+	}
+
+	
+	
+	
 }

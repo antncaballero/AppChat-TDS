@@ -133,7 +133,11 @@ public class ControladorAppChat {
 	}
 	
 	public void enviarMensaje(String mensaje, Contacto contacto) {
-		// TODO 
+		usuarioActual.enviarMensaje(mensaje, contacto);
+	}
+	
+	public void enviarEmoticono(int emoticono, Contacto contacto) {
+		usuarioActual.enviarEmoticono(emoticono, contacto);
 	}
 
 	/**

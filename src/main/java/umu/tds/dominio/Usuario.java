@@ -165,5 +165,13 @@ public class Usuario {
 	public void addContacto(Contacto contacto) {
 		contactos.add(contacto);
 	}
+	
+	public void enviarMensaje(String mensaje, Contacto contacto) {
+		contacto.addMensaje(new Mensaje(mensaje, LocalDateTime.now(), 0, this, contacto));
+	}
+	
+	public void enviarEmoticono(int emoticono, Contacto contacto) {
+		contacto.addMensaje(new Mensaje("", LocalDateTime.now(), emoticono, this, contacto));
+	}
 
 }

@@ -4,6 +4,8 @@ import java.awt.Image;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public abstract class Contacto {
@@ -48,12 +50,19 @@ public abstract class Contacto {
 	
 	public abstract String getEstado();	//TODO revisar si mover a contactor individual
 	
-	public boolean addMensaje(Mensaje mensaje) {
-		return listaMensajes.add(mensaje);
-	}
+	public void addMensaje(Mensaje mensaje) {
+		listaMensajes.add(mensaje);
+	};
 	
+	
+	/**
+	 * Devuelve todos los mensajes entre el usuario que tiene agregado al contacto y el usuario asociado al contacto
+	 * 
+	 * @param usuario que tiene agregado al contacto
+	 * @return lista de mensajes
+	 */
+	public abstract List<Mensaje> getTodosLosMensajes(Usuario usuario);
+
+
 }
-
-
-
 
