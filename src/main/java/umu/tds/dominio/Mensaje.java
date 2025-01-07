@@ -11,8 +11,13 @@ public class Mensaje implements Comparable<Mensaje> {
 	private Usuario emisor;
 	private Contacto receptor;
 	
-	public Mensaje(String texto, int emoticono, Usuario emisor, Contacto receptor) {
-		this(texto, LocalDateTime.now(), emoticono, emisor, receptor);
+	
+	public Mensaje(String texto, Usuario emisor, Contacto receptor) {
+		this(texto, LocalDateTime.now(), 0, emisor, receptor);
+	}
+	
+	public Mensaje(int emoticono, Usuario emisor, Contacto receptor) {
+		this("", LocalDateTime.now(), emoticono, emisor, receptor);
 	}
 	
 	public Mensaje(String texto, LocalDateTime hora, int emoticono, Usuario emisor, Contacto receptor) {

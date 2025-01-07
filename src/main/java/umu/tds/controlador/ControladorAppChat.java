@@ -132,7 +132,7 @@ public class ControladorAppChat {
 	}
 	
 	public void enviarMensaje(String texto, Contacto contacto) {
-		Mensaje mensajeNuevo = new Mensaje(texto, 0 , usuarioActual, contacto);
+		Mensaje mensajeNuevo = new Mensaje(texto, usuarioActual, contacto);
 		usuarioActual.enviarMensaje(mensajeNuevo, contacto);
 		adaptadorMensaje.registrarMensaje(mensajeNuevo);
 		
@@ -144,8 +144,15 @@ public class ControladorAppChat {
 	}
 	
 	public void enviarEmoticono(int emoticono, Contacto contacto) {
-		Mensaje emoticonoNuevo = new Mensaje("", emoticono, usuarioActual, contacto);
+		Mensaje emoticonoNuevo = new Mensaje(emoticono, usuarioActual, contacto);
 		usuarioActual.enviarMensaje(emoticonoNuevo, contacto);
+		adaptadorMensaje.registrarMensaje(emoticonoNuevo);
+		
+		if (contacto instanceof ContactoIndividual) {
+			adaptadorContactoIndividual.modificarContactoIndividual((ContactoIndividual) contacto);
+		} else {
+			adaptadorGrupo.modificarGrupo((Grupo) contacto);
+		}
 	}
 
 	/**

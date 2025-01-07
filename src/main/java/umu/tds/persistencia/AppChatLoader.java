@@ -104,7 +104,7 @@ public class AppChatLoader {
 		Mensaje m3 = new Mensaje("Holaaa",LocalDateTime.of(2024, 10, 10, 10, 10, 10), 0, u2, c10);
 		Mensaje m4 = new Mensaje("Que tal", LocalDateTime.of(2024, 10, 10, 10, 10, 11),0, u2, c10);
 		Mensaje m5 = new Mensaje("Bien", LocalDateTime.of(2024, 12, 10, 10, 10, 11), 0, u1, c1);
-		Mensaje m6 = new Mensaje("", 1, u1, c1);
+		Mensaje m6 = new Mensaje(1, u1, c1);
 		
 		adaptadorMensaje.registrarMensaje(m1);
 		adaptadorMensaje.registrarMensaje(m2);

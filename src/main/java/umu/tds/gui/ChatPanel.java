@@ -2,12 +2,14 @@ package umu.tds.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Rectangle;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
 
@@ -29,7 +31,12 @@ public class ChatPanel extends JPanel implements Scrollable {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); 
 		setSize(500,600);
 		setMinimumSize(new Dimension(500,600));
-		add(Box.createHorizontalStrut(500));
+		add(Box.createRigidArea(new Dimension(500, 100)));		
+		JLabel lblInicio = new JLabel("¡Selecciona un contacto para empezar a chatear!");
+		lblInicio.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblInicio.setAlignmentX(CENTER_ALIGNMENT);
+		add(lblInicio);
+		
 	}
 
 	

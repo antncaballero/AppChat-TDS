@@ -137,7 +137,7 @@ public class VentanaLogin {
         });
 		
 		txtTelefono.addActionListener(e -> {
-			acionAceptar();
+			accionAceptar();
 		});
 		
 		GridBagConstraints gbc_txtTelefono = new GridBagConstraints();
@@ -169,7 +169,7 @@ public class VentanaLogin {
             }
          });
 		txtContrasena.addActionListener(e -> {
-			acionAceptar();
+			accionAceptar();
 		});
 		
 		GridBagConstraints gbc_txtContrasena = new GridBagConstraints();
@@ -220,7 +220,7 @@ public class VentanaLogin {
 		btnAceptar.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		panelSur.add(btnAceptar);
 		btnAceptar.addActionListener(e -> {
-			acionAceptar();
+			accionAceptar();
 		});
 
 		JPanel panelOeste = new JPanel();
@@ -236,7 +236,7 @@ public class VentanaLogin {
 		panelEste.add(espacioEste);
 	}
 	
-	private void acionAceptar() {
+	private void accionAceptar() {
 		//Antes de llamar al controlador, validamos la entrada
 		String tlf = txtTelefono.getText();
 		String pass = String.valueOf(txtContrasena.getPassword());

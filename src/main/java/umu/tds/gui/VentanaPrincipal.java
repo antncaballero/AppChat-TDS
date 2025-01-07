@@ -17,8 +17,10 @@ import java.util.Optional;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -215,7 +217,11 @@ public class VentanaPrincipal extends JFrame {
 		JButton botonSend = new JButton(Utils.getIcon("src/main/resources/send.png", 2f));
 		botonSend.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		botonSend.setBackground(Color.WHITE);
-		JPanel messagePanel = new JPanel(new BorderLayout());
+		JButton botonShowEmojis = new JButton(Utils.getIcon("src/main/resources/emoji.png", 2f));
+		botonShowEmojis.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		botonShowEmojis.setBackground(Color.WHITE);
+		JPanel messagePanel = new JPanel(new BorderLayout());		
+		messagePanel.add(botonShowEmojis, BorderLayout.WEST);
 		messagePanel.add(fieldMensaje, BorderLayout.CENTER);
 		messagePanel.add(botonSend, BorderLayout.EAST);
 		
@@ -223,7 +229,35 @@ public class VentanaPrincipal extends JFrame {
 		JButton btnAnadirContacto = new JButton(Utils.getIcon("src/main/resources/person-add.png", 2.0f));
 		anadirContacto.add(btnAnadirContacto);
 		anadirContacto.setVisible(false);
+			
+		//Panel scroll de emoticonos
+		JPanel panelEmojis = new JPanel();
+		panelEmojis.setLayout(new BoxLayout(panelEmojis, BoxLayout.X_AXIS));
+				
+		for (int i = 0; i <= BubbleText.MAXICONO; i++) {
+			JButton botonEmoji = new JButton(BubbleText.getEmoji(i));
+			botonEmoji.setName(Integer.toString(i));
+			botonEmoji.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			botonEmoji.setBackground(panelEmojis.getBackground());
+			botonEmoji.setBorder(BorderFactory.createEmptyBorder());
+			botonEmoji.addActionListener(e -> enviarEmoticono(Integer.parseInt(botonEmoji.getName()), lista.getSelectedValue()));
+			panelEmojis.add(botonEmoji);
+			panelEmojis.add(Box.createRigidArea(new Dimension(25, 0)));			
+		}		
+		JScrollPane scrollPaneEmojis = new JScrollPane();
+		scrollPaneEmojis.setViewportView(panelEmojis);
+		scrollPaneEmojis.setPreferredSize(new Dimension(500, 70));
 		
+		scrollPaneEmojis.setVisible(false);
+		messagePanel.add(scrollPaneEmojis, BorderLayout.NORTH);
+		
+		botonShowEmojis.addActionListener(e -> {
+			scrollPaneEmojis.setVisible(!scrollPaneEmojis.isVisible());
+			messagePanel.revalidate();
+			messagePanel.repaint();
+		});
+		
+		messagePanel.setMaximumSize(new Dimension(500, 200));
 
         //añadir chatPanel y messagePanel al panelEste y boton añadirContacto, y panelEste al contentPane
 		panelEste.add(scrollPaneChat, BorderLayout.CENTER);
@@ -287,9 +321,7 @@ public class VentanaPrincipal extends JFrame {
 			String mensaje = fieldMensaje.getText();
 			if (!mensaje.isEmpty()) {
 				Contacto contacto = lista.getSelectedValue();
-				if (contacto != null) {
-					enviarMensaje(mensaje, contacto);
-				}
+				enviarMensaje(mensaje, contacto);				
 			}
 		});
 		
@@ -317,12 +349,22 @@ public class VentanaPrincipal extends JFrame {
 		chatPanel.mostrarChat(contacto);
 	}
 	
-	public void enviarMensaje(String mensaje, Contacto contacto) {
-		controlador.enviarMensaje(mensaje, contacto);
-		chatPanel.enviarMensaje(mensaje);
-		fieldMensaje.setText("");
-		//Scroll automático al final del chat
-		chatPanel.scrollRectToVisible(new Rectangle(0, chatPanel.getHeight(), 1, 1));
+	public void enviarMensaje(String mensaje, Contacto contacto) {		
+		if (contacto != null) {
+			controlador.enviarMensaje(mensaje, contacto);
+			chatPanel.enviarMensaje(mensaje);
+			fieldMensaje.setText("");
+			//Scroll automático al final del chat
+			chatPanel.scrollRectToVisible(new Rectangle(0, chatPanel.getHeight(), 1, 1));
+		}
 		
+	}
+	
+	public void enviarEmoticono(int emoticono, Contacto contacto) {
+		if (contacto != null) {
+			controlador.enviarEmoticono(emoticono, contacto);
+			chatPanel.enviarEmoticono(emoticono);
+			chatPanel.scrollRectToVisible(new Rectangle(0, chatPanel.getHeight(), 1, 1));
+		}
 	}
 }
