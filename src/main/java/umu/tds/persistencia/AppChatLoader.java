@@ -28,7 +28,7 @@ public class AppChatLoader {
 		Usuario u2 = new Usuario("Antonio", "López", 111111111, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
 		Usuario u3 = new Usuario("Jose", "López Rodríguez", 222222222, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
 		Usuario u4 = new Usuario("Pepe", "López", 333333333, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
-		Usuario u5 = new Usuario("Jesús", "López", 444444444, "pass", "prueba de estadoprueba de estadoprueba de estadoprueba de estadoprueba de estadoprueba de estado", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg")));
+		Usuario u5 = new Usuario("Juan", "López", 444444444, "pass", "prueba de estadoprueba de estadoprueba de estadoprueba de estadoprueba de estadoprueba de estado", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg")));
 		Usuario u6 = new Usuario("Manuel", "López", 555555555, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
 		Usuario u7 = new Usuario("Miguel", "Fernández", 666666666, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
 		Usuario u8 = new Usuario("Miguel", "Fernández Giménez", 777777777, "pass", "ocupado", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
@@ -43,7 +43,7 @@ public class AppChatLoader {
 		ContactoIndividual c1 = new ContactoIndividual("Antonio", u2);
 		ContactoIndividual c2 = new ContactoIndividual("Jose", u3);
 		ContactoIndividual c3 = new ContactoIndividual("Pepe Hijo", u4);
-		ContactoIndividual c4 = new ContactoIndividual("Jesús", u5);
+		//ContactoIndividual c4 = new ContactoIndividual("Juan", u5);
 		ContactoIndividual c5 = new ContactoIndividual("Manuel", u6);
 		ContactoIndividual c6 = new ContactoIndividual("Miguel", u7);
 		ContactoIndividual c7 = new ContactoIndividual("Miguel Primo", u8);
@@ -53,7 +53,7 @@ public class AppChatLoader {
 		adaptadorContactoIndividual.registrarContactoIndividual(c1);
 		adaptadorContactoIndividual.registrarContactoIndividual(c2);
 		adaptadorContactoIndividual.registrarContactoIndividual(c3);
-		adaptadorContactoIndividual.registrarContactoIndividual(c4);
+		//adaptadorContactoIndividual.registrarContactoIndividual(c4);
 		adaptadorContactoIndividual.registrarContactoIndividual(c5);
 		adaptadorContactoIndividual.registrarContactoIndividual(c6);
 		adaptadorContactoIndividual.registrarContactoIndividual(c7);
@@ -63,7 +63,7 @@ public class AppChatLoader {
 		u1.addContacto(c1);
 		u1.addContacto(c2);
 		u1.addContacto(c3);
-		u1.addContacto(c4);
+		//u1.addContacto(c4);
 		u1.addContacto(c5);
 		u1.addContacto(c6);
 		u1.addContacto(c7);
@@ -78,6 +78,21 @@ public class AppChatLoader {
 		adaptadorContactoIndividual.registrarContactoIndividual(c10);
 		u2.addContacto(c10);
 		adaptadorUsuario.modificarUsuario(u2);
+		
+		//Juan agrega a Pepe y le manda un mensaje
+		ContactoIndividual c11 = new ContactoIndividual("Pepe", u1);
+		adaptadorContactoIndividual.registrarContactoIndividual(c11);
+		u5.addContacto(c11);
+		adaptadorUsuario.modificarUsuario(u5);
+		
+		Mensaje m7 = new Mensaje("Soy Juan", LocalDateTime.of(2024, 10, 8, 8, 8, 8), 0, u5, c11);
+		Mensaje m8 = new Mensaje("Agrégame, tengo nuevo tlf!", LocalDateTime.of(2024, 10, 8, 8, 8, 8), 0, u5, c11);
+		adaptadorMensaje.registrarMensaje(m7);
+		adaptadorMensaje.registrarMensaje(m8);
+		u5.enviarMensaje(m7, c11);
+		u5.enviarMensaje(m8, c11);
+		adaptadorContactoIndividual.modificarContactoIndividual(c11);
+		
 		
 		//Grupo de familia de Pepe
 		
