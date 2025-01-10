@@ -86,9 +86,8 @@ public class VentanaPerfil extends JFrame {
 					evt.acceptDrop(DnDConstants.ACTION_COPY);
 					List<File> droppedFiles = (List<File>) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
 					if (!droppedFiles.isEmpty()) {
-		            	File file = droppedFiles.get(0);		                
-		                ImageIcon icon = new ImageIcon(file.getPath());		                                   	
-		                ImageIcon imageIcon = new ImageIcon(icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+		            	File file = droppedFiles.get(0);		                		             		                                   	
+		                ImageIcon imageIcon = Utils.getScaledIcon(file.getPath(), 80, 80);
 	                    imageIcon.setDescription(file.getPath());
 		                imageLabel.setIcon(imageIcon);
 						editorPane.setVisible(false);
