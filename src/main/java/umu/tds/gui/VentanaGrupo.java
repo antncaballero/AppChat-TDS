@@ -3,20 +3,31 @@ package umu.tds.gui;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -26,12 +37,11 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import javax.swing.DefaultListModel;
-import java.awt.Component;
+import javax.swing.ImageIcon;
+
 import java.awt.FlowLayout;
-import javax.swing.Box;
 import umu.tds.controlador.ControladorAppChat;
 import umu.tds.dominio.ContactoIndividual;
-import umu.tds.dominio.Grupo;
 
 @SuppressWarnings("serial")
 public class VentanaGrupo extends JFrame {
@@ -39,6 +49,8 @@ public class VentanaGrupo extends JFrame {
 	private JPanel contentPane;
 	private JTextField nombregrupo;
 	private DefaultListModel<ContactoIndividual> modelAdded;
+	private JLabel imageLabel;
+	private JTextArea areaEstado;
 
 	/**
 	 * Create the frame.
@@ -69,11 +81,11 @@ public class VentanaGrupo extends JFrame {
 		contentPane.add(panelSur, BorderLayout.SOUTH);
 		
 		JButton btnAceptar = new JButton("Aceptar");
-		JButton btnCancelar = new JButton("Cancelar");
+		JButton btnVolver = new JButton("Volver");
 		btnAceptar.setFont(new Font("Segoe UI", Font.BOLD, 15));
-		btnCancelar.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		btnVolver.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		panelSur.add(btnAceptar);
-		panelSur.add(btnCancelar);
+		panelSur.add(btnVolver);
 		
 		JLabel user = new JLabel("Jose Luis Fenoll ");
 		user.setFont(new Font("Segoe UI", Font.BOLD, 15));
@@ -102,10 +114,10 @@ public class VentanaGrupo extends JFrame {
 		listaContactosAdded.setCellRenderer(new ContactCellRenderer());
 				
 		JScrollPane scrollContactos = new JScrollPane(listaContactosNotAdded);
-		scrollContactos.setPreferredSize(new Dimension(380,450));
+		scrollContactos.setPreferredSize(new Dimension(360,450));
 		
 		JScrollPane scrollContactosAdded = new JScrollPane(listaContactosAdded);
-		scrollContactosAdded.setPreferredSize(new Dimension(380,450));	
+		scrollContactosAdded.setPreferredSize(new Dimension(360,450));	
 		
 		scrollContactos.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		scrollContactosAdded.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -121,39 +133,122 @@ public class VentanaGrupo extends JFrame {
         gbl_panelCentro.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
         panelCentro.setLayout(gbl_panelCentro);
         
-        JLabel nombre = new JLabel("Nombre del grupo");
-        nombre.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        
-        GridBagConstraints gbc_nombre = new GridBagConstraints();
-        gbc_nombre.anchor = GridBagConstraints.WEST;
-        gbc_nombre.insets = new Insets(0, 0, 5, 0);
-        gbc_nombre.gridx = 0;
-        gbc_nombre.gridy = 1;
-        panelCentro.add(nombre, gbc_nombre);
+        //Etiqueta y campo de nombre
+        JLabel labelNombregrupo = new JLabel("Nombre del grupo:");
+		labelNombregrupo.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		GridBagConstraints gbcLabelNombreGrupo = new GridBagConstraints();
+		gbcLabelNombreGrupo.insets = new Insets(5, 5, 5, 0);
+		gbcLabelNombreGrupo.gridx = 0;
+		gbcLabelNombreGrupo.gridy = 0;
+		panelCentro.add(labelNombregrupo, gbcLabelNombreGrupo);
         
         nombregrupo = new JTextField();
-        nombregrupo.setColumns(10);
+        nombregrupo.setColumns(8);
         nombregrupo.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		nombregrupo.addFocusListener(new FocusAdapter() {
+			public void focusGained(FocusEvent evt) {
+				nombregrupo.setBorder(new LineBorder(Color.BLACK, 2));
+			}
+
+			public void focusLost(FocusEvent evt) {
+				nombregrupo.setBorder(new LineBorder(Color.BLACK, 1));
+			}
+		});
+		nombregrupo.addActionListener(e -> {
+			comprobarNombre(nombregrupo.getText());
+        });
         GridBagConstraints gbc_nombregrupo = new GridBagConstraints();
-        gbc_nombregrupo.insets = new Insets(0, 0, 5, 0);
+        gbc_nombregrupo.insets = new Insets(5, 5, 10, 0);
         gbc_nombregrupo.gridx = 0;
-        gbc_nombregrupo.gridy = 2;
-        panelCentro.add(nombregrupo, gbc_nombregrupo);        
+        gbc_nombregrupo.gridy = 1;
+        panelCentro.add(nombregrupo, gbc_nombregrupo);   
         
-        Component verticalStrut = Box.createVerticalStrut(80);
-        GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
-        gbc_verticalStrut.insets = new Insets(0, 0, 5, 0);
-        gbc_verticalStrut.gridx = 0;
-        gbc_verticalStrut.gridy = 3;
-        panelCentro.add(verticalStrut, gbc_verticalStrut);
+        //Etiqueta y campo de descripción
+        JLabel labelEstado = new JLabel("Descripción:");
+        labelEstado.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		GridBagConstraints gbcLabelEstado = new GridBagConstraints();
+		gbcLabelEstado.insets = new Insets(5, 5, 5, 0);
+		gbcLabelEstado.gridx = 0;
+		gbcLabelEstado.gridy = 2;
+		panelCentro.add(labelEstado, gbcLabelEstado);
         
+		areaEstado = new JTextArea(3, 15);
+		GridBagConstraints gbcAreaEstado = new GridBagConstraints();
+		gbcAreaEstado.insets = new Insets(5, 5, 5, 5);
+		gbcAreaEstado.gridx = 0;
+		gbcAreaEstado.gridy = 3;
+		panelCentro.add(new JScrollPane(areaEstado), gbcAreaEstado);
+		
+        
+        //Etiqueta de imagen
+        JLabel labelImagen = new JLabel("Imagen:");
+		labelImagen.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		GridBagConstraints gbcLabelImagen = new GridBagConstraints();
+		gbcLabelImagen.insets = new Insets(5, 5, 5, 0);
+		gbcLabelImagen.gridx = 0;
+		gbcLabelImagen.gridy = 4;
+		panelCentro.add(labelImagen, gbcLabelImagen);
+		
+		//Botones de seleccionar y eliminar
+		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 4));
+		JButton btnSeleccionar = new JButton("Seleccionar");
+		btnSeleccionar.setFont(new Font("Segoe UI", Font.BOLD, 13));
+		panelBotones.add(btnSeleccionar);
+		JButton btnEliminar = new JButton("Eliminar");
+		btnEliminar.setFont(new Font("Segoe UI", Font.BOLD, 13));
+		panelBotones.add(btnEliminar);
+		GridBagConstraints gbc_panelBotones = new GridBagConstraints();
+		gbc_panelBotones.insets = new Insets(0, 0, 5, 0);
+		gbc_panelBotones.fill = GridBagConstraints.HORIZONTAL;
+		gbc_panelBotones.gridx = 0;
+		gbc_panelBotones.gridy = 5;
+		panelCentro.add(panelBotones, gbc_panelBotones);
+        
+		//EditorPane para arrastrar imagen
+		imageLabel = new JLabel();
+		imageLabel.setVisible(false);
+		
+		JEditorPane editorPane = new JEditorPane();
+		editorPane.setContentType("text/html");
+		editorPane.setText("Selecciona una imagen o<br>arrástrala aquí"); 
+		editorPane.setEditable(false); 
+		editorPane.setDropTarget(new DropTarget() {
+
+			public synchronized void drop(DropTargetDropEvent evt) {
+				try {
+					evt.acceptDrop(DnDConstants.ACTION_COPY);
+					List<File> droppedFiles = (List<File>) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+					if (!droppedFiles.isEmpty()) {
+						File file = droppedFiles.get(0);		                
+						ImageIcon imageIcon = Utils.getScaledIcon(file.getPath(), 80, 80);
+						imageIcon.setDescription(file.getPath());
+						imageLabel.setIcon(imageIcon);
+						editorPane.setVisible(false);
+						imageLabel.setVisible(true);					
+					}
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		JPanel panelArrastrar = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+		panelArrastrar.add(imageLabel);
+		panelArrastrar.add(editorPane);		
+		GridBagConstraints gbcEditorPane = new GridBagConstraints();
+		gbcEditorPane.insets = new Insets(5, 5, 10, 0);
+		gbcEditorPane.gridx = 0;
+		gbcEditorPane.gridy = 6;
+		panelCentro.add(panelArrastrar, gbcEditorPane);
+		
+        //Botones de añadir y eliminar contactos
         JButton btnAdd = new JButton(Utils.getScaledIcon("src/main/resources/person-add.png", 40, 40));
         btnAdd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnAdd.setBackground(Color.WHITE);
         GridBagConstraints gbc_btnAdd = new GridBagConstraints();
-        gbc_btnAdd.insets = new Insets(0, 0, 6, 0);
+        gbc_btnAdd.insets = new Insets(0, 0, 5, 0);
         gbc_btnAdd.gridx = 0;
-        gbc_btnAdd.gridy = 4;
+        gbc_btnAdd.gridy = 7;
         panelCentro.add(btnAdd, gbc_btnAdd);
                
         JButton btnRemove = new JButton(Utils.getScaledIcon("src/main/resources/person-remove.png", 40, 40));
@@ -162,7 +257,7 @@ public class VentanaGrupo extends JFrame {
         GridBagConstraints gbc_btnRemove = new GridBagConstraints();
         gbc_btnRemove.insets = new Insets(0, 0, 5, 0);
         gbc_btnRemove.gridx = 0;
-        gbc_btnRemove.gridy = 5;
+        gbc_btnRemove.gridy = 8;
         panelCentro.add(btnRemove, gbc_btnRemove);
 		
 		btnAdd.addActionListener(e -> {
@@ -179,7 +274,32 @@ public class VentanaGrupo extends JFrame {
 			}
 		});
 		
-		btnCancelar.addActionListener(e -> {
+		//Acciones de los botones 
+		
+		btnEliminar.addActionListener(e -> {
+			imageLabel.setIcon(null);
+			editorPane.setText("Selecciona una imagen o<br>arrástrala aquí");
+			editorPane.setVisible(true);
+			imageLabel.setVisible(false);
+		});
+
+		btnSeleccionar.addActionListener(e -> {
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Image files", "jpg", "jpeg", "png"));
+			int result = fileChooser.showOpenDialog(null);
+			if (result == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+				if (selectedFile != null) {
+					ImageIcon imageIcon = new ImageIcon(new ImageIcon(selectedFile.getPath()).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+					imageIcon.setDescription(selectedFile.getPath());
+					imageLabel.setIcon(imageIcon);
+					editorPane.setVisible(false);
+					imageLabel.setVisible(true);
+				}
+			}
+		});
+		
+		btnVolver.addActionListener(e -> {
 			VentanaPrincipal main = new VentanaPrincipal();
 			main.setVisible(true);
 			dispose();
@@ -194,23 +314,38 @@ public class VentanaGrupo extends JFrame {
 	private void accionAceptar() {
 		List<ContactoIndividual> contactos = new LinkedList<>();
 		modelAdded.elements().asIterator().forEachRemaining(contactos::add);
-		ControladorAppChat.getInstancia().crearGrupo(nombregrupo.getText(), contactos);
+		String fotoPGrupoCodificada = imageLabel.getIcon() != null 
+				? Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription())) 
+				: Utils.convertImageToBase64(new File("src/main/resources/group.png"));
+		String estado = areaEstado.getText() != null ? areaEstado.getText() : "";
+		ControladorAppChat.getInstancia().crearGrupo(nombregrupo.getText(), contactos, fotoPGrupoCodificada, estado);
 		JOptionPane.showMessageDialog(this, "Grupo creado correctamente");
 	}
 	
 	private void comprobarNombre(String nombre) {
-		if (!nombre.isEmpty()) {
-			accionAceptar();
-		} else {
-			int respuesta = JOptionPane.showConfirmDialog(
-					this,
-					"¿Quieres asignar un nombre al grupo?",
-					"Nombre del grupo",
-					JOptionPane.YES_NO_OPTION
-					);
-			if (respuesta == JOptionPane.YES_OPTION) nombregrupo.setBorder(new LineBorder(Color.RED, 2));
-			else accionAceptar();
+		Optional<String> error = Optional.ofNullable(validarListaContactos());
+		if (error.isPresent()) {
+			JOptionPane.showMessageDialog(this, error.get());
+		}else {
+			if (!nombre.isEmpty()) {
+				accionAceptar();
+			} else {
+				int respuesta = JOptionPane.showConfirmDialog(
+						this,
+						"¿Quieres asignar un nombre al grupo?",
+						"Nombre del grupo",
+						JOptionPane.YES_NO_OPTION
+						);
+				if (respuesta == JOptionPane.YES_OPTION) SwingUtilities.invokeLater(() -> nombregrupo.requestFocusInWindow());
+				else accionAceptar();
+			}
 		}
+	}
+	
+	private String validarListaContactos() {
+		if (modelAdded.isEmpty())
+			return "El grupo debe tener al menos un contacto";
+		return null;
 	}
 
 }

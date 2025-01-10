@@ -102,7 +102,7 @@ public class AppChatLoader {
 		participantes.add(c8);
 		participantes.add(c9);
 			
-		Grupo g1 = new Grupo("Familia", participantes);
+		Grupo g1 = new Grupo("Familia", participantes, Utils.convertImageToBase64(new File("src/main/resources/group.png")), "Grupo de familia");
 		adaptadorGrupo.registrarGrupo(g1);
 		
 		u1.addContacto(g1);

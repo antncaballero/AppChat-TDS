@@ -32,7 +32,7 @@ public class ContactosTableModel extends AbstractTableModel {
 		case 0:
 			return contacto.getNombre();
 		case 1:
-			return contacto instanceof ContactoIndividual ? String.valueOf(((ContactoIndividual) contacto).getNumTlf()) : "";
+			return contacto instanceof ContactoIndividual ? String.valueOf(((ContactoIndividual) contacto).getNumTlf()) : "--";
 		case 2:
 			return contacto.getEstado();
 		default:

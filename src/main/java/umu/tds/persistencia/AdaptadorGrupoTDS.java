@@ -20,6 +20,8 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 	private static final String PROPIEDAD_NOMBRE = "nombre";
 	private static final String PROPIEDAD_PARTICIPANTES = "participantes";
 	private static final String PROPIEDAD_MENSAJES_RECIBIDOS = "listaMensajes";
+	private static final String PROPIEDAD_FOTO_GRUPO = "fotoGrupo";
+	private static final String PROPIEDAD_ESTADO= "estado";
 
 	private static ServicioPersistencia servPersistencia;
 	private static AdaptadorGrupoTDS unicaInstancia = null;
@@ -44,12 +46,13 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 		
         eGrupo = Optional.of(new Entidad());
         eGrupo.get().setNombre("grupo");
-		eGrupo.get().setPropiedades(
-				new ArrayList<Propiedad>(Arrays.asList(
-						new Propiedad(PROPIEDAD_NOMBRE, grupo.getNombre()),
-						new Propiedad(PROPIEDAD_PARTICIPANTES, obtenerCodigosContactosIndividual(grupo.getParticipantes())),
-						new Propiedad(PROPIEDAD_MENSAJES_RECIBIDOS, obtenerCodigosMensajes(grupo.getMensajesRecibidos())))
-        ));
+        eGrupo.get().setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
+        		new Propiedad(PROPIEDAD_NOMBRE, grupo.getNombre()),
+        		new Propiedad(PROPIEDAD_PARTICIPANTES, obtenerCodigosContactosIndividual(grupo.getParticipantes())),
+        		new Propiedad(PROPIEDAD_FOTO_GRUPO, grupo.getFotoGrupoCodificada()),
+        		new Propiedad(PROPIEDAD_ESTADO, grupo.getEstado()),
+        		new Propiedad(PROPIEDAD_MENSAJES_RECIBIDOS, obtenerCodigosMensajes(grupo.getMensajesRecibidos())))  		
+        		));
 		
 		eGrupo = Optional.ofNullable(servPersistencia.registrarEntidad(eGrupo.get()));
 		grupo.setCodigo(eGrupo.get().getId());
@@ -79,6 +82,10 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 				p.setValor(obtenerCodigosContactosIndividual(grupo.getParticipantes()));
 			}else if (p.getNombre().equals(PROPIEDAD_MENSAJES_RECIBIDOS)) {
 				p.setValor(obtenerCodigosMensajes(grupo.getMensajesRecibidos()));
+			} else if (p.getNombre().equals(PROPIEDAD_FOTO_GRUPO)) {
+				p.setValor(grupo.getFotoGrupoCodificada());
+			} else if (p.getNombre().equals(PROPIEDAD_ESTADO)) {
+				p.setValor(grupo.getEstado());
 			}
 		}
 }
@@ -90,8 +97,10 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 		Entidad eGrupo = servPersistencia.recuperarEntidad(codigo);
 	
 		String nombre = servPersistencia.recuperarPropiedadEntidad(eGrupo, PROPIEDAD_NOMBRE);
+		String fotoGrupo = servPersistencia.recuperarPropiedadEntidad(eGrupo, PROPIEDAD_FOTO_GRUPO);
+		String estado = servPersistencia.recuperarPropiedadEntidad(eGrupo, PROPIEDAD_ESTADO);
 
-		Grupo grupo = new Grupo(nombre, new LinkedList<ContactoIndividual>());
+		Grupo grupo = new Grupo(nombre, new LinkedList<ContactoIndividual>(), fotoGrupo, estado);
 		grupo.setCodigo(codigo);
 		
 		PoolDAO.INSTANCE.addObject(codigo, grupo);

@@ -217,8 +217,8 @@ public class ControladorAppChat {
 		return usuarioActual.getContactos();
 	}
 
-	public void crearGrupo(String nombre, List<ContactoIndividual> contactos) {
-		Grupo grupo = new Grupo(nombre, contactos);
+	public void crearGrupo(String nombre, List<ContactoIndividual> contactos, String fotoGrupoCodificada, String estado) {
+		Grupo grupo = new Grupo(nombre, contactos, fotoGrupoCodificada, estado);
 		adaptadorGrupo.registrarGrupo(grupo);
 		usuarioActual.addContacto(grupo);
 		adaptadorUsuario.modificarUsuario(usuarioActual);

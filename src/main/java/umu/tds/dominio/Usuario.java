@@ -151,8 +151,8 @@ public class Usuario {
 	
 	public Contacto encontrarContactoPorNombre(String nombre) {
 		return contactos.stream()
-				.filter(c -> c instanceof ContactoIndividual)
-				.map(c -> (ContactoIndividual) c)
+				//.filter(c -> c instanceof ContactoIndividual) TODO: revisar si esto es necesario
+				//.map(c -> (ContactoIndividual) c)
 				.filter(c -> c.getNombre().equals(nombre))
 				.findFirst().orElse(null);
 	}
