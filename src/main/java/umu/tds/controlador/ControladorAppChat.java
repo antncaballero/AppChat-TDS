@@ -200,17 +200,17 @@ public class ControladorAppChat {
 		System.out.println("El usuario no existe");
 		return false;
 	}
-
+	
 	/**
-	 * Metodo que añade un contacto con nombre=numTlf
-	 * @param nombre
-	 * @param contact
-	 */
-	public void anadirContactoPorTlf(String tlf) {
-		ContactoIndividual nuevoContacto = new ContactoIndividual(tlf, usuarioActual);//Creamos contacto con el tlf
+     * Metodo que añade un contacto con nombre=numTlf
+     * @param nombre
+     * @param contact
+     */
+	public void anadirContactoPorTlf(String tlf, Usuario usuario) {
+		ContactoIndividual nuevoContacto = new ContactoIndividual(tlf, usuario);//Creamos contacto con el tlf
 		adaptadorContactoIndividual.registrarContactoIndividual(nuevoContacto);//Registramos el contacto
 		usuarioActual.addContacto(nuevoContacto);//Añadimos el contacto a la lista del usuario
-		adaptadorUsuario.modificarUsuario(usuarioActual);//Actualizamos el usuario
+		adaptadorUsuario.modificarUsuario(usuario);//Actualizamos el usuario
 	}
 
 	public List<Contacto> getContactosUsuarioActual() {
@@ -225,6 +225,7 @@ public class ControladorAppChat {
 		//TODO habría que modificar los participantes?
 	}
 
+	
 	public void cargarMensajesDeNoAgregados(Usuario usuario) {
 		//Obtenemos los usuarios que han enviado mensajes a usuario y no están en su lista de contactos
 		adaptadorMensaje.recuperarTodosLosMensajes().stream()
@@ -233,10 +234,11 @@ public class ControladorAppChat {
 			ContactoIndividual contacto = (ContactoIndividual) m.getReceptor();             			
 			return contacto.getUsuarioAsociado().equals(usuario);										//receptor es usuario
 		})
-		.filter(m -> usuario.encontrarContactoPorNombre(m.getEmisor().getNombre()) == null) 			//emisor no está en la lista de contactos de usuario		
+		.filter(m -> usuario.encontrarContactoPorNombre(m.getEmisor().getNombre()) == null) 			//emisor no está en la lista de contactos de usuario con nombre
+		.filter(m -> usuario.encontrarContactoPorNumTlf(m.getEmisor().getNumTlf()) == null) 			//emisor no esta en la lista de contactos de usuario con nombre=numTlf
 		.map(m -> m.getEmisor())                                                                        //obtenemos el emisor						
 		.distinct()				                                                                        //eliminamos duplicados
-		.forEach(u -> usuario.addContacto(new ContactoIndividual(Integer.toString(u.getNumTlf()), u)));	//se crea un contacto ficticio para el usuario
+		.forEach(u -> anadirContactoPorTlf(String.valueOf(u.getNumTlf()), u));	//se crea un contacto ficticio para el usuario
 		
 		adaptadorUsuario.modificarUsuario(usuario);
 	}
