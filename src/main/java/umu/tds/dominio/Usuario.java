@@ -150,11 +150,19 @@ public class Usuario {
     }
 	
 	public Contacto encontrarContactoPorNombre(String nombre) {
-		return contactos.stream().filter(c -> c.getNombre().equals(nombre)).findFirst().orElse(null);
+		return contactos.stream()
+				.filter(c -> c instanceof ContactoIndividual)
+				.map(c -> (ContactoIndividual) c)
+				.filter(c -> c.getNombre().equals(nombre))
+				.findFirst().orElse(null);
 	}
 	
 	public Contacto encontrarContactoPorNumTlf(int numTlf) {
-		return contactos.stream().filter(c -> ((ContactoIndividual) c).getNumTlf() == numTlf).findFirst().orElse(null);
+		return contactos.stream()
+				.filter(c -> c instanceof ContactoIndividual)
+				.map(c -> (ContactoIndividual) c)
+				.filter(c -> c.getUsuarioAsociado().getNumTlf() == numTlf)
+				.findFirst().orElse(null);
 	}
 	
 	public void addContacto(Contacto contacto) {
