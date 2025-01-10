@@ -25,6 +25,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import tds.BubbleText;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+
 import umu.tds.controlador.ControladorAppChat;
 import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
@@ -180,6 +182,7 @@ public class VentanaPrincipal extends JFrame {
 
 		//boton y campo de envio de mensajes
 		fieldMensaje = new TextField();
+		fieldMensaje.addActionListener(e -> accionSend());
 		JButton botonSend = new JButton(Utils.getIcon("src/main/resources/send.png", 2f));
 		botonSend.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		botonSend.setBackground(Color.WHITE);
@@ -284,12 +287,8 @@ public class VentanaPrincipal extends JFrame {
 		});
 
 		botonSend.addActionListener(e -> {
-			String mensaje = fieldMensaje.getText();
-			if (!mensaje.isEmpty()) {
-				Contacto contacto = lista.getSelectedValue();
-				enviarMensaje(mensaje, contacto);				
-			}
-		});
+			accionSend();
+        });
 
 		btnAnadirContacto.addActionListener(e -> {
 			VentanaAnadirContacto ventanaAnadir = new VentanaAnadirContacto(tlfContacto);
@@ -297,6 +296,14 @@ public class VentanaPrincipal extends JFrame {
 			dispose();
 		});
 
+	}
+	
+	private void accionSend() {
+		String mensaje = fieldMensaje.getText();
+		if (!mensaje.isEmpty()) {
+			Contacto contacto = lista.getSelectedValue();
+			enviarMensaje(mensaje, contacto);				
+		}
 	}
 
 	private boolean validarBotonGenerarPdf() {
@@ -313,6 +320,7 @@ public class VentanaPrincipal extends JFrame {
 	public void loadChat(Contacto contacto) {
 		lista.setSelectedValue(contacto, true);
 		chatPanel.mostrarChat(contacto);
+		SwingUtilities.invokeLater(() -> fieldMensaje.requestFocusInWindow());
 	}
 
 	public void enviarMensaje(String mensaje, Contacto contacto) {		
