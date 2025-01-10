@@ -4,12 +4,16 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -27,11 +31,14 @@ import java.awt.FlowLayout;
 import javax.swing.Box;
 import umu.tds.controlador.ControladorAppChat;
 import umu.tds.dominio.ContactoIndividual;
+import umu.tds.dominio.Grupo;
 
 @SuppressWarnings("serial")
 public class VentanaGrupo extends JFrame {
 
 	private JPanel contentPane;
+	private JTextField nombregrupo;
+	private DefaultListModel<ContactoIndividual> modelAdded;
 
 	/**
 	 * Create the frame.
@@ -76,7 +83,7 @@ public class VentanaGrupo extends JFrame {
 		panelNorte.add(user);
 		
 		
-		DefaultListModel<ContactoIndividual> modelAdded = new DefaultListModel<>();
+		modelAdded = new DefaultListModel<>();
 		DefaultListModel<ContactoIndividual> modelNotAdded = new DefaultListModel<>();
 		
 		
@@ -124,7 +131,7 @@ public class VentanaGrupo extends JFrame {
         gbc_nombre.gridy = 1;
         panelCentro.add(nombre, gbc_nombre);
         
-        JTextField nombregrupo = new JTextField();
+        nombregrupo = new JTextField();
         nombregrupo.setColumns(10);
         nombregrupo.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         GridBagConstraints gbc_nombregrupo = new GridBagConstraints();
@@ -179,11 +186,31 @@ public class VentanaGrupo extends JFrame {
 		});
 		
 		btnAceptar.addActionListener(e -> {
-			List<ContactoIndividual> contactos = new LinkedList<>();
-			modelAdded.elements().asIterator().forEachRemaining(contactos::add);
-			ControladorAppChat.getInstancia().crearGrupo(nombregrupo.getText(), contactos);
+			comprobarNombre(nombregrupo.getText());
 		});
 		
+	}
+	
+	private void accionAceptar() {
+		List<ContactoIndividual> contactos = new LinkedList<>();
+		modelAdded.elements().asIterator().forEachRemaining(contactos::add);
+		ControladorAppChat.getInstancia().crearGrupo(nombregrupo.getText(), contactos);
+		JOptionPane.showMessageDialog(this, "Grupo creado correctamente");
+	}
+	
+	private void comprobarNombre(String nombre) {
+		if (!nombre.isEmpty()) {
+			accionAceptar();
+		} else {
+			int respuesta = JOptionPane.showConfirmDialog(
+					this,
+					"¿Quieres asignar un nombre al grupo?",
+					"Nombre del grupo",
+					JOptionPane.YES_NO_OPTION
+					);
+			if (respuesta == JOptionPane.YES_OPTION) nombregrupo.setBorder(new LineBorder(Color.RED, 2));
+			else accionAceptar();
+		}
 	}
 
 }
