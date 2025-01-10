@@ -17,6 +17,7 @@ import javax.swing.Box;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.util.Optional;
 import java.awt.Dimension;
 
 public class VentanaAnadirContacto {
@@ -90,6 +91,9 @@ public class VentanaAnadirContacto {
 		txtNombre = new JTextField();
 		txtNombre.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		txtNombre.addActionListener(e -> {
+			accionAceptar();
+		});
 		GridBagConstraints gbc_txtNombre = new GridBagConstraints();
 		gbc_txtNombre.insets = new Insets(0, 0, 5, 5);
 		gbc_txtNombre.fill = GridBagConstraints.HORIZONTAL;
@@ -110,6 +114,9 @@ public class VentanaAnadirContacto {
 		txtTelefono = new JTextField();
 		txtTelefono.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		txtTelefono.addActionListener(e -> {
+			accionAceptar();
+		});
 		GridBagConstraints gbc_txtTelefono = new GridBagConstraints();
 		gbc_txtTelefono.insets = new Insets(0, 0, 5, 5);
 		gbc_txtTelefono.fill = GridBagConstraints.HORIZONTAL;
@@ -139,19 +146,7 @@ public class VentanaAnadirContacto {
 		});
 		
 		btnAceptar.addActionListener(e -> {
-			boolean succes = ControladorAppChat.getInstancia().anadirContactoNuevo(txtNombre.getText(), txtTelefono.getText());
-			if (!succes) {
-				Toolkit.getDefaultToolkit().beep();
-				JOptionPane.showMessageDialog(frame, "The contact is already saved or its user does not exist",
-						"Error", JOptionPane.ERROR_MESSAGE);
-			} else {
-				JOptionPane.showMessageDialog(frame, "Contact added successfully", "Info",
-						JOptionPane.INFORMATION_MESSAGE);
-				VentanaPrincipal main = new VentanaPrincipal();
-				main.setVisible(true);
-				frame.dispose();
-			}
-			
+			accionAceptar();
 		});
 
 		JPanel panelOeste = new JPanel();
@@ -165,6 +160,58 @@ public class VentanaAnadirContacto {
 
 		Component espacioEste = Box.createHorizontalStrut(50);
 		panelEste.add(espacioEste);
+	}
+	
+	private void accionAceptar() {
+		//Antes de llamar al controlador, validamos la entrada
+		String tlf = txtTelefono.getText();
+		String nombre = txtNombre.getText();
+		Optional<String> error = Optional.ofNullable(validarEntrada(tlf, nombre));
+
+	    if (error.isEmpty()) {
+			boolean succes = ControladorAppChat.getInstancia().anadirContactoNuevo(txtNombre.getText(), txtTelefono.getText());
+			if (!succes) {
+				Toolkit.getDefaultToolkit().beep();
+				JOptionPane.showMessageDialog(frame, "The contact is already saved or its user does not exist",
+						"Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(frame, "Contact added successfully", "Info",
+						JOptionPane.INFORMATION_MESSAGE);
+				VentanaPrincipal main = new VentanaPrincipal();
+				main.setVisible(true);
+				frame.dispose();
+			}
+	    }else { //Las entradas no son válidas, mostramos mensaje de error y configuramos bordes
+	    	Toolkit.getDefaultToolkit().beep();
+	        mostrarError(error.get(), tlf, nombre);
+	    }
+	}
+	
+	private String validarEntrada(String tlf, String nombre) {
+	    if ((tlf.isEmpty() || !tlf.matches("\\d{9}")) && nombre.isEmpty()) {
+	        return "Falta por introducir un teléfono de 9 dígitos y un nombre para el contacto";
+	    }
+	    if ((!tlf.isEmpty() && tlf.matches("\\d{9}")) && nombre.isEmpty()) {
+	        return "Falta por introducir un nombre para el contacto";
+	    }
+	    if ((tlf.isEmpty() || !tlf.matches("\\d{9}"))  && !nombre.isEmpty()) {
+	        return "Falta por introducir un teléfono de 9 dígitos";
+	    }
+	    return null; // No hay errores
+	}
+	
+	private void mostrarError(String mensaje, String tlf, String nombre) {
+	    // Cambiar bordes según tipo de error
+	    txtTelefono.setBorder(tlf.isEmpty() || !tlf.matches("[0-9]{9}") 
+	                          ? new LineBorder(Color.RED, 2) 
+	                          : new LineBorder(Color.BLACK, 1));
+	    
+	    txtNombre.setBorder(nombre.isEmpty() 
+	                            ? new LineBorder(Color.RED, 2) 
+	                            : new LineBorder(Color.BLACK, 1));
+	    
+	    // Mostrar mensaje de error
+	    JOptionPane.showMessageDialog(frame, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 	
 }
