@@ -1,26 +1,15 @@
 package umu.tds.gui;
 
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.TextField;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-
-import javax.imageio.ImageIO;
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -30,25 +19,19 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import tds.BubbleText;
 import javax.swing.JScrollPane;
-import javax.swing.UIManager;
-
 import umu.tds.controlador.ControladorAppChat;
 import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Descuento;
-import umu.tds.dominio.Grupo;
-import umu.tds.dominio.Usuario;
 import umu.tds.utils.Utils;
-import static umu.tds.dominio.PDFService.*;
 
-
+@SuppressWarnings("serial")
 public class VentanaPrincipal extends JFrame {
 
 	private JPanel contentPane;
@@ -58,28 +41,11 @@ public class VentanaPrincipal extends JFrame {
 	private JScrollPane scrollPaneChat;
 	private JList<Contacto> lista;
 	private String tlfContacto;
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaPrincipal window = new VentanaPrincipal();
-					window.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+
 
 	/**
 	 * Create the application.
 	 */
-
-
-	
 	public VentanaPrincipal() {
 		setTitle("AppChat");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,7 +57,7 @@ public class VentanaPrincipal extends JFrame {
 
 		JPanel panelNorte = new JPanel();
 		contentPane.add(panelNorte, BorderLayout.NORTH);
-		
+
 		//BOTONES DE ZONA NORTE
 		JButton botonPremium = new JButton(Utils.getIcon("src/main/resources/premium.png", 3.3f));
 		JButton botonBuscar = new JButton(Utils.getIcon("src/main/resources/glass.png", 2.5f));
@@ -100,7 +66,7 @@ public class VentanaPrincipal extends JFrame {
 		JButton botonAddGrupo = new JButton(Utils.getIcon("src/main/resources/group.png", 2.7f));
 		JButton botonAnadirContacto = new JButton(Utils.getIcon("src/main/resources/user.png", 2.5f));
 		JButton btnGenerarPdf = new JButton("+ PDF");
-		
+
 		//EVENTOS DE LOS BOTONES DE ZONA NORTE
 		botonPremium.addActionListener(e -> {
 			if (controlador.getUsuarioActual().isPremium()) {
@@ -109,18 +75,18 @@ public class VentanaPrincipal extends JFrame {
 			} else {
 				List<Descuento> descuentos = controlador.getDescuentosUsuarioActual();
 				JDialogDescuentos dialogoDescuentos = new JDialogDescuentos(this, descuentos);
-                dialogoDescuentos.setVisible(true);
-                boolean exitoPago = dialogoDescuentos.isConfirmed();
-                controlador.hacerPremium(exitoPago); //si paga con éxito se hace premium, si no no hace nada
+				dialogoDescuentos.setVisible(true);
+				boolean exitoPago = dialogoDescuentos.isConfirmed();
+				controlador.hacerPremium(exitoPago); //si paga con éxito se hace premium, si no no hace nada
 			}
 		});
-		
+
 		botonAddGrupo.addActionListener(e -> {
 			VentanaGrupo ventanaGrupo = new VentanaGrupo();
 			ventanaGrupo.setVisible(true);
 			dispose();
 		});
-		
+
 		botonAnadirContacto.addActionListener(e -> {
 			VentanaAnadirContacto ventanaAnadirContacto = new VentanaAnadirContacto();
 			ventanaAnadirContacto.setVisible(true);
@@ -130,13 +96,13 @@ public class VentanaPrincipal extends JFrame {
 			 		o si se quiere añadir un contacto nuevo que no tiene nada que ver con los chats que hay
 			 */
 		});
-		
+
 		botonContactos.addActionListener(e -> {
 			VentanaContactos ventanaContactos = new VentanaContactos(this);
 			ventanaContactos.setVisible(true);
 			setVisible(false);
 		});
-		
+
 		botonPerfil.addActionListener(e -> {
 			VentanaPerfil ventanaPerfil = new VentanaPerfil();
 			ventanaPerfil.setVisible(true);
@@ -146,7 +112,7 @@ public class VentanaPrincipal extends JFrame {
 		btnGenerarPdf.addActionListener(e -> {
 			//SI NO HAY NINGÚN CHAT SELECCIONADO O NO ERES PREMIUM NO SE PUEDE
 			if (!validarBotonGenerarPdf()) return;
-			
+
 			JFileChooser directoryChooser = new JFileChooser();
 			directoryChooser.setDialogTitle("Seleccionar directorio para guardar el archivo PDF");
 			directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); // Solo directorios
@@ -187,31 +153,31 @@ public class VentanaPrincipal extends JFrame {
 		botonAnadirContacto.setFont(new Font("Segoe UI", Font.BOLD, 25));
 		botonAnadirContacto.setIconTextGap(5);
 		botonAddGrupo.setFont(new Font("Segoe UI", Font.BOLD, 25));
-        botonAddGrupo.setIconTextGap(5);
-        btnGenerarPdf.setBackground(Color.WHITE);
-        btnGenerarPdf.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnGenerarPdf.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        
-		
-        //AÑADIR BOTONES A LA ZONA NORTE
-        panelNorte.add(btnGenerarPdf);
-        panelNorte.add(botonAnadirContacto);
-        panelNorte.add(botonAddGrupo);
+		botonAddGrupo.setIconTextGap(5);
+		btnGenerarPdf.setBackground(Color.WHITE);
+		btnGenerarPdf.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnGenerarPdf.setFont(new Font("Segoe UI", Font.BOLD, 15));
+
+
+		//AÑADIR BOTONES A LA ZONA NORTE
+		panelNorte.add(btnGenerarPdf);
+		panelNorte.add(botonAnadirContacto);
+		panelNorte.add(botonAddGrupo);
 		panelNorte.add(botonBuscar);		
 		panelNorte.add(botonContactos);
 		panelNorte.add(botonPremium);
 		panelNorte.add(botonPerfil);
-		
+
 		//PANEL ESTE(CHAT + ENVIAR MENSAJE)
 		JPanel panelEste = new JPanel();
 		panelEste.setLayout(new BorderLayout());
 		panelEste.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "mensajes con contactos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		
+
 		//PANEL DE CHATS
 		chatPanel = new ChatPanel();
 		scrollPaneChat = new JScrollPane(chatPanel);
-		
-	
+
+
 		//boton y campo de envio de mensajes
 		fieldMensaje = new TextField();
 		JButton botonSend = new JButton(Utils.getIcon("src/main/resources/send.png", 2f));
@@ -224,16 +190,16 @@ public class VentanaPrincipal extends JFrame {
 		messagePanel.add(botonShowEmojis, BorderLayout.WEST);
 		messagePanel.add(fieldMensaje, BorderLayout.CENTER);
 		messagePanel.add(botonSend, BorderLayout.EAST);
-		
+
 		JPanel anadirContacto = new JPanel(new FlowLayout());
 		JButton btnAnadirContacto = new JButton(Utils.getIcon("src/main/resources/person-add.png", 2.0f));
 		anadirContacto.add(btnAnadirContacto);
 		anadirContacto.setVisible(false);
-			
+
 		//Panel scroll de emoticonos
 		JPanel panelEmojis = new JPanel();
 		panelEmojis.setLayout(new BoxLayout(panelEmojis, BoxLayout.X_AXIS));
-				
+
 		for (int i = 0; i <= BubbleText.MAXICONO; i++) {
 			JButton botonEmoji = new JButton(BubbleText.getEmoji(i));
 			botonEmoji.setName(Integer.toString(i));
@@ -247,30 +213,30 @@ public class VentanaPrincipal extends JFrame {
 		JScrollPane scrollPaneEmojis = new JScrollPane();
 		scrollPaneEmojis.setViewportView(panelEmojis);
 		scrollPaneEmojis.setPreferredSize(new Dimension(500, 70));
-		
+
 		scrollPaneEmojis.setVisible(false);
 		messagePanel.add(scrollPaneEmojis, BorderLayout.NORTH);
-		
+
 		botonShowEmojis.addActionListener(e -> {
 			scrollPaneEmojis.setVisible(!scrollPaneEmojis.isVisible());
 			messagePanel.revalidate();
 			messagePanel.repaint();
 		});
-		
+
 		messagePanel.setMaximumSize(new Dimension(500, 200));
 
-        //añadir chatPanel y messagePanel al panelEste y boton añadirContacto, y panelEste al contentPane
+		//añadir chatPanel y messagePanel al panelEste y boton añadirContacto, y panelEste al contentPane
 		panelEste.add(scrollPaneChat, BorderLayout.CENTER);
 		panelEste.add(messagePanel, BorderLayout.SOUTH);
 		panelEste.add(anadirContacto, BorderLayout.NORTH);
 		contentPane.add(panelEste, BorderLayout.EAST);
-		
+
 		//LISTA DE CONTACTOS
 		JPanel panelCentro = new JPanel();
 		panelCentro.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "Mis chats", TitledBorder.LEADING, TitledBorder.TOP));
 		contentPane.add(panelCentro, BorderLayout.CENTER);
-		
-		
+
+
 		AbstractListModel<Contacto> model = new AbstractListModel<Contacto>() {
 			@Override
 			public int getSize() {
@@ -282,7 +248,7 @@ public class VentanaPrincipal extends JFrame {
 				return controlador.getUsuarioActual().getContactos().get(index);
 			}
 		};
-		
+
 		lista = new JList<>(model);
 		lista.setCellRenderer(new ContactCellRenderer());
 		lista.addListSelectionListener(e -> {
@@ -293,15 +259,15 @@ public class VentanaPrincipal extends JFrame {
 					panelEste.setBorder(new TitledBorder(null, "Mensajes con " + contactoSeleccionado, TitledBorder.LEADING, TitledBorder.TOP, null, null));
 					boolean esRegistrado = selectedContact instanceof ContactoIndividual 
 							? ControladorAppChat.getInstancia().esContactoRegistrado(selectedContact)
-							: false;
+									: false;
 					anadirContacto.setVisible(esRegistrado);
 					tlfContacto = esRegistrado ? selectedContact.getNombre() : null;
 					loadChat(selectedContact);
 				}
 			}
 		});
-		
-		
+
+
 
 		JScrollPane scrollPane = new JScrollPane(lista);
 		scrollPane.setSize(380,490); 
@@ -310,13 +276,13 @@ public class VentanaPrincipal extends JFrame {
 		scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelCentro.add(scrollPane);
 		panelCentro.setMaximumSize(new Dimension(380, 490));
-		
+
 		botonBuscar.addActionListener(e -> {
 			VentanaBusqueda ventanaBusqueda = new VentanaBusqueda();
 			ventanaBusqueda.setVisible(true);
 			dispose();
 		});
-		
+
 		botonSend.addActionListener(e -> {
 			String mensaje = fieldMensaje.getText();
 			if (!mensaje.isEmpty()) {
@@ -324,13 +290,13 @@ public class VentanaPrincipal extends JFrame {
 				enviarMensaje(mensaje, contacto);				
 			}
 		});
-		
+
 		btnAnadirContacto.addActionListener(e -> {
 			VentanaAnadirContacto ventanaAnadir = new VentanaAnadirContacto(tlfContacto);
 			ventanaAnadir.setVisible(true);
 			dispose();
 		});
-	
+
 	}
 
 	private boolean validarBotonGenerarPdf() {
@@ -348,7 +314,7 @@ public class VentanaPrincipal extends JFrame {
 		lista.setSelectedValue(contacto, true);
 		chatPanel.mostrarChat(contacto);
 	}
-	
+
 	public void enviarMensaje(String mensaje, Contacto contacto) {		
 		if (contacto != null) {
 			controlador.enviarMensaje(mensaje, contacto);
@@ -357,9 +323,9 @@ public class VentanaPrincipal extends JFrame {
 			//Scroll automático al final del chat
 			chatPanel.scrollRectToVisible(new Rectangle(0, chatPanel.getHeight(), 1, 1));
 		}
-		
+
 	}
-	
+
 	public void enviarEmoticono(int emoticono, Contacto contacto) {
 		if (contacto != null) {
 			controlador.enviarEmoticono(emoticono, contacto);

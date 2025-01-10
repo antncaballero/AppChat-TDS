@@ -2,17 +2,12 @@ package umu.tds.dominio;
 
 import java.awt.Image;
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import umu.tds.utils.Utils;
 
 public class Usuario {

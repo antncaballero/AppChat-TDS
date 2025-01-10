@@ -23,7 +23,7 @@ import umu.tds.controlador.ControladorAppChat;
 import umu.tds.utils.Utils;
 import org.apache.commons.validator.routines.EmailValidator;
 
-
+@SuppressWarnings("serial")
 public class VentanaRegistro extends JFrame {
 	private JTextField emailField;
 	private JTextField nombreField;
@@ -32,25 +32,11 @@ public class VentanaRegistro extends JFrame {
 	private JPasswordField passwordField1;
 	private JPasswordField passwordField2;
 	private JDateChooser dateChooser;
-	
-
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaRegistro frame = new VentanaRegistro();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	public VentanaRegistro() {
 		// Configuración de la ventana
 		setTitle("Registro de Usuario");
-		setBounds(100, 100, 800, 500);
+		setBounds(100, 100, 850, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
@@ -84,13 +70,13 @@ public class VentanaRegistro extends JFrame {
 		nombreField.setBorder(new LineBorder(Color.BLACK, 1));
 		panelCentro.add(nombreField, gbcNombreField);
 		nombreField.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent evt) {
-            	nombreField.setBorder(new LineBorder(Color.BLACK, 2));
-            }
-            public void focusLost(FocusEvent evt) {
-            	nombreField.setBorder(new LineBorder(Color.BLACK, 1));
-            }
-        });
+			public void focusGained(FocusEvent evt) {
+				nombreField.setBorder(new LineBorder(Color.BLACK, 2));
+			}
+			public void focusLost(FocusEvent evt) {
+				nombreField.setBorder(new LineBorder(Color.BLACK, 1));
+			}
+		});
 
 		// Etiqueta y campo de "Apellidos"
 		GridBagConstraints gbcApellidosLabel = new GridBagConstraints();
@@ -150,7 +136,7 @@ public class VentanaRegistro extends JFrame {
 				telefonoField.setBorder(new LineBorder(Color.BLACK, 1));
 			}
 		});
-		
+
 		JLabel lblEmail = new JLabel("Email:");
 		lblEmail.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		GridBagConstraints gbc_lblEmail = new GridBagConstraints();
@@ -158,18 +144,18 @@ public class VentanaRegistro extends JFrame {
 		gbc_lblEmail.gridx = 3;
 		gbc_lblEmail.gridy = 2;
 		panelCentro.add(lblEmail, gbc_lblEmail);
-		
+
 		emailField = new JTextField(20);
 		emailField.setBorder(new LineBorder(Color.BLACK, 1));
 		GridBagConstraints gbc_emailField = new GridBagConstraints();
 		emailField.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent evt) {
-            	emailField.setBorder(new LineBorder(Color.BLACK, 2));
-            }
-            public void focusLost(FocusEvent evt) {
-            	emailField.setBorder(new LineBorder(Color.BLACK, 1));
-            }
-        });
+			public void focusGained(FocusEvent evt) {
+				emailField.setBorder(new LineBorder(Color.BLACK, 2));
+			}
+			public void focusLost(FocusEvent evt) {
+				emailField.setBorder(new LineBorder(Color.BLACK, 1));
+			}
+		});
 		gbc_emailField.anchor = GridBagConstraints.WEST;
 		gbc_emailField.insets = new Insets(0, 0, 5, 0);
 		gbc_emailField.gridx = 4;
@@ -217,42 +203,29 @@ public class VentanaRegistro extends JFrame {
 		passwordField2.setBorder(new LineBorder(Color.BLACK, 1));
 		passwordField2.setHorizontalAlignment(SwingConstants.LEFT);
 		passwordField2.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent evt) {
-                passwordField2.setBorder(new LineBorder(Color.BLACK, 2));
-            }
+			public void focusGained(FocusEvent evt) {
+				passwordField2.setBorder(new LineBorder(Color.BLACK, 2));
+			}
 
-            public void focusLost(FocusEvent evt) {
-                passwordField2.setBorder(new LineBorder(Color.BLACK, 1));
-            }
-        });
-		
-		JPanel btnMostrarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-		
-		JButton btnMostrar = new JButton(Utils.getIcon("src/main/resources/OjoOculto.png", 1.5f));
-		btnMostrar.setFont(new Font("Segoe UI", Font.BOLD, 13));
-		btnMostrar.addActionListener(e -> {
-			if (passwordField1.getEchoChar() == '•') {
-				passwordField1.setEchoChar((char) 0);
-				passwordField2.setEchoChar((char) 0);
-				btnMostrar.setIcon(Utils.getIcon("src/main/resources/OjoAbierto.png", 1.5f));
-			} else {
-				passwordField1.setEchoChar('•');
-				passwordField2.setEchoChar('•');
-				btnMostrar.setIcon(Utils.getIcon("src/main/resources/OjoOculto.png", 1.5f));
+			public void focusLost(FocusEvent evt) {
+				passwordField2.setBorder(new LineBorder(Color.BLACK, 1));
 			}
 		});
-		
+
+		JPanel btnMostrarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));		
+		JButton btnMostrar = new JButton(Utils.getIcon("src/main/resources/OjoOculto.png", 1.5f));
+		btnMostrar.setFont(new Font("Segoe UI", Font.BOLD, 13));			
 		btnMostrarPanel.add(passwordField2);
 		btnMostrarPanel.add(btnMostrar);
-		
+
 		GridBagConstraints gbcbtnMostrarPanel = new GridBagConstraints();
 		gbcbtnMostrarPanel.anchor = GridBagConstraints.WEST;
 		gbcbtnMostrarPanel.insets = new Insets(5, 5, 5, 0);
 		gbcbtnMostrarPanel.gridx = 4;
 		gbcbtnMostrarPanel.gridy = 3;
-		
+
 		panelCentro.add(btnMostrarPanel, gbcbtnMostrarPanel);
-		
+
 		// Etiqueta y campo de "Fecha"
 		GridBagConstraints gbcFechaLabel = new GridBagConstraints();
 		gbcFechaLabel.anchor = GridBagConstraints.WEST;
@@ -284,10 +257,10 @@ public class VentanaRegistro extends JFrame {
 		JLabel label_6 = new JLabel("Imagen:");
 		label_6.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		panelCentro.add(label_6, gbcImagenLabel);
-		
+
 		JLabel imageLabel = new JLabel();
 		imageLabel.setVisible(false);
-		
+
 		JEditorPane editorPane = new JEditorPane();
 		editorPane.setContentType("text/html");
 		editorPane.setText("Selecciona una imagen o<br>arrástrala aquí"); 
@@ -299,11 +272,11 @@ public class VentanaRegistro extends JFrame {
 					evt.acceptDrop(DnDConstants.ACTION_COPY);
 					List<File> droppedFiles = (List<File>) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
 					if (!droppedFiles.isEmpty()) {
-		            	File file = droppedFiles.get(0);		                
-		                ImageIcon icon = new ImageIcon(file.getPath());		                                   	
-		                ImageIcon imageIcon = new ImageIcon(icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
-	                    imageIcon.setDescription(file.getPath());
-		                imageLabel.setIcon(imageIcon);
+						File file = droppedFiles.get(0);		                
+						ImageIcon icon = new ImageIcon(file.getPath());		                                   	
+						ImageIcon imageIcon = new ImageIcon(icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+						imageIcon.setDescription(file.getPath());
+						imageLabel.setIcon(imageIcon);
 						editorPane.setVisible(false);
 						imageLabel.setVisible(true);					
 					}
@@ -312,11 +285,10 @@ public class VentanaRegistro extends JFrame {
 				}
 			}
 		});
-		
+
 		JPanel panelArrastrar = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
 		panelArrastrar.add(imageLabel);
-		panelArrastrar.add(editorPane);
-		
+		panelArrastrar.add(editorPane);		
 		GridBagConstraints gbcEditorPane = new GridBagConstraints();
 		gbcEditorPane.insets = new Insets(5, 5, 0, 0);
 		gbcEditorPane.gridx = 4;
@@ -324,7 +296,8 @@ public class VentanaRegistro extends JFrame {
 		gbcEditorPane.fill = GridBagConstraints.BOTH;
 		gbcEditorPane.anchor = GridBagConstraints.CENTER;
 		panelCentro.add(panelArrastrar, gbcEditorPane);
-		
+
+		//PANEL DE BOTONES
 		JPanel panelBotones = new JPanel();
 		GridBagConstraints gbc_panelBotones = new GridBagConstraints();
 		gbc_panelBotones.insets = new Insets(0, 0, 5, 0);
@@ -336,35 +309,13 @@ public class VentanaRegistro extends JFrame {
 		JButton btnSeleccionar = new JButton("Seleccionar");
 		panelBotones.add(btnSeleccionar);
 		btnSeleccionar.setFont(new Font("Segoe UI", Font.BOLD, 13));
-		
 		JButton btnEliminar = new JButton("Eliminar");
 		btnEliminar.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btnEliminar.addActionListener(e -> {
-				imageLabel.setIcon(null);
-				editorPane.setText("Selecciona una imagen o<br>arrástrala aquí");
-				editorPane.setVisible(true);
-				imageLabel.setVisible(false);
-		});
-		
 		btnEliminar.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		panelBotones.add(btnEliminar);
-		
-		btnSeleccionar.addActionListener(e -> {
-	        JFileChooser fileChooser = new JFileChooser();
-	        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Image files", "jpg", "jpeg", "png"));
-	        int result = fileChooser.showOpenDialog(null);
-	        if (result == JFileChooser.APPROVE_OPTION) {
-	            File selectedFile = fileChooser.getSelectedFile();
-	            if (selectedFile != null) {
-	                ImageIcon imageIcon = new ImageIcon(new ImageIcon(selectedFile.getPath()).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-	                imageIcon.setDescription(selectedFile.getPath());
-	                imageLabel.setIcon(imageIcon);
-	                editorPane.setVisible(false);
-	                imageLabel.setVisible(true);
-	            }
-	        }
-	    });
-		
+
+
+
 		// Etiqueta y área de texto de "Saludo"
 		GridBagConstraints gbcSaludoLabel = new GridBagConstraints();
 		gbcSaludoLabel.anchor = GridBagConstraints.WEST;
@@ -383,7 +334,7 @@ public class VentanaRegistro extends JFrame {
 		JTextArea saludoField = new JTextArea(3, 20);
 		saludoField.setText("Hi there..");
 		panelCentro.add(new JScrollPane(saludoField), gbcSaludoField);
-		
+
 
 		getContentPane().add(panelCentro);
 
@@ -411,30 +362,72 @@ public class VentanaRegistro extends JFrame {
 
 		Component rigidArea_2 = Box.createRigidArea(new Dimension(20, 50));
 		panelSur.add(rigidArea_2);
-		JButton cancelarButton = new JButton("Cancelar");
+		JButton cancelarButton = new JButton("Volver a login");
 		panelSur.add(cancelarButton);
 		cancelarButton.setFont(new Font("Segoe UI", Font.BOLD, 13));	
 		JButton aceptarButton = new JButton("Aceptar");
 		panelSur.add(aceptarButton);
 		aceptarButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
-	
+
+		// Acciones de los botones
+		cancelarButton.addActionListener(e -> {
+			VentanaLogin window = new VentanaLogin();
+			window.setVisible(true);
+			dispose();
+		});
+
+		btnEliminar.addActionListener(e -> {
+			imageLabel.setIcon(null);
+			editorPane.setText("Selecciona una imagen o<br>arrástrala aquí");
+			editorPane.setVisible(true);
+			imageLabel.setVisible(false);
+		});
+
+		btnSeleccionar.addActionListener(e -> {
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Image files", "jpg", "jpeg", "png"));
+			int result = fileChooser.showOpenDialog(null);
+			if (result == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+				if (selectedFile != null) {
+					ImageIcon imageIcon = new ImageIcon(new ImageIcon(selectedFile.getPath()).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+					imageIcon.setDescription(selectedFile.getPath());
+					imageLabel.setIcon(imageIcon);
+					editorPane.setVisible(false);
+					imageLabel.setVisible(true);
+				}
+			}
+		});
+
+		btnMostrar.addActionListener(e -> {
+			if (passwordField1.getEchoChar() == '•') {
+				passwordField1.setEchoChar((char) 0);
+				passwordField2.setEchoChar((char) 0);
+				btnMostrar.setIcon(Utils.getIcon("src/main/resources/OjoAbierto.png", 1.5f));
+			} else {
+				passwordField1.setEchoChar('•');
+				passwordField2.setEchoChar('•');
+				btnMostrar.setIcon(Utils.getIcon("src/main/resources/OjoOculto.png", 1.5f));
+			}
+		});
+
 		aceptarButton.addActionListener(e -> {		
 			Optional<String> error = Optional.ofNullable(validarEntrada(nombreField.getText(), 
 					apellidosField.getText(), telefonoField.getText(), emailField.getText(), 
 					String.valueOf(passwordField1.getPassword()), String.valueOf(passwordField2.getPassword())));
-			
+
 			if (error.isEmpty()) {
 				String fotoPerfilCodificada = imageLabel.getIcon() != null 
 						? Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription())) 
-						: Utils.convertImageToBase64(new File("src/main/resources/user.png"));
-				
+								: Utils.convertImageToBase64(new File("src/main/resources/user.png"));
+
 				LocalDate fechaNacimiento = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-				
+
 				boolean success = ControladorAppChat.getInstancia().registrarUsuario(
 						nombreField.getText(), apellidosField.getText(), Integer.parseInt(telefonoField.getText()),
 						new String(passwordField1.getPassword()), saludoField.getText(), fechaNacimiento,
 						emailField.getText(), fotoPerfilCodificada);
-				
+
 				JOptionPane.showMessageDialog(VentanaRegistro.this, success ? "Te has registrado con éxito" : "El usuario ya existe");
 				if (success) {
 					VentanaLogin window = new VentanaLogin(telefonoField.getText());
@@ -447,9 +440,9 @@ public class VentanaRegistro extends JFrame {
 						emailField.getText(), String.valueOf(passwordField1.getPassword()),
 						String.valueOf(passwordField2.getPassword()));
 			}
-			
+
 		});
-		
+
 	}
 	/**
 	 * Método para validar la entrada del usuario.
@@ -467,7 +460,7 @@ public class VentanaRegistro extends JFrame {
 	private String validarEntrada(String nombre, String apellidos, String tlf, String email, 
 			String pass1, String pass2) {
 		String error = null;
-		
+
 		if (nombre.isEmpty() || apellidos.isEmpty() || tlf.isEmpty() || email.isEmpty() || pass1.isEmpty()
 				|| pass2.isEmpty() || dateChooser.getDate() == null) {
 			error = "Debes rellenar los siguientes campos: \n\t";
@@ -477,8 +470,8 @@ public class VentanaRegistro extends JFrame {
 			if (email.isEmpty()) error += "email, ";
 			if (pass1.isEmpty()) error += "contraseña, ";
 			if (pass2.isEmpty()) error += "confirmación de contraseña, ";
-		    if (dateChooser.getDate() == null) error += "fecha de nacimiento, ";
-		    error = error.substring(0, error.length() - 2);
+			if (dateChooser.getDate() == null) error += "fecha de nacimiento, ";
+			error = error.substring(0, error.length() - 2);
 		} else if (!pass1.equals(pass2)) {
 			error = "Las contraseñas no coinciden";
 		} else if (!tlf.matches("[0-9]{9}")) {
@@ -486,10 +479,10 @@ public class VentanaRegistro extends JFrame {
 		} else if (!EmailValidator.getInstance().isValid(email)) {
 			error = "El email debe ser compatible con el estándar RFC 5322";	
 		}
-		
+
 		return error;
 	}
-	
+
 	/**
 	 * Método para mostrar un mensaje y configurar bordes.
 	 * 
@@ -511,12 +504,12 @@ public class VentanaRegistro extends JFrame {
 		passwordField1.setBorder(pass1.isEmpty() || !pass1.equals(pass2) ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
 		passwordField2.setBorder(pass2.isEmpty() || !pass2.equals(pass1) ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
 		dateChooser.setBorder(dateChooser.getDate() == null ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
-		
+
 		JOptionPane.showMessageDialog(VentanaRegistro.this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
-	
-	
-	
-	
+
+
+
+
 }

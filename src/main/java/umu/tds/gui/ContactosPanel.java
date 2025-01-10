@@ -5,6 +5,7 @@ import java.awt.*;
 import java.util.List;
 import umu.tds.dominio.Contacto;
 
+@SuppressWarnings("serial")
 public class ContactosPanel extends JPanel {
 
 	private JTable table;

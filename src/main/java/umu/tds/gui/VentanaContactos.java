@@ -2,10 +2,8 @@
 package umu.tds.gui;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Frame;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,7 +12,6 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import umu.tds.controlador.ControladorAppChat;
 import umu.tds.dominio.Contacto;
-import umu.tds.gui.VentanaPrincipal;
 
 public class VentanaContactos extends JFrame {
 

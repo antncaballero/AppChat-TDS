@@ -14,12 +14,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import umu.tds.dominio.Descuento;
-import umu.tds.dominio.Usuario;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Dimension;
 import java.awt.Component;
 
+@SuppressWarnings("serial")
 public class JDialogDescuentos extends JDialog {
 	
 	private static final double PRECIO_PREMIUM = 100;

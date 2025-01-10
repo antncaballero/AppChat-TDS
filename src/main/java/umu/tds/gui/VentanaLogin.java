@@ -1,44 +1,28 @@
 package umu.tds.gui;
 
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-
 import java.awt.Font;
 import java.awt.GridBagConstraints;
-
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-
 import umu.tds.controlador.ControladorAppChat;
-import umu.tds.persistencia.AppChatLoader;
 import umu.tds.utils.Utils;
-
 import java.awt.Component;
-
 import javax.swing.JButton;
-import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.JPasswordField;
-
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 
 public class VentanaLogin {
@@ -46,22 +30,6 @@ public class VentanaLogin {
 	private JFrame frame;
 	private JTextField txtTelefono;
 	private JPasswordField txtContrasena;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaLogin window = new VentanaLogin();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.

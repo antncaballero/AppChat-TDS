@@ -3,9 +3,6 @@ package umu.tds.dominio;
 import java.util.Collections;
 import java.util.List;
 import java.awt.Image;
-
-
-import umu.tds.gui.VentanaPrincipal;
 import umu.tds.utils.Utils;
 
 public class Grupo extends Contacto {

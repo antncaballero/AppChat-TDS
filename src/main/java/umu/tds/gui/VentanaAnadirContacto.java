@@ -1,29 +1,19 @@
 package umu.tds.gui;
-
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.BoxLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
-
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
-
 import umu.tds.controlador.ControladorAppChat;
-
 import java.awt.Component;
-
 import javax.swing.JButton;
 import javax.swing.Box;
-import javax.swing.JPasswordField;
-
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -35,22 +25,7 @@ public class VentanaAnadirContacto {
 	private JTextField txtTelefono;
 	private JTextField txtNombre;
 	private JButton btnAceptar;
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaAnadirContacto window = new VentanaAnadirContacto();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
+	
 	/**
 	 * Create the application.
 	 */

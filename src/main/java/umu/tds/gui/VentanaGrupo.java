@@ -1,13 +1,11 @@
 package umu.tds.gui;
 
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,45 +16,22 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-
-import umu.tds.dominio.Usuario;
 import umu.tds.utils.Utils;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
-
 import java.awt.Component;
-import javax.swing.SwingConstants;
 import java.awt.FlowLayout;
 import javax.swing.Box;
-
 import umu.tds.controlador.ControladorAppChat;
-import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
 
+@SuppressWarnings("serial")
 public class VentanaGrupo extends JFrame {
 
 	private JPanel contentPane;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaGrupo frame = new VentanaGrupo();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.

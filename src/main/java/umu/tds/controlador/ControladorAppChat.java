@@ -2,22 +2,13 @@ package umu.tds.controlador;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
-
-
 import java.util.Optional;
-import javax.swing.ImageIcon;
-
-import umu.tds.persistencia.AdaptadorContactoIndividualTDS;
-import umu.tds.persistencia.AdaptadorGrupoTDS;
-import umu.tds.persistencia.AdaptadorMensajeTDS;
-import umu.tds.persistencia.AdaptadorUsuarioTDS;
 import umu.tds.persistencia.ContactoIndividualDAO;
 import umu.tds.persistencia.DAOException;
 import umu.tds.persistencia.FactoriaDAO;
 import umu.tds.persistencia.GrupoDAO;
 import umu.tds.persistencia.MensajeDAO;
 import umu.tds.persistencia.UsuarioDAO;
-import umu.tds.utils.Utils;
 import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Descuento;
@@ -26,7 +17,6 @@ import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.PDFService;
 import umu.tds.dominio.RepositorioUsuarios;
 import umu.tds.dominio.Usuario;
-import umu.tds.gui.VentanaPrincipal;
 
 public class ControladorAppChat {
 

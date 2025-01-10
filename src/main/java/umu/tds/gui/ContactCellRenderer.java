@@ -11,10 +11,10 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
-
 import umu.tds.dominio.Contacto;
 import umu.tds.utils.Utils;
 
+@SuppressWarnings("serial")
 public class ContactCellRenderer extends JPanel implements ListCellRenderer<Contacto> {
 	
 	private JLabel nameLabel;

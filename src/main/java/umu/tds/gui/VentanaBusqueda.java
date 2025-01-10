@@ -1,9 +1,6 @@
 package umu.tds.gui;
 
-import java.awt.EventQueue;
 import java.awt.Font;
-import java.time.LocalDateTime;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -23,30 +20,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
-
-import umu.tds.dominio.Contacto;
 import umu.tds.dominio.Mensaje;
 import umu.tds.utils.Utils;
 
+@SuppressWarnings("serial")
 public class VentanaBusqueda extends JFrame {
 
 	private JPanel contentPane;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaBusqueda frame = new VentanaBusqueda();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.

@@ -16,9 +16,9 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.util.List;
 
+@SuppressWarnings("serial")
 public class VentanaPerfil extends JFrame {
 
-    private static final long serialVersionUID = 1L;
 	private ControladorAppChat controlador = ControladorAppChat.getInstancia();
 
     public VentanaPerfil() {

@@ -5,14 +5,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.LinkedList;
-
-import umu.tds.controlador.ControladorAppChat;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.Usuario;
 import umu.tds.utils.Utils;
-
 
 /**
  * Clase para cargar datos de prueba en la BBDD de la aplicación si se desea   
