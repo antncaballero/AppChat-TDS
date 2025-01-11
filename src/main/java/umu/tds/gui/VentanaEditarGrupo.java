@@ -179,7 +179,8 @@ public class VentanaEditarGrupo extends JFrame {
 
 
 		//Panel listas
-
+		panelListas.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "Cambio en participantes", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		
 		JPanel panelListasEste = new JPanel();
 		JPanel panelListasOeste = new JPanel();
 		JPanel panelListasCentro = new JPanel();
