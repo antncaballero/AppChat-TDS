@@ -1,20 +1,30 @@
 package umu.tds.dominio;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+
+import tds.BubbleText;
 
 public enum PDFService {
 	INSTANCE;
@@ -30,6 +40,7 @@ public enum PDFService {
 		
 		File file = new File(directorio, generatePDFName(c));
 	    Document document = new Document();
+	    
 
 	    try {
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
@@ -47,15 +58,28 @@ public enum PDFService {
 	        
 	        c.getTodosLosMensajes(usuario).forEach(m -> {
 	            PdfPCell cell;
-				if (!m.getEmisor().equals(usuario)) {
-					//TODO: Comprobamos si el mensaje es un emoticono
-					/*if(m.getEmoticono() != 0)
-						cell = new PdfPCell(new Paragraph(m.getHora().format(DateTimeFormatter.ISO_LOCAL_TIME) + " - "+ m.getEmisor().getNombre() + ": " + m.getEmoticono()));
-					else*/ 
+				if (!m.getEmisor().equals(usuario)) {	
 					Paragraph paragraph = new Paragraph();
-	                paragraph.add(new Chunk(m.getHora().format(DateTimeFormatter.ISO_LOCAL_TIME) + " - " + m.getEmisor().getNombre() + ": ", regularFont));
-	                paragraph.add(new Chunk(m.getTexto(), boldFont));
-	                cell = new PdfPCell(paragraph);
+					if(m.getEmoticono() != 0) {
+						Image image = null;
+						try {
+							image = ImageIconToImage(BubbleText.getEmoji(m.getEmoticono()));
+						} catch (BadElementException | IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						paragraph.add(new Chunk(
+								m.getHora().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) 
+								+ " - "+ m.getEmisor().getNombre() + ": ", regularFont));
+						image.scaleToFit(15, 15);
+						paragraph.add(new Chunk(image, 0, 0, true));
+						cell = new PdfPCell(paragraph);
+					} else {
+		                paragraph.add(new Chunk(m.getHora().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + " - " + m.getEmisor().getNombre() + ": ", regularFont));
+		                paragraph.add(new Chunk(m.getTexto(), boldFont));
+		                cell = new PdfPCell(paragraph);
+					}
+						
 				    cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 				    cell.setBorder(PdfPCell.NO_BORDER);
 				    table.addCell(cell);
@@ -63,13 +87,35 @@ public enum PDFService {
 				    emptyCell.setBorder(PdfPCell.NO_BORDER);
 				    table.addCell(emptyCell); // Empty cell for the right side
 				} else {
+					Paragraph paragraph = new Paragraph();
 				    PdfPCell emptyCell = new PdfPCell();
 				    emptyCell.setBorder(PdfPCell.NO_BORDER);
 				    table.addCell(emptyCell); // Empty cell for the left side
-					Paragraph paragraph = new Paragraph();
-					paragraph.add(new Chunk(m.getTexto(), boldFont));
-					paragraph.add(new Chunk(": " + m.getEmisor().getNombre() + " - " + m.getHora().format(DateTimeFormatter.ISO_LOCAL_TIME), regularFont));
-				    cell = new PdfPCell(paragraph);
+				    if(m.getEmoticono() != 0) {
+				    	Image image = null;
+						try {
+							image = ImageIconToImage(BubbleText.getEmoji(m.getEmoticono()));
+						} catch (BadElementException | IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						image.scaleToFit(15, 15);
+				    	paragraph.add(new Chunk(image, 0, 0, true));
+				    	paragraph.add(new Chunk(
+				    			": " + m.getEmisor().getNombre() + " - " 
+				    			+ m.getHora().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) , regularFont));
+				    	
+				    	cell = new PdfPCell(paragraph);
+				    	
+				    }
+				    	
+				    else {			
+				    	paragraph.add(new Chunk(m.getTexto(), boldFont));
+				    	paragraph.add(new Chunk(": " + m.getEmisor().getNombre() + " - " 
+				    							+ m.getHora().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), regularFont));
+				    	cell = new PdfPCell(paragraph);
+				    }
+				    
 				    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 				    cell.setBorder(PdfPCell.NO_BORDER);
 				    table.addCell(cell);
@@ -85,6 +131,20 @@ public enum PDFService {
 
 	    document.close();
 	    return true;
+	}
+	
+	private Image ImageIconToImage(ImageIcon imageIcon) throws IOException, BadElementException {
+		// Convert ImageIcon to iText Image
+        BufferedImage bufferedImage = new BufferedImage(
+            imageIcon.getIconWidth(),
+            imageIcon.getIconHeight(),
+            BufferedImage.TYPE_INT_ARGB
+        );
+        imageIcon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "png", baos);
+        Image image = Image.getInstance(baos.toByteArray());
+        return image;
 	}
 	
 	/**
