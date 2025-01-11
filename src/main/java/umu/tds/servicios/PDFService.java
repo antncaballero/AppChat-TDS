@@ -1,4 +1,4 @@
-package servicios;
+package umu.tds.servicios;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -181,7 +181,6 @@ public enum PDFService {
 			paragraph.add(new Chunk(m.getHora().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) 
 					+ " - " + m.getEmisor().getNombre() + ": ", regularFont));
 			paragraph.add(new Chunk(image, 0, 0, true));
-			int el = Element.ALIGN_LEFT;
 		}else {
 			paragraph.add(new Chunk(image, 0, 0, true));
 			paragraph.add(new Chunk(": " + m.getEmisor().getNombre() 

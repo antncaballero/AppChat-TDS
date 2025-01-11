@@ -1,6 +1,10 @@
 package umu.tds.gui;
 
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.util.List;
+import java.util.Optional;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -18,8 +22,12 @@ import javax.swing.ListCellRenderer;
 import javax.swing.border.TitledBorder;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+
+import umu.tds.controlador.ControladorAppChat;
+import umu.tds.dominio.Contacto;
 import umu.tds.dominio.Mensaje;
 import umu.tds.utils.Utils;
 
@@ -27,6 +35,11 @@ import umu.tds.utils.Utils;
 public class VentanaBusqueda extends JFrame {
 
 	private JPanel contentPane;
+	private JTextField textFieldTexto;
+	private JTextField textFieldTlf;
+	private JTextField textFieldContacto;
+	private DefaultListModel<Mensaje> mensajesBuscados;
+	private JList<Mensaje> listaMensajes;
 
 	/**
 	 * Create the frame.
@@ -55,7 +68,7 @@ public class VentanaBusqueda extends JFrame {
 		
 		JLabel lblTexto = new JLabel("Introduce el texto a buscar: ");
 		lblTexto.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		JTextField textFieldTexto = new JTextField();
+		textFieldTexto = new JTextField();
 		textFieldTexto.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		textFieldTexto.setColumns(40);
 		panelArriba.add(lblTexto);
@@ -66,7 +79,7 @@ public class VentanaBusqueda extends JFrame {
 		JLabel lblTlf = new JLabel("Teléfono: ");
 		lblTlf.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		
-		JTextField textFieldTlf = new JTextField();
+		textFieldTlf = new JTextField();
 		textFieldTlf.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		textFieldTlf.setColumns(18);
 		panelAbajo.add(lblTlf);
@@ -74,7 +87,7 @@ public class VentanaBusqueda extends JFrame {
 		
 		JLabel lblContacto = new JLabel("Contacto: ");
 		lblContacto.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		JTextField textFieldContacto = new JTextField();
+		textFieldContacto = new JTextField();
 		textFieldContacto.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		textFieldContacto.setColumns(18);
 		panelAbajo.add(lblContacto);
@@ -87,7 +100,7 @@ public class VentanaBusqueda extends JFrame {
 		
 		panelBuscar.setPreferredSize(new Dimension(800, 120));
 		
-		DefaultListModel<Mensaje> mensajesBuscados = new DefaultListModel<>();
+		mensajesBuscados = new DefaultListModel<>();
 		/*
 		mensajesBuscados.addElement(new Mensaje("¿A qué hora paso por ti?", LocalDateTime.of(2023, 11, 3, 14, 0), 0, 345678901, 234567890));
 		mensajesBuscados.addElement(new Mensaje("¡Nos vemos mañana! Nos vemos mañana! Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!", LocalDateTime.of(2023, 11, 3, 20, 30), 4, 456789012, 345678901));
@@ -99,7 +112,7 @@ public class VentanaBusqueda extends JFrame {
 		mensajesBuscados.addElement(new Mensaje("Te llamo en un momento.", LocalDateTime.of(2023, 11, 5, 13, 55), 0, 789012345, 678901234));
 		mensajesBuscados.addElement(new Mensaje("Te llamo en un momento.", LocalDateTime.of(2023, 11, 5, 13, 55), 0, 789012345, 678901234));
 		*/
-		JList<Mensaje> listaMensajes = new JList<>(mensajesBuscados);
+		listaMensajes = new JList<>(mensajesBuscados);
 		listaMensajes.setCellRenderer(createListRenderer());
 		listaMensajes.setBackground(getForeground());
 		
@@ -121,6 +134,67 @@ public class VentanaBusqueda extends JFrame {
 			dispose();
 		});
 		
+		btnBuscar.addActionListener(e -> {
+            accionAceptar();
+		});
+
+		
+	}
+	
+	private void accionAceptar() {
+		//Antes de llamar al controlador, validamos la entrada
+		String texto = textFieldTexto.getText();
+		String tlf = textFieldTlf.getText();
+		String nombreContacto = textFieldContacto.getText();
+		
+		Optional<String> error = Optional.ofNullable(validarEntrada(texto, tlf, nombreContacto));
+
+	    if (error.isEmpty()) {
+	    	List<Mensaje> mensajes = ControladorAppChat.getInstancia().buscarMensaje(texto, tlf, nombreContacto);
+	    	mensajesBuscados.clear();
+	    	listaMensajes.repaint();
+	    	mensajes.forEach(m -> mensajesBuscados.addElement(m));	    		    
+	    }else { //Las entradas no son válidas, mostramos mensaje de error y configuramos bordes
+	    	Toolkit.getDefaultToolkit().beep();
+	        mostrarError(error.get());
+	    }
+	}
+
+	/**
+	 * Método para validar la entrada del usuario.
+	 * 
+	 * @param tlf
+	 * @param pass
+	 * @return
+	 */
+	private String validarEntrada(String texto, String tlf, String nombreContacto ) {
+	    if (texto.isEmpty() && tlf.isEmpty() && nombreContacto.isEmpty()) {
+	        return "Debe introducir al menos un filtro de búsqueda";
+	    }	    
+	    if (!nombreContacto.isEmpty()) {
+	    	Optional<Contacto> contacto = Optional.ofNullable(ControladorAppChat.getInstancia().buscarContactoDeUsuario(nombreContacto));
+	    	if (contacto.isEmpty()) {
+	    		return "No existe ningún contacto con ese nombre";
+	    	}	    
+	    }	    
+	    if (!tlf.isEmpty()) {
+	    	Optional<Contacto> contacto = Optional.ofNullable(ControladorAppChat.getInstancia().buscarContactoDeUsuario(Integer.parseInt(tlf)));
+	    	if (contacto.isEmpty()) {
+	    		return "No existe ningún contacto con ese teléfono";
+	    	}	        
+	    }
+	    return null; // No hay errores
+	}
+
+	/**
+	 * Método para mostrar un mensaje de error y configurar bordes.
+	 * 
+	 * @param mensaje
+	 * @param tlf
+	 * @param pass
+	 */
+	private void mostrarError(String mensaje) {
+	    JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 	
 	

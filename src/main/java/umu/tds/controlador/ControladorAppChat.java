@@ -4,13 +4,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import servicios.PDFService;
 import umu.tds.persistencia.ContactoIndividualDAO;
 import umu.tds.persistencia.DAOException;
 import umu.tds.persistencia.FactoriaDAO;
 import umu.tds.persistencia.GrupoDAO;
 import umu.tds.persistencia.MensajeDAO;
 import umu.tds.persistencia.UsuarioDAO;
+import umu.tds.servicios.BuscarMsgService;
+import umu.tds.servicios.PDFService;
 import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Descuento;
@@ -37,6 +38,7 @@ public class ControladorAppChat {
 
 	//Servicios
 	private PDFService pdfService;
+	private BuscarMsgService buscadorMensajes;
 
 	//Constructor privado
 	private ControladorAppChat() {
@@ -70,6 +72,7 @@ public class ControladorAppChat {
 
 	private void inicializarServicios() {
 		pdfService = PDFService.INSTANCE;
+		buscadorMensajes = BuscarMsgService.INSTANCE;
 	}
 
 	//Método para obtener la instancia de la clase
@@ -117,6 +120,10 @@ public class ControladorAppChat {
 
 	public Contacto buscarContactoDeUsuario(String nombre) {		
 		return usuarioActual.encontrarContactoPorNombre(nombre);
+	}
+	
+	public Contacto buscarContactoDeUsuario(int numTlf) {
+		return usuarioActual.encontrarContactoPorNumTlf(numTlf);
 	}
 
 	public boolean esContactoRegistrado(Contacto contacto) {
@@ -199,6 +206,25 @@ public class ControladorAppChat {
 	 */
 	public boolean generatePDF(Contacto contacto, File directorio) {		
 		return pdfService.generatePDF(directorio, contacto, usuarioActual);		
+	}
+	
+	/**
+	 * Metodo para buscar mensajes
+	 * @param texto
+	 * @param tlf
+	 * @param nombreContato
+	 * @return
+     */
+	public List<Mensaje> buscarMensaje(String texto, String tlf, String nombreContacto) {
+		Contacto contactoNombre = null;
+		Contacto contactoTlf = null;
+		if (!nombreContacto.isEmpty()) {
+			 contactoTlf = buscarContactoDeUsuario(nombreContacto);
+		}
+		if (!tlf.isEmpty()) {
+			contactoNombre = buscarContactoDeUsuario(Integer.parseInt(tlf));
+		}
+		return buscadorMensajes.buscarMensajes(usuarioActual, texto, contactoTlf, contactoNombre);
 	}
 
 	/**
