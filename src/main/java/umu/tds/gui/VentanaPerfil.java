@@ -169,7 +169,7 @@ public class VentanaPerfil extends JFrame {
 			else if (((ImageIcon) imageLabel.getIcon()).getDescription() != null) fotoCodificada = Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription()));
 			else fotoCodificada = controlador.getUsuarioActual().getFotoPerfilCodificada();;
 				
-			controlador.cambiarEstado(estado);
+			controlador.cambiarEstadoPerfil(estado);
 			controlador.cambiarFotoPerfil(fotoCodificada);
 		});
 		

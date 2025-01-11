@@ -36,7 +36,7 @@ public class Grupo extends Contacto {
 		return (imagen.isPresent() ? imagen.get() : Utils.convertBase64ToImage(Utils.convertImageToBase64(new File("src/main/resources/group.png"))));	
 	}
 
-	public void setFotoPerfilCodificada(String fotoGrupoCodificada) {
+	public void setFotoGrupoCodificada(String fotoGrupoCodificada) {
 		this.fotoGrupoCodificada = fotoGrupoCodificada;
 	}
 	

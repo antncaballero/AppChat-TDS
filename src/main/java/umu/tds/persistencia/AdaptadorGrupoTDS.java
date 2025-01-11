@@ -87,8 +87,9 @@ public class AdaptadorGrupoTDS implements GrupoDAO{
 			} else if (p.getNombre().equals(PROPIEDAD_ESTADO)) {
 				p.setValor(grupo.getEstado());
 			}
+			servPersistencia.modificarPropiedad(p);
 		}
-}
+	}
 
 	public Grupo recuperarGrupo(int codigo) {
 		
