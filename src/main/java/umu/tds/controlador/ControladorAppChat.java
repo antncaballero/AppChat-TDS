@@ -225,7 +225,6 @@ public class ControladorAppChat {
 		//TODO habría que modificar los participantes?
 	}
 
-	
 	public void cargarMensajesDeNoAgregados(Usuario usuario) {
 		//Obtenemos los usuarios que han enviado mensajes a usuario y no están en su lista de contactos
 		adaptadorMensaje.recuperarTodosLosMensajes().stream()

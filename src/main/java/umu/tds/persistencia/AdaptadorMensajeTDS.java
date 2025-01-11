@@ -10,7 +10,9 @@ import beans.Entidad;
 import beans.Propiedad;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
+import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
+import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.Usuario;
 
@@ -21,6 +23,7 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 	private static final String PROPIEDAD_HORA = "hora";
 	private static final String PROPIEDAD_TEXTO = "texto";
 	private static final String PROPIEDAD_EMOTICONO = "emoticono";
+	private static final String PROPIEDAD_TIPO_RECEPTOR = "tipoReceptor";
 	
 	
 	private static ServicioPersistencia servPersistencia;
@@ -43,6 +46,14 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		Optional<Entidad> eMensaje = Optional.ofNullable(servPersistencia.recuperarEntidad(mensaje.getCodigo()));
 		if (eMensaje.isPresent()) return;
 		
+		//Registramos sus objetos asociados
+		AdaptadorUsuarioTDS.getInstancia().registrarUsuario(mensaje.getEmisor());
+		if (mensaje.getReceptor() instanceof ContactoIndividual) {
+			AdaptadorContactoIndividualTDS.getInstancia().registrarContactoIndividual((ContactoIndividual) mensaje.getReceptor());
+	    } else {
+	    	AdaptadorGrupoTDS.getInstancia().registrarGrupo((Grupo) mensaje.getReceptor());
+	    }
+		
 		//Creamos una entidad mensaje
 		eMensaje = Optional.of(new Entidad());
 		//Asignamos tipo
@@ -53,8 +64,10 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 			        new Propiedad(PROPIEDAD_TEXTO, mensaje.getTexto()),
 			        new Propiedad(PROPIEDAD_HORA, mensaje.getHora().toString()),
 			        new Propiedad(PROPIEDAD_EMOTICONO, Integer.toString(mensaje.getEmoticono())),
+			        new Propiedad(PROPIEDAD_TIPO_RECEPTOR, mensaje.getReceptor() instanceof ContactoIndividual ? "individual" : "grupo"),
 			        new Propiedad(PROPIEDAD_EMISOR, Integer.toString(mensaje.getEmisor().getCodigo())),
 			        new Propiedad(PROPIEDAD_RECEPTOR, Integer.toString(mensaje.getReceptor().getCodigo()))
+			        
 			     ))
 		);
 		//Registramos la entidad
@@ -114,7 +127,8 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		LocalDateTime fechaHora = LocalDateTime.parse(servPersistencia.recuperarPropiedadEntidad(eMensaje, "hora"));		
 		int emoticono = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_EMOTICONO));		
 		Usuario emisor = null;
-		ContactoIndividual receptor = null;
+		Contacto receptor = null;
+		String tipo = servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_TIPO_RECEPTOR);
 		
 		//Creamos el mensaje
 		Mensaje mensaje = new Mensaje(texto, fechaHora, emoticono, emisor, receptor);
@@ -124,7 +138,12 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		PoolDAO.INSTANCE.addObject(codigo, mensaje);
 		
 		emisor = AdaptadorUsuarioTDS.getInstancia().recuperarUsuario(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_EMISOR)));
-		receptor = AdaptadorContactoIndividualTDS.getInstancia().recuperarContactoIndividual(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_RECEPTOR)));
+		
+		if (tipo.equals("grupo"))
+			receptor = AdaptadorGrupoTDS.getInstancia().recuperarGrupo(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_RECEPTOR)));
+		else
+			receptor = AdaptadorContactoIndividualTDS.getInstancia().recuperarContactoIndividual(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_RECEPTOR)));
+		
 		mensaje.setEmisor(emisor);
 		mensaje.setReceptor(receptor);
 		
