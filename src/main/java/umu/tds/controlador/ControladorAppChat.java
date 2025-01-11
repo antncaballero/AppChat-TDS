@@ -3,6 +3,8 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import servicios.PDFService;
 import umu.tds.persistencia.ContactoIndividualDAO;
 import umu.tds.persistencia.DAOException;
 import umu.tds.persistencia.FactoriaDAO;
@@ -14,7 +16,6 @@ import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Descuento;
 import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Mensaje;
-import umu.tds.dominio.PDFService;
 import umu.tds.dominio.RepositorioUsuarios;
 import umu.tds.dominio.Usuario;
 

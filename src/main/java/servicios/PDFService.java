@@ -1,4 +1,4 @@
-package umu.tds.dominio;
+package servicios;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -25,6 +25,11 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import tds.BubbleText;
+import umu.tds.dominio.Contacto;
+import umu.tds.dominio.ContactoIndividual;
+import umu.tds.dominio.Grupo;
+import umu.tds.dominio.Mensaje;
+import umu.tds.dominio.Usuario;
 
 public enum PDFService {
 	INSTANCE;
