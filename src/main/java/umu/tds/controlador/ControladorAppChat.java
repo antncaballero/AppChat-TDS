@@ -219,7 +219,7 @@ public class ControladorAppChat {
 	 * @return true si se ha generado correctamente, false en caso contrario
 	 */
 	public boolean generatePDF(Contacto contacto, File directorio) {		
-		return pdfService.generatePDF(directorio, contacto);		
+		return pdfService.generatePDF(directorio, contacto, usuarioActual);		
 	}
 
 	/**
