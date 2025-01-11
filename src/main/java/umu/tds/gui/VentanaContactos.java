@@ -12,6 +12,8 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import umu.tds.controlador.ControladorAppChat;
 import umu.tds.dominio.Contacto;
+import umu.tds.dominio.ContactoIndividual;
+import umu.tds.dominio.Grupo;
 
 public class VentanaContactos extends JFrame {
 
@@ -63,6 +65,25 @@ public class VentanaContactos extends JFrame {
 			new VentanaPrincipal().setVisible(true);
 			dispose();
 		});
+		JButton btnEditarGrupo = new JButton("Editar grupo o contacto");
+		btnEditarGrupo.addActionListener(e -> {
+			if (contactosPanel.getTable().getSelectedRow() == -1)
+				return;
+
+			JTable t = contactosPanel.getTable();
+			Contacto contactoSeleccionado = controlador
+					.buscarContactoDeUsuario(t.getValueAt(t.getSelectedRow(), 0).toString());
+			if (contactoSeleccionado instanceof Grupo) {
+				VentanaEditarGrupo ventanaEditarGrupo = new VentanaEditarGrupo((Grupo) contactoSeleccionado);
+				ventanaEditarGrupo.setVisible(true);
+				dispose();
+			}else {
+                VentanaEditarContacto ventanaEditarContacto = new VentanaEditarContacto((ContactoIndividual) contactoSeleccionado);
+                ventanaEditarContacto.setVisible(true);
+                dispose();
+            }
+		});
+		
 		
 		JButton btnChat = new JButton("Ir al chat");
 		btnChat.addActionListener(e -> {
@@ -79,6 +100,7 @@ public class VentanaContactos extends JFrame {
 		
 		panelSur.add(btnCerrar);
 		panelSur.add(btnChat);
+		panelSur.add(btnEditarGrupo);
 		
 		btnCerrar.setFont(new Font("Segoe UI", 1, 14));
 		btnChat.setFont(new Font("Segoe UI", 1, 14));
