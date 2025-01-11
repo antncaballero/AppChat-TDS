@@ -53,8 +53,16 @@ public class Grupo extends Contacto {
         return Collections.unmodifiableList(participantes);
     }
 	
+	public void setParticipantes(List<ContactoIndividual> participantes) {
+        this.participantes = participantes;
+    }
+	
 	public boolean addParticipante(ContactoIndividual contacto) {
 		return participantes.add(contacto);
+	}
+	
+	public boolean removeParticipante(ContactoIndividual contacto) {
+		return participantes.remove(contacto);
 	}
 	
 	@Override
@@ -67,7 +75,14 @@ public class Grupo extends Contacto {
 	public List<Mensaje> getTodosLosMensajes(Usuario usuario) {
 		return this.getMensajesRecibidos();
 	}
-
+	
+	public void editarGrupo(String nombre, List<ContactoIndividual> participantes, String fotoGrupoCodificada,
+			String estado) {
+		setNombre(nombre);
+		this.participantes = participantes;
+		this.fotoGrupoCodificada = fotoGrupoCodificada;
+		this.estado = estado;
+	}
 	
 	
 	

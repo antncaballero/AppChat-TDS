@@ -158,37 +158,15 @@ public class ControladorAppChat {
 	}
 	
 	/**
-	 * Metodo que cambia el estado de un grupo
-	 * 
+	 * Método para modificar un grupo
+	 * @param nombre
+	 * @param contactos
+	 * @param fotoGrupoCodificada
 	 * @param estado
 	 * @param grupo
 	 */
-	public void cambiarEstadoGrupo(String estado, Grupo grupo) {
-		grupo.setEstado(estado);
-		adaptadorGrupo.modificarGrupo(grupo);
-		adaptadorUsuario.modificarUsuario(usuarioActual);
-	}
-	
-	/**
-	 * Metodo que cambia la foto de perfil de un grupo
-	 * 
-	 * @param foto
-	 * @param grupo
-	 */
-	public void cambiarFotoGrupo(String fotoCodificada, Grupo grupo) {
-		grupo.setFotoGrupoCodificada(fotoCodificada);
-		adaptadorGrupo.modificarGrupo(grupo);
-		adaptadorUsuario.modificarUsuario(usuarioActual);
-	}
-
-	/**
-	 * Metodo que cambia el nombre de un grupo
-	 * 
-	 * @param foto
-	 * @param contacto
-	 */
-	public void cambiarNombreGrupo(String nombre, Grupo grupo) {
-		grupo.setNombre(nombre);
+	public void editarGrupo(String nombre, List<ContactoIndividual> contactos, String fotoGrupoCodificada, String estado, Grupo grupo) {
+		grupo.editarGrupo(nombre, contactos, fotoGrupoCodificada, estado);
 		adaptadorGrupo.modificarGrupo(grupo);
 		adaptadorUsuario.modificarUsuario(usuarioActual);
 	}
