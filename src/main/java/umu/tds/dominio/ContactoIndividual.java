@@ -39,7 +39,7 @@ public class ContactoIndividual extends Contacto {
         return usuarioAsociado.getNumTlf();
     }
 	
-	public boolean nombreEsIgualNumTlf() {
+	public boolean isContactoFicticio() {
 		return this.getNombre().equals(String.valueOf(this.getNumTlf()));
 	}
 

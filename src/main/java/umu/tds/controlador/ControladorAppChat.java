@@ -128,7 +128,7 @@ public class ControladorAppChat {
 	}
 
 	public boolean esContactoRegistrado(Contacto contacto) {
-		return ((ContactoIndividual) contacto).nombreEsIgualNumTlf();
+		return ((ContactoIndividual) contacto).isContactoFicticio();
 	}
 
 	public void enviarMensaje(String texto, Contacto contacto) {
@@ -234,6 +234,7 @@ public class ControladorAppChat {
 		if (usuario.isPresent()) { // Si el usuario existe, comprobamos que sea ContactoNuevo
 			Optional<ContactoIndividual> contacto = Optional.ofNullable((ContactoIndividual)usuarioActual.encontrarContactoPorNumTlf(Integer.parseInt(tlf)));
 			if (!contacto.isPresent()) {
+				//TODO cambiar estos sysout
 				System.out.println("El contacto no está registrado");
 				ContactoIndividual nuevoContacto = new ContactoIndividual(nombre, usuario.get());
 				adaptadorContactoIndividual.registrarContactoIndividual(nuevoContacto);
