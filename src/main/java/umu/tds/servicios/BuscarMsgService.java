@@ -38,8 +38,7 @@ public enum BuscarMsgService {
 	private Predicate<Mensaje> filtroNombreContacto(Usuario u, String nombreContacto) {
 		return m -> {
 			if (nombreContacto.isEmpty()) return true; 														// no se ha introducido nombre
-			if (m.getReceptor().getNombre().equals(nombreContacto)) return true; 							// nombre corresponde al receptor
-			
+			if (m.getReceptor().getNombre().equals(nombreContacto)) return true; 							// nombre corresponde al receptor			
 			if (u.encontrarContactoPorNombre(nombreContacto) instanceof ContactoIndividual) {
 				ContactoIndividual c = (ContactoIndividual) u.encontrarContactoPorNombre(nombreContacto); 
 				if (c.getUsuarioAsociado().equals(m.getEmisor())) return true; 								// nombre corresponde al emisor

@@ -24,17 +24,12 @@ public class Grupo extends Contacto {
 	
 	@Override
 	public Image getFoto() {
-		return getFotoGrupo();
+		Optional<Image> imagen = Optional.ofNullable(Utils.convertBase64ToImage(fotoGrupoCodificada));	
+		return (imagen.isPresent() ? imagen.get() : Utils.convertBase64ToImage(Utils.convertImageToBase64(new File("src/main/resources/group.png"))));	
 	}
 	
 	public String getFotoGrupoCodificada() {
 		return fotoGrupoCodificada;
-	}
-	
-	public Image getFotoGrupo() {
-		
-		Optional<Image> imagen = Optional.ofNullable(Utils.convertBase64ToImage(fotoGrupoCodificada));	
-		return (imagen.isPresent() ? imagen.get() : Utils.convertBase64ToImage(Utils.convertImageToBase64(new File("src/main/resources/group.png"))));	
 	}
 
 	public void setFotoGrupoCodificada(String fotoGrupoCodificada) {
@@ -46,7 +41,7 @@ public class Grupo extends Contacto {
 	}
 	
 	@Override
-	public String getEstado() {	//TODO revisar
+	public String getEstado() {
 		return estado;
 	}
 	
