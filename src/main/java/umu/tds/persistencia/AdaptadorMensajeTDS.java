@@ -123,8 +123,8 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		Entidad eMensaje = servPersistencia.recuperarEntidad(codigo);
 		
 		//Recuperamos sus propiedades
-		String texto = servPersistencia.recuperarPropiedadEntidad(eMensaje, "texto");
-		LocalDateTime fechaHora = LocalDateTime.parse(servPersistencia.recuperarPropiedadEntidad(eMensaje, "hora"));		
+		String texto = servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_TEXTO);
+		LocalDateTime fechaHora = LocalDateTime.parse(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_HORA));		
 		int emoticono = Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_EMOTICONO));		
 		Usuario emisor = null;
 		Contacto receptor = null;

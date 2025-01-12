@@ -139,7 +139,14 @@ public class ControladorAppChat {
 		if (contacto instanceof ContactoIndividual) {
 			adaptadorContactoIndividual.modificarContactoIndividual((ContactoIndividual) contacto);
 		} else {
-			adaptadorGrupo.modificarGrupo((Grupo) contacto);
+			Grupo grupo = (Grupo) contacto;
+			grupo.getParticipantes().forEach(p -> {
+				Mensaje msjIndividual = new Mensaje(mensajeNuevo.getTexto(), mensajeNuevo.getHora(), mensajeNuevo.getEmoticono(), mensajeNuevo.getEmisor(), p);
+				usuarioActual.enviarMensaje(msjIndividual,p);
+				adaptadorMensaje.registrarMensaje(msjIndividual);
+				adaptadorContactoIndividual.modificarContactoIndividual((ContactoIndividual) p);
+				adaptadorGrupo.modificarGrupo(grupo);
+			});
 		}
 	}
 
@@ -151,7 +158,14 @@ public class ControladorAppChat {
 		if (contacto instanceof ContactoIndividual) {
 			adaptadorContactoIndividual.modificarContactoIndividual((ContactoIndividual) contacto);
 		} else {
-			adaptadorGrupo.modificarGrupo((Grupo) contacto);
+			Grupo grupo = (Grupo) contacto;
+			grupo.getParticipantes().forEach(p -> {
+				Mensaje msjIndividual = new Mensaje(emoticonoNuevo.getTexto(), emoticonoNuevo.getHora(), emoticonoNuevo.getEmoticono(), emoticonoNuevo.getEmisor(), p);
+				usuarioActual.enviarMensaje(msjIndividual,p);
+				adaptadorMensaje.registrarMensaje(msjIndividual);
+				adaptadorContactoIndividual.modificarContactoIndividual((ContactoIndividual) p);
+				adaptadorGrupo.modificarGrupo(grupo);
+			});
 		}
 	}
 	

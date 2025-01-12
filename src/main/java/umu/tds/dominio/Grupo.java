@@ -60,15 +60,7 @@ public class Grupo extends Contacto {
 	public boolean removeParticipante(ContactoIndividual contacto) {
 		return participantes.remove(contacto);
 	}
-	
-	@Override
-	public void addMensaje(Mensaje mensaje) {
-		participantes.stream().forEach(p -> {
-			Mensaje m = new Mensaje(mensaje.getTexto(), mensaje.getHora(), mensaje.getEmoticono(), mensaje.getEmisor(), p);
-			p.addMensaje(m);
-		});
-		listaMensajes.add(mensaje);
-	}
+
 
 	@Override
 	public List<Mensaje> getTodosLosMensajes(Usuario usuario) {
