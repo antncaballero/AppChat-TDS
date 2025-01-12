@@ -117,6 +117,7 @@ public class ControladorAppChat {
 
 	public void hacerPremium(boolean exitoPago) {
 		usuarioActual.setPremium(exitoPago);
+		adaptadorUsuario.modificarUsuario(usuarioActual);
 	}
 
 	public Contacto buscarContactoDeUsuario(String nombre) {		
