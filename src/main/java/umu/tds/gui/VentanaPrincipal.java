@@ -67,6 +67,7 @@ public class VentanaPrincipal extends JFrame {
 		JButton botonPerfil = new JButton(Utils.imageToImageIcon(controlador.getUsuarioActual().getFotoPerfil(), 40, 40));
 		JButton botonAddGrupo = new JButton(Utils.getIcon("src/main/resources/group.png", 2.7f));
 		JButton botonAnadirContacto = new JButton(Utils.getIcon("src/main/resources/user.png", 2.5f));
+		JButton botonLogout = new JButton(Utils.getIcon("src/main/resources/logout.png", 2.5f));
 		JButton btnGenerarPdf = new JButton("+ PDF");
 
 		//EVENTOS DE LOS BOTONES DE ZONA NORTE
@@ -159,7 +160,8 @@ public class VentanaPrincipal extends JFrame {
 		btnGenerarPdf.setBackground(Color.WHITE);
 		btnGenerarPdf.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGenerarPdf.setFont(new Font("Segoe UI", Font.BOLD, 15));
-
+		botonLogout.setBackground(Color.WHITE);
+		botonLogout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		//AÑADIR BOTONES A LA ZONA NORTE
 		panelNorte.add(btnGenerarPdf);
@@ -169,6 +171,7 @@ public class VentanaPrincipal extends JFrame {
 		panelNorte.add(botonContactos);
 		panelNorte.add(botonPremium);
 		panelNorte.add(botonPerfil);
+		panelNorte.add(botonLogout);
 
 		//PANEL ESTE(CHAT + ENVIAR MENSAJE)
 		JPanel panelEste = new JPanel();
