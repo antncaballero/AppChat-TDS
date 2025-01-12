@@ -2,6 +2,8 @@ package umu.tds.servicios;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.Usuario;
@@ -38,12 +40,9 @@ public enum BuscarMsgService {
 	private Predicate<Mensaje> filtroNombreContacto(Usuario u, String nombreContacto) {
 		return m -> {
 			if (nombreContacto.isEmpty()) return true; 														// no se ha introducido nombre
-			if (m.getReceptor().getNombre().equals(nombreContacto)) return true; 							// nombre corresponde al receptor			
-			if (u.encontrarContactoPorNombre(nombreContacto) instanceof ContactoIndividual) {
-				ContactoIndividual c = (ContactoIndividual) u.encontrarContactoPorNombre(nombreContacto); 
-				if (c.getUsuarioAsociado().equals(m.getEmisor())) return true; 								// nombre corresponde al emisor
-			}
-			return false;
+			if (m.getReceptor().getNombre().equals(nombreContacto)) return true; 							// nombre Contacto corresponde al receptor			
+			Contacto c = u.encontrarContactoPorNombre(nombreContacto);
+			return (c instanceof ContactoIndividual && ((ContactoIndividual) c).getUsuarioAsociado().equals(m.getEmisor())); // nombre Contacto corresponde al emisor			
 		};
 	}	
 }
