@@ -1,4 +1,4 @@
-package lanzador;
+package umu.tds.lanzador;
 
 import java.awt.EventQueue;
 
