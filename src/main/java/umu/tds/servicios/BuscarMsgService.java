@@ -1,47 +1,50 @@
 package umu.tds.servicios;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import umu.tds.dominio.Contacto;
+import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.Usuario;
 
 public enum BuscarMsgService {
-
 	INSTANCE;
 
-	private List<Mensaje> mensajes = new LinkedList<>();
-	
-	public List<Mensaje> buscarMensajes(Usuario usuario, String texto, Contacto contactoTlf, Contacto contactoNombre) {
-		buscarMensajePorNombre(usuario, contactoNombre);
-		buscarMensajePorTlf(usuario, contactoTlf);
-		if (mensajes.isEmpty()) {
-			usuario.getContactos().forEach(contacto -> contacto.getTodosLosMensajes(usuario).forEach(mensaje -> mensajes.add(mensaje)));
-		}
-
-		if (!texto.isEmpty()) {
-		    mensajes = mensajes.stream()
-		            .filter(mensaje -> mensaje.getTexto().contains(texto))
-		            .distinct()
-		            .collect(Collectors.toList());
-		}
-
-		return mensajes;
+	public List<Mensaje> buscarMensajes(Usuario usuario, List<Mensaje> mensajes, String tlf, String nombreContacto, String texto) {				
+		return mensajes.stream()
+				.filter(filtroTelefono(tlf))					
+				.filter(filtroNombreContacto(usuario, nombreContacto))
+				.filter(filtroTexto(texto))		         					
+				.collect(Collectors.toList());				
 	}
 	
-	private void buscarMensajePorTlf(Usuario usuario, Contacto contactoTlf) {
-		if (contactoTlf != null) {
-			contactoTlf.getTodosLosMensajes(usuario).forEach(mensaje -> mensajes.add(mensaje));
-		}
+	//Filtros como funciones que devuelven predicados
+	
+	private Predicate<Mensaje> filtroTexto(String texto) {
+		return m -> texto.isEmpty() || m.getTexto().contains(texto);
 	}
 	
-	private void buscarMensajePorNombre(Usuario usuario, Contacto contactoNombre) {
-		if (contactoNombre != null) {
-			contactoNombre.getTodosLosMensajes(usuario).forEach(mensaje -> mensajes.add(mensaje));
-		}
-		
+	private Predicate<Mensaje> filtroTelefono(String tlf) {
+		return m -> {
+			if (tlf.isEmpty()) return true; 												// no hay filtro por tlf
+			if (m.getEmisor().getNumTlf() == Integer.parseInt(tlf)) return true; 			// tlf corresponde al emisor
+			if (m.getReceptor() instanceof ContactoIndividual) {
+				ContactoIndividual contacto = (ContactoIndividual) m.getReceptor();
+				return contacto.getUsuarioAsociado().getNumTlf() == Integer.parseInt(tlf);	// tlf corresponde al receptor
+			}
+			return false;
+		};
 	}
+	
+	private Predicate<Mensaje> filtroNombreContacto(Usuario u, String nombreContacto) {
+		return m -> {
+			if (nombreContacto.isEmpty()) return true; 														// no se ha introducido nombre
+			if (m.getReceptor().getNombre().equals(nombreContacto)) return true; 							// nombre corresponde al receptor
+			
+			if (u.encontrarContactoPorNombre(nombreContacto) instanceof ContactoIndividual) {
+				ContactoIndividual c = (ContactoIndividual) u.encontrarContactoPorNombre(nombreContacto); 
+				if (c.getUsuarioAsociado().equals(m.getEmisor())) return true; 								// nombre corresponde al emisor
+			}
+			return false;
+		};
+	}	
 }

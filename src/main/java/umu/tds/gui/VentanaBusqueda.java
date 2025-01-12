@@ -34,6 +34,13 @@ import umu.tds.utils.Utils;
 @SuppressWarnings("serial")
 public class VentanaBusqueda extends JFrame {
 
+	private final static String ERROR_VACIO = "Debe introducir al menos un filtro de búsqueda";
+	private final static String ERROR_FORMATO_TLF = "El teléfono debe ser un número";
+	private final static String ERROR_TLF_CONTACTO = "No existe ningún contacto con ese teléfono";
+	private final static String ERROR_NOMBRE_CONTACTO = "No existe ningún contacto con ese nombre";
+	
+	
+	
 	private JPanel contentPane;
 	private JTextField textFieldTexto;
 	private JTextField textFieldTlf;
@@ -101,17 +108,6 @@ public class VentanaBusqueda extends JFrame {
 		panelBuscar.setPreferredSize(new Dimension(800, 120));
 		
 		mensajesBuscados = new DefaultListModel<>();
-		/*
-		mensajesBuscados.addElement(new Mensaje("¿A qué hora paso por ti?", LocalDateTime.of(2023, 11, 3, 14, 0), 0, 345678901, 234567890));
-		mensajesBuscados.addElement(new Mensaje("¡Nos vemos mañana! Nos vemos mañana! Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!Nos vemos mañana!", LocalDateTime.of(2023, 11, 3, 20, 30), 4, 456789012, 345678901));
-		mensajesBuscados.addElement(new Mensaje("Gracias por el consejo", LocalDateTime.of(2023, 11, 4, 16, 20), 5, 567890123, 456789012));
-		mensajesBuscados.addElement(new Mensaje("¿Estás disponible para una reunión?", LocalDateTime.of(2023, 11, 5, 11, 10), 1, 678901234, 567890123));
-		mensajesBuscados.addElement(new Mensaje("Te llamo en un momento.", LocalDateTime.of(2023, 11, 5, 13, 55), 0, 789012345, 678901234));
-		mensajesBuscados.addElement(new Mensaje("Te llamo en un momento.", LocalDateTime.of(2023, 11, 5, 13, 55), 0, 789012345, 678901234));
-		mensajesBuscados.addElement(new Mensaje("Te llamo en un momento.", LocalDateTime.of(2023, 11, 5, 13, 55), 0, 789012345, 678901234));
-		mensajesBuscados.addElement(new Mensaje("Te llamo en un momento.", LocalDateTime.of(2023, 11, 5, 13, 55), 0, 789012345, 678901234));
-		mensajesBuscados.addElement(new Mensaje("Te llamo en un momento.", LocalDateTime.of(2023, 11, 5, 13, 55), 0, 789012345, 678901234));
-		*/
 		listaMensajes = new JList<>(mensajesBuscados);
 		listaMensajes.setCellRenderer(createListRenderer());
 		listaMensajes.setBackground(getForeground());
@@ -140,23 +136,25 @@ public class VentanaBusqueda extends JFrame {
 
 		
 	}
-	
+
+	/**
+	 * Método que se ejecuta al pulsar el botón de buscar.
+	 */
 	private void accionAceptar() {
 		//Antes de llamar al controlador, validamos la entrada
 		String texto = textFieldTexto.getText();
 		String tlf = textFieldTlf.getText();
-		String nombreContacto = textFieldContacto.getText();
-		
-		Optional<String> error = Optional.ofNullable(validarEntrada(texto, tlf, nombreContacto));
-
-	    if (error.isEmpty()) {
+		String nombreContacto = textFieldContacto.getText();		
+		String error = validarEntrada(texto, tlf, nombreContacto);
+	    
+		if (error.isEmpty()) {
 	    	List<Mensaje> mensajes = ControladorAppChat.getInstancia().buscarMensaje(texto, tlf, nombreContacto);
 	    	mensajesBuscados.clear();
 	    	listaMensajes.repaint();
 	    	mensajes.forEach(m -> mensajesBuscados.addElement(m));	    		    
 	    }else { //Las entradas no son válidas, mostramos mensaje de error y configuramos bordes
 	    	Toolkit.getDefaultToolkit().beep();
-	        mostrarError(error.get());
+	    	JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
 	    }
 	}
 
@@ -168,35 +166,28 @@ public class VentanaBusqueda extends JFrame {
 	 * @return
 	 */
 	private String validarEntrada(String texto, String tlf, String nombreContacto ) {
-	    if (texto.isEmpty() && tlf.isEmpty() && nombreContacto.isEmpty()) {
-	        return "Debe introducir al menos un filtro de búsqueda";
-	    }	    
-	    if (!nombreContacto.isEmpty()) {
+		
+		if (texto.isEmpty() && tlf.isEmpty() && nombreContacto.isEmpty()) return ERROR_VACIO;	    	    
+		
+		if (!nombreContacto.isEmpty()) {
 	    	Optional<Contacto> contacto = Optional.ofNullable(ControladorAppChat.getInstancia().buscarContactoDeUsuario(nombreContacto));
-	    	if (contacto.isEmpty()) {
-	    		return "No existe ningún contacto con ese nombre";
-	    	}	    
-	    }	    
-	    if (!tlf.isEmpty()) {
+	    	if (contacto.isEmpty()) return ERROR_NOMBRE_CONTACTO;	    		    
+	    }	    	    
+		
+		if (!tlf.isEmpty()) {			
+	    	try {
+				Integer.parseInt(tlf);
+			} catch (NumberFormatException e) {
+				return ERROR_FORMATO_TLF;	
+			}
+			
 	    	Optional<Contacto> contacto = Optional.ofNullable(ControladorAppChat.getInstancia().buscarContactoDeUsuario(Integer.parseInt(tlf)));
 	    	if (contacto.isEmpty()) {
-	    		return "No existe ningún contacto con ese teléfono";
+	    		return ERROR_TLF_CONTACTO;
 	    	}	        
 	    }
-	    return null; // No hay errores
-	}
-
-	/**
-	 * Método para mostrar un mensaje de error y configurar bordes.
-	 * 
-	 * @param mensaje
-	 * @param tlf
-	 * @param pass
-	 */
-	private void mostrarError(String mensaje) {
-	    JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
-	}
-	
+	    return ""; // No hay errores
+	}	
 	
 	private static ListCellRenderer<? super Mensaje> createListRenderer() {
 		return new DefaultListCellRenderer() {

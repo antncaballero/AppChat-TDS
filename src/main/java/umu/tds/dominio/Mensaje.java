@@ -1,6 +1,7 @@
 package umu.tds.dominio;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Mensaje implements Comparable<Mensaje> {
 	
@@ -73,4 +74,22 @@ public class Mensaje implements Comparable<Mensaje> {
 	public int compareTo(Mensaje mensaje) {
 		return hora.compareTo(mensaje.hora);
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(emisor, emoticono, hora, receptor, texto);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Mensaje other = (Mensaje) obj;
+		return Objects.equals(emisor, other.emisor) && emoticono == other.emoticono && Objects.equals(hora, other.hora)
+				&& Objects.equals(receptor, other.receptor) && Objects.equals(texto, other.texto);
+	}	
 }

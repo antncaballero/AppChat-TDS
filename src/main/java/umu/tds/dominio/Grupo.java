@@ -2,6 +2,7 @@ package umu.tds.dominio;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.awt.Image;
 import java.io.File;
@@ -67,8 +68,11 @@ public class Grupo extends Contacto {
 	
 	@Override
 	public void addMensaje(Mensaje mensaje) {
-		super.addMensaje(mensaje);
-		participantes.forEach(p -> p.addMensaje(mensaje));
+		participantes.stream().forEach(p -> {
+			Mensaje m = new Mensaje(mensaje.getTexto(), mensaje.getHora(), mensaje.getEmoticono(), mensaje.getEmisor(), p);
+			p.addMensaje(m);
+		});
+		listaMensajes.add(mensaje);
 	}
 
 	@Override
@@ -84,6 +88,25 @@ public class Grupo extends Contacto {
 		this.estado = estado;
 	}
 	
-	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(estado, fotoGrupoCodificada, participantes);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Grupo other = (Grupo) obj;
+		return Objects.equals(estado, other.estado) && Objects.equals(fotoGrupoCodificada, other.fotoGrupoCodificada)
+				&& Objects.equals(participantes, other.participantes);
+	}
 	
 }

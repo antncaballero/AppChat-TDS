@@ -3,6 +3,7 @@ package umu.tds.dominio;
 import java.awt.Image;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -65,6 +66,24 @@ public class ContactoIndividual extends Contacto {
 				.filter(c -> c.getUsuarioAsociado().equals(usuario))
 				.findFirst();				
 	}
-	
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(usuarioAsociado);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ContactoIndividual other = (ContactoIndividual) obj;
+		return Objects.equals(usuarioAsociado, other.usuarioAsociado);
+	}
 }

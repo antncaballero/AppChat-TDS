@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import umu.tds.utils.Utils;
 
@@ -151,10 +152,9 @@ public class Usuario {
 	
 	public Contacto encontrarContactoPorNombre(String nombre) {
 		return contactos.stream()
-				//.filter(c -> c instanceof ContactoIndividual) TODO: revisar si esto es necesario
-				//.map(c -> (ContactoIndividual) c)
 				.filter(c -> c.getNombre().equals(nombre))
-				.findFirst().orElse(null);
+				.findFirst()
+				.orElse(null);
 	}
 	
 	public Contacto encontrarContactoPorNumTlf(int numTlf) {
@@ -162,7 +162,8 @@ public class Usuario {
 				.filter(c -> c instanceof ContactoIndividual)
 				.map(c -> (ContactoIndividual) c)
 				.filter(c -> c.getUsuarioAsociado().getNumTlf() == numTlf)
-				.findFirst().orElse(null);
+				.findFirst()
+				.orElse(null);
 	}
 	
 	public void addContacto(Contacto contacto) {
@@ -172,7 +173,22 @@ public class Usuario {
 	public void enviarMensaje(Mensaje mensaje, Contacto contacto) {
 		contacto.addMensaje(mensaje);
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(numTlf);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		return numTlf == other.numTlf;
+	}
 	
-
-
 }

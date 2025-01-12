@@ -3,6 +3,7 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import umu.tds.persistencia.ContactoIndividualDAO;
 import umu.tds.persistencia.DAOException;
@@ -216,15 +217,11 @@ public class ControladorAppChat {
 	 * @return
      */
 	public List<Mensaje> buscarMensaje(String texto, String tlf, String nombreContacto) {
-		Contacto contactoNombre = null;
-		Contacto contactoTlf = null;
-		if (!nombreContacto.isEmpty()) {
-			 contactoTlf = buscarContactoDeUsuario(nombreContacto);
-		}
-		if (!tlf.isEmpty()) {
-			contactoNombre = buscarContactoDeUsuario(Integer.parseInt(tlf));
-		}
-		return buscadorMensajes.buscarMensajes(usuarioActual, texto, contactoTlf, contactoNombre);
+		List<Mensaje> mensajes = usuarioActual.getContactos().stream()
+				.flatMap(c -> c.getTodosLosMensajes(usuarioActual).stream())
+				.distinct()
+				.collect(Collectors.toList());
+		return buscadorMensajes.buscarMensajes(usuarioActual, mensajes, tlf, nombreContacto, texto);
 	}
 
 	/**

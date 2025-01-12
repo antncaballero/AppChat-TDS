@@ -4,14 +4,14 @@ import java.awt.Image;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 
 public abstract class Contacto {
 	
 	private int codigo;
 	private String nombre;
-	//TODO revisar si tiene sentido que un grupo tenga una lista de mensajes
-	private List<Mensaje> listaMensajes;
+	protected List<Mensaje> listaMensajes;
 	
 	public Contacto(String nombre) {
 		this.codigo = 0;
@@ -61,6 +61,21 @@ public abstract class Contacto {
 	 */
 	public abstract List<Mensaje> getTodosLosMensajes(Usuario usuario);
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(codigo, nombre);
+	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Contacto other = (Contacto) obj;
+		return codigo == other.codigo && Objects.equals(nombre, other.nombre);
+	}
 }
 
