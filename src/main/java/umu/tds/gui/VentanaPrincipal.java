@@ -179,7 +179,7 @@ public class VentanaPrincipal extends JFrame {
 		//PANEL ESTE(CHAT + ENVIAR MENSAJE)
 		JPanel panelEste = new JPanel();
 		panelEste.setLayout(new BorderLayout());
-		panelEste.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "mensajes con contactos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelEste.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "Mensajes con contactos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
 		//PANEL DE CHATS
 		chatPanel = new ChatPanel();
@@ -265,6 +265,7 @@ public class VentanaPrincipal extends JFrame {
 				Contacto selectedContact = lista.getSelectedValue();
 				if (selectedContact != null) {
 		            String tituloBorde;
+		            //Se decide el título del borde del panel de los chats, según si es un contacto ind. (su nombre) o un grupo (nombres de participantes)
 		            if (selectedContact instanceof ContactoIndividual) {
 		            	tituloBorde = "Mensajes con " + selectedContact.getNombre();
 		            } else {
@@ -275,11 +276,12 @@ public class VentanaPrincipal extends JFrame {
 		                tituloBorde = "Mensajes con " + nombresParticipantes;
 		            }
 					panelEste.setBorder(new TitledBorder(null, tituloBorde, TitledBorder.LEADING, TitledBorder.TOP, null, null));
-					boolean esRegistrado = selectedContact instanceof ContactoIndividual 
-							? ControladorAppChat.getInstancia().esContactoRegistrado(selectedContact)
-									: false;
-					anadirContacto.setVisible(esRegistrado);
-					tlfContacto = esRegistrado ? selectedContact.getNombre() : null;
+					//Si es un contacto ficticio, muestra el botón de añadir contactos ficticios
+					boolean esContactoFicticio = controlador.esContactoFicticio(selectedContact);	
+					anadirContacto.setVisible(esContactoFicticio);
+					//Se prepara el teléfono del contacto fictio (si lo es) para que al intentar añadirlo se muestre sin que lo tenga que escribir el usuario
+					tlfContacto = esContactoFicticio ? selectedContact.getNombre() : null;
+					//Se carga el chat seleccionado, independientemente del tipo de contacto
 					loadChat(selectedContact);
 				}
 			}

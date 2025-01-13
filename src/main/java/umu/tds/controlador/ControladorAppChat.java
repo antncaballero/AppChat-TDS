@@ -128,8 +128,14 @@ public class ControladorAppChat {
 		return usuarioActual.encontrarContactoPorNumTlf(numTlf);
 	}
 
-	public boolean esContactoRegistrado(Contacto contacto) {
-		return ((ContactoIndividual) contacto).isContactoFicticio();
+	/**
+	 * Metodo que devuelve si un contacto es ficticio o no
+	 * 
+	 * @param contacto
+	 */
+	public boolean esContactoFicticio(Contacto contacto) {
+		if (contacto instanceof ContactoIndividual) return ((ContactoIndividual) contacto).isContactoFicticio();
+		else return false; 
 	}
 
 	public void enviarMensaje(String texto, Contacto contacto) {
