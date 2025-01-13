@@ -312,6 +312,10 @@ public class ControladorAppChat {
 		
 		adaptadorUsuario.modificarUsuario(usuario);
 	}
+	
+	public void cerrarSesion() {
+		usuarioActual = null;
+	}
 
 }
 

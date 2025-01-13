@@ -134,6 +134,13 @@ public class VentanaPrincipal extends JFrame {
 			}	   
 		});
 
+		botonLogout.addActionListener(e -> {
+			controlador.cerrarSesion();
+			VentanaLogin ventanaLogin = new VentanaLogin();
+			ventanaLogin.setVisible(true);
+			dispose();
+		});
+
 		//ESTILOS DE LOS BOTONES DE ZONA NORTE
 		botonPremium.setBackground(Color.WHITE);
 		botonPremium.setBorder(BorderFactory.createEmptyBorder());
@@ -264,17 +271,17 @@ public class VentanaPrincipal extends JFrame {
 			if (!e.getValueIsAdjusting()) {
 				Contacto selectedContact = lista.getSelectedValue();
 				if (selectedContact != null) {
-		            String tituloBorde;
-		            //Se decide el título del borde del panel de los chats, según si es un contacto ind. (su nombre) o un grupo (nombres de participantes)
-		            if (selectedContact instanceof ContactoIndividual) {
-		            	tituloBorde = "Mensajes con " + selectedContact.getNombre();
-		            } else {
-		                Grupo grupo = (Grupo) selectedContact;
-		                String nombresParticipantes = grupo.getParticipantes().stream()
-		                    .map(Contacto::getNombre)
-		                    .collect(Collectors.joining(", "));
-		                tituloBorde = "Mensajes con " + nombresParticipantes;
-		            }
+					String tituloBorde;
+					//Se decide el título del borde del panel de los chats, según si es un contacto ind. (su nombre) o un grupo (nombres de participantes)
+					if (selectedContact instanceof ContactoIndividual) {
+						tituloBorde = "Mensajes con " + selectedContact.getNombre();
+					} else {
+						Grupo grupo = (Grupo) selectedContact;
+						String nombresParticipantes = grupo.getParticipantes().stream()
+								.map(Contacto::getNombre)
+								.collect(Collectors.joining(", "));
+						tituloBorde = "Mensajes con " + nombresParticipantes;
+					}
 					panelEste.setBorder(new TitledBorder(null, tituloBorde, TitledBorder.LEADING, TitledBorder.TOP, null, null));
 					//Si es un contacto ficticio, muestra el botón de añadir contactos ficticios
 					boolean esContactoFicticio = controlador.esContactoFicticio(selectedContact);	
@@ -305,7 +312,7 @@ public class VentanaPrincipal extends JFrame {
 
 		botonSend.addActionListener(e -> {
 			accionSend();
-        });
+		});
 
 		btnAnadirContacto.addActionListener(e -> {
 			VentanaAnadirContacto ventanaAnadir = new VentanaAnadirContacto(tlfContacto);
@@ -314,7 +321,7 @@ public class VentanaPrincipal extends JFrame {
 		});
 
 	}
-	
+
 	private void accionSend() {
 		String mensaje = fieldMensaje.getText();
 		if (!mensaje.isEmpty()) {
