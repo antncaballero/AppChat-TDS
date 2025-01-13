@@ -6,6 +6,8 @@ import java.awt.Rectangle;
 import java.awt.TextField;
 import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -31,6 +33,7 @@ import umu.tds.controlador.ControladorAppChat;
 import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Descuento;
+import umu.tds.dominio.Grupo;
 import umu.tds.utils.Utils;
 
 @SuppressWarnings("serial")
@@ -261,8 +264,18 @@ public class VentanaPrincipal extends JFrame {
 			if (!e.getValueIsAdjusting()) {
 				Contacto selectedContact = lista.getSelectedValue();
 				if (selectedContact != null) {
-					String contactoSeleccionado = selectedContact.getNombre();
-					panelEste.setBorder(new TitledBorder(null, "Mensajes con " + contactoSeleccionado, TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		            String tituloBorde;
+		            if (selectedContact instanceof ContactoIndividual) {
+		            	tituloBorde = "Mensajes con " + selectedContact.getNombre();
+		            } else {
+		                // Assuming ContactoGrupo is the class for group contacts
+		                Grupo grupo = (Grupo) selectedContact;
+		                String nombresParticipantes = grupo.getParticipantes().stream()
+		                    .map(Contacto::getNombre)
+		                    .collect(Collectors.joining(", "));
+		                tituloBorde = "Mensajes con " + nombresParticipantes;
+		            }
+					panelEste.setBorder(new TitledBorder(null, tituloBorde, TitledBorder.LEADING, TitledBorder.TOP, null, null));
 					boolean esRegistrado = selectedContact instanceof ContactoIndividual 
 							? ControladorAppChat.getInstancia().esContactoRegistrado(selectedContact)
 									: false;
