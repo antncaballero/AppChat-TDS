@@ -268,7 +268,6 @@ public class VentanaPrincipal extends JFrame {
 		            if (selectedContact instanceof ContactoIndividual) {
 		            	tituloBorde = "Mensajes con " + selectedContact.getNombre();
 		            } else {
-		                // Assuming ContactoGrupo is the class for group contacts
 		                Grupo grupo = (Grupo) selectedContact;
 		                String nombresParticipantes = grupo.getParticipantes().stream()
 		                    .map(Contacto::getNombre)
