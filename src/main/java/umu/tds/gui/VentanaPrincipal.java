@@ -76,8 +76,11 @@ public class VentanaPrincipal extends JFrame {
 		//EVENTOS DE LOS BOTONES DE ZONA NORTE
 		botonPremium.addActionListener(e -> {
 			if (controlador.getUsuarioActual().isPremium()) {
-				JOptionPane.showMessageDialog(this, "Ya eres usuario premium", "Premium",
-						JOptionPane.INFORMATION_MESSAGE);
+				int response = JOptionPane.showConfirmDialog(this, "¿Quieres dejar de ser usuario premium?", "Premium", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (response == JOptionPane.YES_OPTION) {
+					controlador.setPremiumUsuarioActual(false);
+					JOptionPane.showMessageDialog(this, "Has dejado de ser usuario premium", "Premium", JOptionPane.INFORMATION_MESSAGE);
+				}				
 			} else {
 				List<Descuento> descuentos = controlador.getUsuarioActual().getDescuentosAplicables();
 				JDialogDescuentos dialogoDescuentos = new JDialogDescuentos(this, descuentos);
