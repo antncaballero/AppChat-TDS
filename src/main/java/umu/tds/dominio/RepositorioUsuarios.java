@@ -34,6 +34,10 @@ public enum RepositorioUsuarios {
 	public boolean contains(Usuario usuario) {
 		return usuarios.containsValue(usuario);
 	}
+	
+	public boolean containsTlf(int tlf) {
+		return usuariosTlf.containsKey(tlf);
+	}
 
 	public void add(Usuario usuario) {
 		usuarios.put(usuario.getCodigo(), usuario);

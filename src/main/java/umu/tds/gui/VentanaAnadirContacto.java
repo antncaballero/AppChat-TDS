@@ -22,6 +22,12 @@ import java.awt.Dimension;
 
 public class VentanaAnadirContacto {
 
+	private static final String ERROR_TLF = "Se necesita un teléfono de 9 dígitos para el contacto";
+	private static final String ERROR_NOMBRE = "Falta por introducir un nombre para el contacto";
+	private static final String ERROR_TLF_NOMBRE = "Falta por introducir un teléfono de 9 dígitos y un nombre para el contacto";
+	private static final String ERROR_AL_AÑADIR = "El contacto ya está añadido, el usuario no existe, o eres tu mismo";
+	private static final String AÑADIDO_CORRECTAMENTE = "Contacto añadido correctamente";
+	
 	private JFrame frame;
 	private JTextField txtTelefono;
 	private JTextField txtNombre;
@@ -65,7 +71,7 @@ public class VentanaAnadirContacto {
 		JPanel panelNorte = new JPanel();
 		panelLogin.add(panelNorte, BorderLayout.NORTH);
 
-		JLabel labelTitulo = new JLabel("Alert");
+		JLabel labelTitulo = new JLabel("Añade un contacto");
 		labelTitulo.setFont(new Font("Segoe UI", Font.BOLD, 30));
 		panelNorte.add(labelTitulo);
 
@@ -92,7 +98,7 @@ public class VentanaAnadirContacto {
 		txtNombre.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		txtNombre.addActionListener(e -> {
-			accionAceptar();
+			añadirContacto();
 		});
 		GridBagConstraints gbc_txtNombre = new GridBagConstraints();
 		gbc_txtNombre.insets = new Insets(0, 0, 5, 5);
@@ -115,7 +121,7 @@ public class VentanaAnadirContacto {
 		txtTelefono.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		txtTelefono.addActionListener(e -> {
-			accionAceptar();
+			añadirContacto();
 		});
 		GridBagConstraints gbc_txtTelefono = new GridBagConstraints();
 		gbc_txtTelefono.insets = new Insets(0, 0, 5, 5);
@@ -146,7 +152,7 @@ public class VentanaAnadirContacto {
 		});
 		
 		btnAceptar.addActionListener(e -> {
-			accionAceptar();
+			añadirContacto();
 		});
 
 		JPanel panelOeste = new JPanel();
@@ -162,20 +168,20 @@ public class VentanaAnadirContacto {
 		panelEste.add(espacioEste);
 	}
 	
-	private void accionAceptar() {
+	private void añadirContacto() {
 		//Antes de llamar al controlador, validamos la entrada
 		String tlf = txtTelefono.getText();
 		String nombre = txtNombre.getText();
-		Optional<String> error = Optional.ofNullable(validarEntrada(tlf, nombre));
+		String errorEntrada = validarEntrada(tlf, nombre);
 
-	    if (error.isEmpty()) {
-			boolean succes = ControladorAppChat.getInstancia().anadirContactoNuevo(txtNombre.getText(), txtTelefono.getText());
-			if (!succes) {
+	    if (errorEntrada.isEmpty()) {
+			boolean success = ControladorAppChat.getInstancia().anadirContactoNuevo(txtNombre.getText(), txtTelefono.getText());
+			if (!success) {
 				Toolkit.getDefaultToolkit().beep();
-				JOptionPane.showMessageDialog(frame, "The contact is already saved or its user does not exist",
+				JOptionPane.showMessageDialog(frame, ERROR_AL_AÑADIR,
 						"Error", JOptionPane.ERROR_MESSAGE);
 			} else {
-				JOptionPane.showMessageDialog(frame, "Contact added successfully", "Info",
+				JOptionPane.showMessageDialog(frame, AÑADIDO_CORRECTAMENTE, "Info",
 						JOptionPane.INFORMATION_MESSAGE);
 				VentanaPrincipal main = new VentanaPrincipal();
 				main.setVisible(true);
@@ -183,19 +189,19 @@ public class VentanaAnadirContacto {
 			}
 	    }else { //Las entradas no son válidas, mostramos mensaje de error y configuramos bordes
 	    	Toolkit.getDefaultToolkit().beep();
-	        mostrarError(error.get(), tlf, nombre);
+	        mostrarError(errorEntrada, tlf, nombre);
 	    }
 	}
 	
 	private String validarEntrada(String tlf, String nombre) {
 	    if ((tlf.isEmpty() || !tlf.matches("\\d{9}")) && nombre.isEmpty()) {
-	        return "Falta por introducir un teléfono de 9 dígitos y un nombre para el contacto";
+	        return ERROR_TLF_NOMBRE;
 	    }
 	    if ((!tlf.isEmpty() && tlf.matches("\\d{9}")) && nombre.isEmpty()) {
-	        return "Falta por introducir un nombre para el contacto";
+	        return ERROR_NOMBRE;
 	    }
 	    if ((tlf.isEmpty() || !tlf.matches("\\d{9}"))  && !nombre.isEmpty()) {
-	        return "Falta por introducir un teléfono de 9 dígitos";
+	        return ERROR_TLF;
 	    }
 	    return null; // No hay errores
 	}

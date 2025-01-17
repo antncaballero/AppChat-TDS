@@ -251,24 +251,29 @@ public class ControladorAppChat {
 	 * @param contactos
 	 */
 	public boolean anadirContactoNuevo(String nombre, String tlf) {
-		Optional<Usuario> usuario = Optional.ofNullable(repositorioUsuarios.getUsuarioPorTlf(Integer.parseInt(tlf)));
-		if (usuario.isPresent()) { // Si el usuario existe, comprobamos que sea ContactoNuevo
+		if (repositorioUsuarios.containsTlf(Integer.parseInt(tlf))) { // Si el usuario existe, comprobamos que sea ContactoNuevo
+			Usuario usuarioAsociado = repositorioUsuarios.getUsuarioPorTlf(Integer.parseInt(tlf));
 			Optional<ContactoIndividual> contacto = Optional.ofNullable((ContactoIndividual)usuarioActual.encontrarContactoPorNumTlf(Integer.parseInt(tlf)));
-			if (!contacto.isPresent()) {
-				//TODO cambiar estos sysout
-				System.out.println("El contacto no está registrado");
-				ContactoIndividual nuevoContacto = new ContactoIndividual(nombre, usuario.get());
+			if (usuarioAsociado.equals(usuarioActual)) {
+                //No se puede añadir a uno mismo
+                return false;
+            } else if (!contacto.isPresent()) {
+				//contacto no esta registrado
+				ContactoIndividual nuevoContacto = new ContactoIndividual(nombre, usuarioAsociado);
 				adaptadorContactoIndividual.registrarContactoIndividual(nuevoContacto);
 				usuarioActual.addContacto(nuevoContacto);
 				adaptadorUsuario.modificarUsuario(usuarioActual);
-			} else {
-				System.out.println("El contacto ya existe con nombre: " + contacto.get().getNombre());
+				return true;
+			} else if (contacto.get().isContactoFicticio()){
+				//Es un contacto ficticio, cambiamos el nombre
 				contacto.get().setNombre(nombre);
 				adaptadorContactoIndividual.modificarContactoIndividual(contacto.get());
-			}
-			return true;
+				return true;
+			} else {
+				//El contacto ya existe y no es ficticio
+				return false;
+			}			
 		}          
-		System.out.println("El usuario no existe");
 		return false;
 	}
 	
@@ -281,7 +286,7 @@ public class ControladorAppChat {
 		ContactoIndividual nuevoContacto = new ContactoIndividual(tlf, usuario);//Creamos contacto con el tlf
 		adaptadorContactoIndividual.registrarContactoIndividual(nuevoContacto);//Registramos el contacto
 		usuarioActual.addContacto(nuevoContacto);//Añadimos el contacto a la lista del usuario
-		adaptadorUsuario.modificarUsuario(usuario);//Actualizamos el usuario
+		adaptadorUsuario.modificarUsuario(usuarioActual);//Actualizamos el usuario
 	}
 
 	public List<Contacto> getContactosUsuarioActual() {
