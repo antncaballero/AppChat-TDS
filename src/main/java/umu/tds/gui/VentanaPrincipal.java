@@ -79,11 +79,11 @@ public class VentanaPrincipal extends JFrame {
 				JOptionPane.showMessageDialog(this, "Ya eres usuario premium", "Premium",
 						JOptionPane.INFORMATION_MESSAGE);
 			} else {
-				List<Descuento> descuentos = controlador.getDescuentosUsuarioActual();
+				List<Descuento> descuentos = controlador.getUsuarioActual().getDescuentosAplicables();
 				JDialogDescuentos dialogoDescuentos = new JDialogDescuentos(this, descuentos);
 				dialogoDescuentos.setVisible(true);
 				boolean exitoPago = dialogoDescuentos.isConfirmed();
-				controlador.hacerPremium(exitoPago); //si paga con éxito se hace premium, si no no hace nada
+				controlador.setPremiumUsuarioActual(exitoPago);  //si paga con éxito se hace premium, si no no hace nada
 			}
 		});
 
@@ -97,10 +97,6 @@ public class VentanaPrincipal extends JFrame {
 			VentanaAnadirContacto ventanaAnadirContacto = new VentanaAnadirContacto();
 			ventanaAnadirContacto.setVisible(true);
 			dispose();
-			/*TODO: podriamos ver si chat seleccionado esta en la lista de contactos y añadirlo si no esta,
-					habría que ver como diferenciar si se quiere añadir al contacto del chat seleccionado
-			 		o si se quiere añadir un contacto nuevo que no tiene nada que ver con los chats que hay
-			 */
 		});
 
 		botonContactos.addActionListener(e -> {

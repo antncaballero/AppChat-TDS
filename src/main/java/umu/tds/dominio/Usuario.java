@@ -173,6 +173,11 @@ public class Usuario {
 	public void enviarMensaje(Mensaje mensaje, Contacto contacto) {
 		contacto.addMensaje(mensaje);
 	}
+	
+	public boolean tieneAgregado(Usuario usuario) {
+		return contactos.stream().
+		anyMatch(c -> c instanceof ContactoIndividual && ((ContactoIndividual) c).getUsuarioAsociado().equals(usuario));
+	}
 
 	@Override
 	public int hashCode() {

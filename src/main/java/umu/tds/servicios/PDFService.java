@@ -155,7 +155,7 @@ public enum PDFService {
 	/**
 	 * Crea una celda con un emoticono
 	 * 
-	 * @param m
+	 * @param mensaje
 	 * @param regularFont
 	 * @param paragraph
 	 * @param esIzquierda

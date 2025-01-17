@@ -21,11 +21,13 @@ import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.RepositorioUsuarios;
 import umu.tds.dominio.Usuario;
 
+/**
+ * Controlador de la aplicación
+ * 
+ */
 public class ControladorAppChat {
 
 	private static ControladorAppChat unicaInstancia = null;
-
-	//TODO quitar el new Usuario, esto es para hacer pruebas
 	private Usuario usuarioActual;
 
 	//Adaptadores
@@ -33,25 +35,27 @@ public class ControladorAppChat {
 	private ContactoIndividualDAO adaptadorContactoIndividual;
 	private GrupoDAO adaptadorGrupo;
 	private MensajeDAO adaptadorMensaje;
-
+	
 	//Repositorios
 	private RepositorioUsuarios repositorioUsuarios;
-
+	
 	//Servicios
 	private PDFService pdfService;
 	private BuscarMsgService buscadorMensajes;
 
-	//Constructor privado
+	/**
+	 * Constructor privado de la clase
+     */
 	private ControladorAppChat() {
-
 		inicializarAdaptadores();
 		inicializarRepositorios();
 		inicializarServicios();
 
 	}
 
-	//Inicialización de los adaptadores, repositorios y servicios
-
+	/**
+	 * Método para inicializar los adaptadores
+	 */
 	private void inicializarAdaptadores() {
 		FactoriaDAO factoria = null;
 		try {
@@ -60,23 +64,31 @@ public class ControladorAppChat {
 		} catch (DAOException e) {
 			e.printStackTrace();
 		}
-
 		adaptadorUsuario = factoria.getUsuarioDAO();
 		adaptadorContactoIndividual = factoria.getContactoIndividualDAO();
 		adaptadorGrupo = factoria.getGrupoDAO();
 		adaptadorMensaje = factoria.getMensajeDAO();
 	}
 
+	/**
+	 * Método para inicializar los repositorios
+	 */
 	private void inicializarRepositorios() {
 		repositorioUsuarios = RepositorioUsuarios.INSTANCE;
 	}
-
+	
+	/**
+	 * Método para inicializar los servicios
+	 */
 	private void inicializarServicios() {
 		pdfService = PDFService.INSTANCE;
 		buscadorMensajes = BuscarMsgService.INSTANCE;
 	}
 
-	//Método para obtener la instancia de la clase
+	/**
+	 * Método para obtener la instancia única de la clase
+	 * @return unicaInstancia
+	 */
 	public static ControladorAppChat getInstancia() {
 		if (unicaInstancia == null)
 			unicaInstancia = new ControladorAppChat();
@@ -84,60 +96,94 @@ public class ControladorAppChat {
 	}
 
 	//Métodos de la clase
+	
+	/**
+	 * Método para obtener el usuario actual
+	 * @return usuarioActual
+	 */
 	public Usuario getUsuarioActual() {
 		return usuarioActual;
 	}
-
-	public List<Descuento> getDescuentosUsuarioActual() {
-		return usuarioActual.getDescuentosAplicables();
-	}
-
+	
+	/**
+	 * Método para iniciar sesión 
+	 * @param numTlf
+	 * @param password
+	 * @return true si se ha iniciado sesión correctamente, false en caso contrario
+	 */
 	public boolean iniciarSesion(int numTlf, String password) {
 		Optional<Usuario> usuario = Optional.ofNullable(repositorioUsuarios.getUsuarioPorTlf(numTlf));
 		if (usuario.isPresent() && usuario.get().getPassword().equals(password)) {
 			usuarioActual = usuario.get();
-			cargarMensajesDeNoAgregados(usuarioActual);
+			cargarMensajesDeNoAgregados();
 			return true;
 		}
 		return false;
 	}
-
-	public boolean registrarUsuario(String nombre, String apellidos, int numTlf, String password, String estado,
-			LocalDate fechaNacimiento, String email, String fotoPerfilCodificada) {
-
+	
+	/**
+	 * Método para registrar un usuario
+	 * @param nombre
+	 * @param apellidos
+	 * @param numTlf
+	 * @param password
+	 * @param estado
+	 * @param fechaNacimiento
+	 * @param email
+	 * @param fotoPerfilCodificada
+	 * @return true si se ha registrado correctamente, false en caso contrario
+	 */
+	public boolean registrarUsuario(String nombre, String apellidos, int numTlf, String password, String estado,LocalDate fechaNacimiento, String email, String fotoPerfilCodificada) {
 		Usuario user = new Usuario(nombre, apellidos, numTlf, password, estado, fechaNacimiento, email, fotoPerfilCodificada);
-
 		if (!repositorioUsuarios.contains(user)) {
 			adaptadorUsuario.registrarUsuario(user);
 			repositorioUsuarios.add(user);			
 			return true;
 		}
-		else return false;
+		return false;
 	}
-
-	public void hacerPremium(boolean exitoPago) {
+	
+	/**
+	 * Método hacer un usuario premium
+	 * @return descuento
+	 */
+	public void setPremiumUsuarioActual(boolean exitoPago) {
 		usuarioActual.setPremium(exitoPago);
 		adaptadorUsuario.modificarUsuario(usuarioActual);
 	}
-
+	
+	/**
+	 * Método para buscar un contacto del usuario actual
+	 * @param nombre
+	 * @return contacto
+	 */
 	public Contacto buscarContactoDeUsuario(String nombre) {		
 		return usuarioActual.encontrarContactoPorNombre(nombre);
 	}
-	
+
+	/**
+	 * Método para buscar un contacto del usuario actual
+	 * 
+	 * @param numTlf
+	 * @return contacto
+	 */
 	public Contacto buscarContactoDeUsuario(int numTlf) {
 		return usuarioActual.encontrarContactoPorNumTlf(numTlf);
 	}
 
 	/**
-	 * Metodo que devuelve si un contacto es ficticio o no
-	 * 
+	 * Metodo que devuelve si un contacto es ficticio o no 
 	 * @param contacto
 	 */
 	public boolean esContactoFicticio(Contacto contacto) {
 		if (contacto instanceof ContactoIndividual) return ((ContactoIndividual) contacto).isContactoFicticio();
 		else return false; 
 	}
-
+	/**
+	 * Método para enviar un mensaje
+	 * @param texto
+	 * @param contacto
+	 */
 	public void enviarMensaje(String texto, Contacto contacto) {
 		Mensaje mensajeNuevo = new Mensaje(texto, usuarioActual, contacto);
 		usuarioActual.enviarMensaje(mensajeNuevo, contacto);
@@ -156,7 +202,11 @@ public class ControladorAppChat {
 			});
 		}
 	}
-
+	/**
+	 * Método para enviar un emoticono
+	 * @param emoticono
+	 * @param contacto
+	 */
 	public void enviarEmoticono(int emoticono, Contacto contacto) {
 		Mensaje emoticonoNuevo = new Mensaje(emoticono, usuarioActual, contacto);
 		usuarioActual.enviarMensaje(emoticonoNuevo, contacto);
@@ -180,6 +230,7 @@ public class ControladorAppChat {
 	 * Metodo que cambia el nombre de un contacto
 	 * 
 	 * @param nombre
+	 * @param contacto
 	 */
 	public void cambiarNombreContacto(String nombre, Contacto contacto) {
 		contacto.setNombre(nombre);
@@ -235,7 +286,7 @@ public class ControladorAppChat {
 	 * @param texto
 	 * @param tlf
 	 * @param nombreContato
-	 * @return
+	 * @return lista de mensajes encontrados
      */
 	public List<Mensaje> buscarMensaje(String texto, String tlf, String nombreContacto) {
 		List<Mensaje> mensajes = usuarioActual.getContactos().stream()
@@ -288,36 +339,44 @@ public class ControladorAppChat {
 		usuarioActual.addContacto(nuevoContacto);//Añadimos el contacto a la lista del usuario
 		adaptadorUsuario.modificarUsuario(usuarioActual);//Actualizamos el usuario
 	}
-
-	public List<Contacto> getContactosUsuarioActual() {
-		return usuarioActual.getContactos();
-	}
-
+	
+	/**
+	 * Metodo para crear un grupo
+	 * @param nombre
+	 * @param contactos
+	 * @param fotoCodificada
+	 * @param estado
+	 */
 	public void crearGrupo(String nombre, List<ContactoIndividual> contactos, String fotoGrupoCodificada, String estado) {
 		Grupo grupo = new Grupo(nombre, contactos, fotoGrupoCodificada, estado);
 		adaptadorGrupo.registrarGrupo(grupo);
 		usuarioActual.addContacto(grupo);
 		adaptadorUsuario.modificarUsuario(usuarioActual);
-		//TODO habría que modificar los participantes?
-	}
-
-	public void cargarMensajesDeNoAgregados(Usuario usuario) {
-		//Obtenemos los usuarios que han enviado mensajes a usuario y no están en su lista de contactos
-		adaptadorMensaje.recuperarTodosLosMensajes().stream()
-		.filter(m -> m.getReceptor() instanceof ContactoIndividual)										//receptor es un contacto individual
-		.filter(m -> { 
-			ContactoIndividual contacto = (ContactoIndividual) m.getReceptor();             			
-			return contacto.getUsuarioAsociado().equals(usuario);										//receptor es usuario
-		})
-		.filter(m -> usuario.encontrarContactoPorNombre(m.getEmisor().getNombre()) == null) 			//emisor no está en la lista de contactos de usuario con nombre
-		.filter(m -> usuario.encontrarContactoPorNumTlf(m.getEmisor().getNumTlf()) == null) 			//emisor no esta en la lista de contactos de usuario con nombre=numTlf
-		.map(m -> m.getEmisor())                                                                        //obtenemos el emisor						
-		.distinct()				                                                                        //eliminamos duplicados
-		.forEach(u -> anadirContactoPorTlf(String.valueOf(u.getNumTlf()), u));	//se crea un contacto ficticio para el usuario
-		
-		adaptadorUsuario.modificarUsuario(usuario);
 	}
 	
+	/**
+	 * Método para cargar los mensajes de los usuarios que han enviado mensajes a usuario y no están agregados
+	 * @param usuario
+	 */
+	public void cargarMensajesDeNoAgregados() {
+		//Obtenemos los usuarios que han enviado mensajes a usuario y no están en su lista de contactos
+		adaptadorMensaje.recuperarTodosLosMensajes().stream()
+		.filter(m -> m.getReceptor() instanceof ContactoIndividual)					//receptor es un contacto individual
+		.filter(m -> { 
+			ContactoIndividual contacto = (ContactoIndividual) m.getReceptor();             			
+			return contacto.getUsuarioAsociado().equals(usuarioActual);				//receptor es usuario actual
+		})
+		.filter(m -> !usuarioActual.tieneAgregado(m.getEmisor())) 					//emisor no está en la lista de contactos del usuario actual
+		.map(m -> m.getEmisor())                                                    //obtenemos el emisor						
+		.distinct()				                                                    //eliminamos duplicados
+		.forEach(u -> anadirContactoPorTlf(String.valueOf(u.getNumTlf()), u));		//se crea un contacto ficticio para el usuario
+		
+		adaptadorUsuario.modificarUsuario(usuarioActual);
+	}
+	
+	/**
+	 * Método para cerrar sesión
+	 */
 	public void cerrarSesion() {
 		usuarioActual = null;
 	}

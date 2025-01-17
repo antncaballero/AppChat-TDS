@@ -37,8 +37,7 @@ public class VentanaContactos extends JFrame {
 		setContentPane(contentPane);
 
 		// Obtener los contactos del usuario actual
-		List<Contacto> contactosUsuario = controlador.getContactosUsuarioActual();
-		// TODO List<Contacto> contactosUsuario = VentanaPrincipal.ContactListModel.getContactos();
+		List<Contacto> contactosUsuario = controlador.getUsuarioActual().getContactos();
 
 		// Crear el panel de contactos y añadirlo al contentPane
 		contactosPanel = new ContactosPanel(contactosUsuario);
