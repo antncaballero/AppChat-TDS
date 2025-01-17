@@ -39,8 +39,6 @@ public class VentanaBusqueda extends JFrame {
 	private final static String ERROR_TLF_CONTACTO = "No existe ningún contacto con ese teléfono";
 	private final static String ERROR_NOMBRE_CONTACTO = "No existe ningún contacto con ese nombre";
 	
-	
-	
 	private JPanel contentPane;
 	private JTextField textFieldTexto;
 	private JTextField textFieldTlf;
@@ -131,22 +129,19 @@ public class VentanaBusqueda extends JFrame {
 		});
 		
 		btnBuscar.addActionListener(e -> {
-            accionAceptar();
-		});
-
-		
+			String filtroTexto = textFieldTexto.getText();
+			String filtroTlf = textFieldTlf.getText();
+			String filtroNombreContacto = textFieldContacto.getText();
+			buscarMensajes(filtroTexto, filtroTlf, filtroNombreContacto);
+		});		
 	}
 
 	/**
 	 * Método que se ejecuta al pulsar el botón de buscar.
 	 */
-	private void accionAceptar() {
-		//Antes de llamar al controlador, validamos la entrada
-		String texto = textFieldTexto.getText();
-		String tlf = textFieldTlf.getText();
-		String nombreContacto = textFieldContacto.getText();		
-		String error = validarEntrada(texto, tlf, nombreContacto);
-	    
+	private void buscarMensajes(String texto, String tlf, String nombreContacto) {
+		//Antes de llamar al controlador, validamos la entrada			
+		String error = validarEntrada(texto, tlf, nombreContacto);	    
 		if (error.isEmpty()) {
 	    	List<Mensaje> mensajes = ControladorAppChat.getInstancia().buscarMensaje(texto, tlf, nombreContacto);
 	    	mensajesBuscados.clear();
