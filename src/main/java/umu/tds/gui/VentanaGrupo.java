@@ -87,9 +87,9 @@ public class VentanaGrupo extends JFrame {
 		panelSur.add(btnAceptar);
 		panelSur.add(btnVolver);
 		
-		JLabel user = new JLabel("Jose Luis Fenoll ");
+		JLabel user = new JLabel(ControladorAppChat.getInstancia().getUsuarioActual().getNombre() + " ");
 		user.setFont(new Font("Segoe UI", Font.BOLD, 15));
-		user.setIcon(Utils.getScaledIcon("src/main/resources/user.png", 40, 40));
+		user.setIcon(Utils.imageToImageIcon(ControladorAppChat.getInstancia().getUsuarioActual().getFotoPerfil(), 40, 40));
 		user.setBorder(new LineBorder(Color.BLACK, 1));
 		
 		panelNorte.add(user);
@@ -99,7 +99,6 @@ public class VentanaGrupo extends JFrame {
 		DefaultListModel<ContactoIndividual> modelNotAdded = new DefaultListModel<>();
 		
 		
-		//Ejemplo de contactos		
 		ControladorAppChat.getInstancia().getUsuarioActual().getContactos().forEach(c -> {
 			if (c instanceof ContactoIndividual) {
 				modelNotAdded.addElement((ContactoIndividual) c);
