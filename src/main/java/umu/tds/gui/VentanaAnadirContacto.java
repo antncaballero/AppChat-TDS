@@ -203,7 +203,7 @@ public class VentanaAnadirContacto {
 	    if ((tlf.isEmpty() || !tlf.matches("\\d{9}"))  && !nombre.isEmpty()) {
 	        return ERROR_TLF;
 	    }
-	    return null; // No hay errores
+	    return ""; // No hay errores
 	}
 	
 	private void mostrarError(String mensaje, String tlf, String nombre) {
