@@ -9,7 +9,7 @@ import umu.tds.dominio.ContactoIndividual;
 public class ContactosTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 	private final List<Contacto> contactos;
-	private final String[] columnNames = {"Nombre", "Telefono", "Estado"};
+	private final String[] columnNames = {"Nombre", "Teléfono", "Estado"};
 
 	public ContactosTableModel(List<Contacto> contactos) {
 		this.contactos = contactos;
@@ -32,7 +32,9 @@ public class ContactosTableModel extends AbstractTableModel {
 		case 0:
 			return contacto.getNombre();
 		case 1:
-			return contacto instanceof ContactoIndividual ? String.valueOf(((ContactoIndividual) contacto).getNumTlf()) : "--";
+			return contacto instanceof ContactoIndividual 
+					? String.valueOf(((ContactoIndividual) contacto).getNumTlf()) 
+					: "--";
 		case 2:
 			return contacto.getEstado();
 		default:

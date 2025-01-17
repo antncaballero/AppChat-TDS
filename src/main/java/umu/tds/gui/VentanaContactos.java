@@ -36,24 +36,18 @@ public class VentanaContactos extends JFrame {
 		contentPane.setLayout(new BorderLayout(10, 10));
 		setContentPane(contentPane);
 
-		// Obtener los contactos del usuario actual
-		List<Contacto> contactosUsuario = controlador.getUsuarioActual().getContactos();
+		// Obtener los contactos reales del usuario actual
+		List<Contacto> contactosUsuario = controlador.getUsuarioActual().getContactos().stream()
+				.filter(c -> !ControladorAppChat.getInstancia().isContactoFicticio(c))
+				.toList();
 
 		// Crear el panel de contactos y añadirlo al contentPane
 		contactosPanel = new ContactosPanel(contactosUsuario);
 		contentPane.add(contactosPanel, BorderLayout.CENTER);
-
-		// Aplicar el renderer personalizado
-		ContactTableCellRenderer renderer = new ContactTableCellRenderer();
-		for (int i = 0; i < contactosPanel.getTable().getColumnCount(); i++) {
-			contactosPanel.getTable().getColumnModel().getColumn(i).setCellRenderer(renderer);
-		}
 		
 		// Añadir el panel sur con sus botones
 		contentPane.add(crearPanelSur(), BorderLayout.SOUTH);
 	}
-	
-	
 	
 	public JPanel crearPanelSur() {
 		JPanel panelSur = new JPanel();
@@ -85,16 +79,13 @@ public class VentanaContactos extends JFrame {
 		
 		
 		JButton btnChat = new JButton("Ir al chat");
-		btnChat.addActionListener(e -> {
-			
-			if (contactosPanel.getTable().getSelectedRow() == -1) return;
-			
+		btnChat.addActionListener(e -> {			
+			if (contactosPanel.getTable().getSelectedRow() == -1) return;			
 			JTable t = contactosPanel.getTable();
 			Contacto contactoSeleccionado = controlador.buscarContactoDeUsuario(t.getValueAt(t.getSelectedRow(), 0).toString());
 			parent.loadChat(contactoSeleccionado);
 			parent.setVisible(true);
-			dispose();
-			
+			dispose();			
 		});
 		
 		panelSur.add(btnCerrar);

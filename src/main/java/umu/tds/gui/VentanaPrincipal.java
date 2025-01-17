@@ -283,7 +283,7 @@ public class VentanaPrincipal extends JFrame {
 					}
 					panelEste.setBorder(new TitledBorder(null, tituloBorde, TitledBorder.LEADING, TitledBorder.TOP, null, null));
 					//Si es un contacto ficticio, muestra el botón de añadir contactos ficticios
-					boolean esContactoFicticio = controlador.esContactoFicticio(selectedContact);	
+					boolean esContactoFicticio = controlador.isContactoFicticio(selectedContact);	
 					anadirContacto.setVisible(esContactoFicticio);
 					//Se prepara el teléfono del contacto fictio (si lo es) para que al intentar añadirlo se muestre sin que lo tenga que escribir el usuario
 					tlfContacto = esContactoFicticio ? selectedContact.getNombre() : null;
