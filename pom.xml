@@ -7,9 +7,8 @@
   <artifactId>AppChat</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>MavenTestProject</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <name>AppChat-TDS</name>
+  <url>https://github.com/antncaballero/AppChat-TDS</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
