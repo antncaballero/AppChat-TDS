@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,6 +12,8 @@ import java.util.Base64;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
+
+import com.itextpdf.text.BadElementException;
 
 public class Utils {
 
@@ -85,4 +88,33 @@ public class Utils {
 			return null;
 		}
 	}
+	
+	/**
+	 * Convierte un ImageIcon a un iTextImage
+	 * 
+	 * @param imageIcon
+	 * @return imagen específica de iText
+	 * @throws IOException
+	 * @throws BadElementException
+	 */
+	public static com.itextpdf.text.Image imageIconToPDFImage(ImageIcon imageIcon) throws IOException, BadElementException {
+		// Convert ImageIcon to iText Image
+		BufferedImage bufferedImage = new BufferedImage(
+				imageIcon.getIconWidth(),
+				imageIcon.getIconHeight(),
+				BufferedImage.TYPE_INT_ARGB
+				);
+		imageIcon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ImageIO.write(bufferedImage, "png", baos);
+		com.itextpdf.text.Image image = com.itextpdf.text.Image.getInstance(baos.toByteArray());
+		return image;
+	}
+
+	/**
+	 * Genera el nombre del PDF a partir del contacto
+	 * 
+	 * @param c
+	 * @return
+	 */
 }

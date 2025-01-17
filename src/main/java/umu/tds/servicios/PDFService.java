@@ -1,16 +1,10 @@
 package umu.tds.servicios;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -23,14 +17,18 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-
 import tds.BubbleText;
 import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.Usuario;
+import umu.tds.utils.Utils;
 
+/**
+ * Servicio para generar PDFs con los mensajes de un contacto
+ * 
+ */
 public enum PDFService {
 	INSTANCE;
 
@@ -38,10 +36,10 @@ public enum PDFService {
 	 * Genera un PDF con un los mensajes con un contacto
 	 * 
 	 * @param directorio
-	 * @param c
-	 * @return
+	 * @param contacto
+	 * @param usuario que tiene añadido al contacto
+	 * @return true si se ha generado correctamente, false en caso contrario
 	 */
-	//TODO: Mejorar formato del PDF
 	public boolean generatePDF(File directorio, Contacto c, Usuario usuario) {
 		File file = new File(directorio, generatePDFName(c));
 		Document document = new Document();
@@ -51,15 +49,12 @@ public enum PDFService {
 			Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
 			Font regularFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
 			document.open();
-			document.add(new Paragraph("¡Hola, este es un PDF generado desde Java!"));
 			document.add(generarInicio(c));
 			document.add(new Paragraph(" "));
 
 			PdfPTable table = new PdfPTable(2);
 			table.setWidthPercentage(100);
 			table.setWidths(new int[]{1, 1});
-
-			
 
 			c.getTodosLosMensajes(usuario).forEach(m -> {
 				PdfPCell cell;
@@ -89,7 +84,7 @@ public enum PDFService {
 	 * Genera el inicio del PDF
 	 * 
 	 * @param contacto
-	 * @return
+	 * @return parrafo inicio
 	 */
 	private Paragraph generarInicio(Contacto contacto) {
 		Paragraph paragraph = new Paragraph();
@@ -105,20 +100,18 @@ public enum PDFService {
 			paragraph.add(new Chunk("\n"));
 			paragraph.add(new Chunk("Participantes: "));
 			grupo.getParticipantes().forEach(c -> paragraph.add(new Chunk(c.getNombre() + "-" + c.getUsuarioAsociado().getNumTlf() + "; ")));	
-		}
-            
-		
+		}		
 		return paragraph;
 	}
 	
 	/**
 	 * Crea una celda a la izquierda con un mensaje o un emoticono
 	 * 
-	 * @param m
+	 * @param mensaje m
 	 * @param regularFont
 	 * @param paragraph
 	 * @param esIzquierda
-	 * @return
+	 * @return celda izquierda
 	 */
 	private PdfPCell crearCeldaIzquierda(Mensaje m, Font regularFont, Font boldFont) {
 		Paragraph paragraph = new Paragraph();
@@ -142,7 +135,7 @@ public enum PDFService {
 	 * @param regularFont
 	 * @param paragraph
 	 * @param esIzquierda
-	 * @return
+	 * @return celda derecha
 	 */
 	private PdfPCell crearCeldaDerecha(Mensaje m, Font regularFont, Font boldFont) {
 		Paragraph paragraph = new Paragraph();
@@ -172,7 +165,7 @@ public enum PDFService {
 		Image image = null;
 		int lado = esIzquierda ? Element.ALIGN_LEFT : Element.ALIGN_RIGHT;
 		try {
-			image = ImageIconToImage(BubbleText.getEmoji(m.getEmoticono()));
+			image = Utils.imageIconToPDFImage(BubbleText.getEmoji(m.getEmoticono()));
 		} catch (BadElementException | IOException e) {
 			e.printStackTrace();
 		}
@@ -186,8 +179,6 @@ public enum PDFService {
 			paragraph.add(new Chunk(": " + m.getEmisor().getNombre() 
 					+ " - " + m.getHora().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))));
 		}
-
-
 		PdfPCell cell = new PdfPCell(paragraph);
 		cell.setHorizontalAlignment(lado);
 		cell.setBorder(PdfPCell.NO_BORDER);
@@ -205,34 +196,11 @@ public enum PDFService {
 		return emptyCell;
 	}
 
-
 	/**
-	 * Convierte un ImageIcon a un iText Image
+	 * Genera el nombre del PDF
 	 * 
-	 * @param imageIcon
-	 * @return
-	 * @throws IOException
-	 * @throws BadElementException
-	 */
-	private Image ImageIconToImage(ImageIcon imageIcon) throws IOException, BadElementException {
-		// Convert ImageIcon to iText Image
-		BufferedImage bufferedImage = new BufferedImage(
-				imageIcon.getIconWidth(),
-				imageIcon.getIconHeight(),
-				BufferedImage.TYPE_INT_ARGB
-				);
-		imageIcon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ImageIO.write(bufferedImage, "png", baos);
-		Image image = Image.getInstance(baos.toByteArray());
-		return image;
-	}
-
-	/**
-	 * Genera el nombre del PDF a partir del contacto
-	 * 
-	 * @param c
-	 * @return
+	 * @param Contacto
+	 * @return nombre del PDF
 	 */
 	private String generatePDFName(Contacto c) {		
 		return "Chat-" + c.getNombre() + ".pdf";	
