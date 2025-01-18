@@ -20,6 +20,9 @@ import java.awt.BorderLayout;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.border.TitledBorder;
+
+import tds.BubbleText;
+
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -28,7 +31,10 @@ import javax.swing.DefaultListModel;
 
 import umu.tds.controlador.ControladorAppChat;
 import umu.tds.dominio.Contacto;
+import umu.tds.dominio.ContactoIndividual;
+import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Mensaje;
+import umu.tds.dominio.Usuario;
 import umu.tds.utils.Utils;
 
 @SuppressWarnings("serial")
@@ -39,6 +45,7 @@ public class VentanaBusqueda extends JFrame {
 	private final static String ERROR_TLF_CONTACTO = "No existe ningún contacto con ese teléfono";
 	private final static String ERROR_NOMBRE_CONTACTO = "No existe ningún contacto con ese nombre";
 	
+	private ControladorAppChat controlador = ControladorAppChat.getInstancia();
 	private JPanel contentPane;
 	private JTextField textFieldTexto;
 	private JTextField textFieldTlf;
@@ -143,7 +150,7 @@ public class VentanaBusqueda extends JFrame {
 		//Antes de llamar al controlador, validamos la entrada			
 		String error = validarEntrada(texto, tlf, nombreContacto);	    
 		if (error.isEmpty()) {
-	    	List<Mensaje> mensajes = ControladorAppChat.getInstancia().buscarMensaje(texto, tlf, nombreContacto);
+	    	List<Mensaje> mensajes = controlador.buscarMensaje(texto, tlf, nombreContacto);
 	    	mensajesBuscados.clear();
 	    	listaMensajes.repaint();
 	    	mensajes.forEach(m -> mensajesBuscados.addElement(m));	    		    
@@ -160,22 +167,18 @@ public class VentanaBusqueda extends JFrame {
 	 * @param pass
 	 * @return
 	 */
-	private String validarEntrada(String texto, String tlf, String nombreContacto ) {
-		
-		if (texto.isEmpty() && tlf.isEmpty() && nombreContacto.isEmpty()) return ERROR_VACIO;	    	    
-		
+	private String validarEntrada(String texto, String tlf, String nombreContacto ) {		
+		if (texto.isEmpty() && tlf.isEmpty() && nombreContacto.isEmpty()) return ERROR_VACIO;	    	    		
 		if (!nombreContacto.isEmpty()) {
-	    	Optional<Contacto> contacto = Optional.ofNullable(ControladorAppChat.getInstancia().buscarContactoDeUsuario(nombreContacto));
+	    	Optional<Contacto> contacto = Optional.ofNullable(controlador.buscarContactoDeUsuario(nombreContacto));
 	    	if (contacto.isEmpty()) return ERROR_NOMBRE_CONTACTO;	    		    
-	    }	    	    
-		
+	    }	    	    		
 		if (!tlf.isEmpty()) {			
 	    	try {
 				Integer.parseInt(tlf);
 			} catch (NumberFormatException e) {
 				return ERROR_FORMATO_TLF;	
-			}
-			
+			}			
 	    	Optional<Contacto> contacto = Optional.ofNullable(ControladorAppChat.getInstancia().buscarContactoDeUsuario(Integer.parseInt(tlf)));
 	    	if (contacto.isEmpty()) {
 	    		return ERROR_TLF_CONTACTO;
@@ -187,8 +190,7 @@ public class VentanaBusqueda extends JFrame {
 	private static ListCellRenderer<? super Mensaje> createListRenderer() {
 		return new DefaultListCellRenderer() {
 			@Override
-			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-					boolean cellHasFocus) {
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 				
 				JPanel panelEntero = new JPanel();
 				panelEntero.setLayout(new BoxLayout(panelEntero, BoxLayout.Y_AXIS));
@@ -197,11 +199,11 @@ public class VentanaBusqueda extends JFrame {
 				JPanel panel = new JPanel();
 				panel.setBorder(new LineBorder(Color.BLACK, 1));
 				panel.setLayout(new BorderLayout());
-				JLabel labelEmisor = new JLabel(" " + msj.getEmisor().getNombre());
+				JLabel labelEmisor = new JLabel(" " + generarNombreEmisor(msj));
 				labelEmisor.setFont(new Font("Segoe UI", Font.BOLD, 15));
-				JLabel labelReceptor = new JLabel(msj.getReceptor().getNombre() + " ");
+				JLabel labelReceptor = new JLabel(generarNombreReceptor(msj) + " ");
 				labelReceptor.setFont(new Font("Segoe UI", Font.BOLD, 15));
-				JLabel labelTexto = new JLabel(" " + msj.getTexto());
+				JLabel labelTexto = generarLabelTexto(msj);
 				labelTexto.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 				labelTexto.setBorder(new LineBorder(Color.BLACK, 1));
 				
@@ -220,5 +222,54 @@ public class VentanaBusqueda extends JFrame {
 				return panelEntero;
 			}
 		};
+	}
+	
+	/**
+	 * Método que genera el nombre del receptor para el cell renderer de mensajes
+	 * @param mensaje
+	 * @return nombre del receptor
+	 */
+	private static String generarNombreReceptor(Mensaje msj) {
+		Usuario usuarioActual = ControladorAppChat.getInstancia().getUsuarioActual();
+		//Si el receptor del mensaje es un grupo, se mostrará el nombre del grupo
+		if (msj.getReceptor() instanceof Grupo) return msj.getReceptor().getNombre();
+		//Si el receptor del mensaje es el usuario actual, se mostrará "Tú"
+		else if (((ContactoIndividual) msj.getReceptor()).getUsuarioAsociado().equals(usuarioActual)) return "Tú";
+		//Si el receptor del mensaje es un contacto individual que no es el usuario actual, se mostrará el nombre del contacto
+		else return msj.getReceptor().getNombre();
+	}
+	
+	/**
+	 * Método que genera el nombre del emisor para el cell renderer de mensajes
+	 * 
+	 * @param mensaje
+	 * @return nombre del emisor
+	 */
+	private static String generarNombreEmisor(Mensaje msj) {
+		Usuario usuarioActual = ControladorAppChat.getInstancia().getUsuarioActual();
+		if (msj.getEmisor().equals(usuarioActual)) {
+			// Si el emisor del mensaje es el usuario actual, se mostrará "Tú"
+			return "Tú";
+		}else {
+            // Si el emisor del mensaje no es el usuario, se mostrará el nombre del contacto agregad 			
+			return usuarioActual.getContactos().stream()
+				    .filter(c -> c instanceof ContactoIndividual)
+				    .map(c -> (ContactoIndividual) c)
+				    .filter(c -> c.getUsuarioAsociado().equals(msj.getEmisor()))
+				    .map(c -> c.getNombre())
+				    .findFirst()
+				    .orElse("Usuario desconocido");
+		}		
+	}
+	
+	/**
+	 * Método que genera el JLabel para el texto del cell renderer de mensajes
+	 * 
+	 * @param mensaje
+	 * @return JLabel con el texto o emoticono del mensaje
+	 */
+	private static JLabel generarLabelTexto(Mensaje msj) {
+		if (!msj.getTexto().isEmpty()) return new JLabel(" " + msj.getTexto());
+		else return new JLabel(BubbleText.getEmoji(msj.getEmoticono()));  
 	}
 }
