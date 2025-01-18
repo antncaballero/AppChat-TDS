@@ -11,7 +11,7 @@ public abstract class Contacto {
 	
 	private int codigo;
 	private String nombre;
-	protected List<Mensaje> listaMensajes;
+	private List<Mensaje> listaMensajes;
 	
 	public Contacto(String nombre) {
 		this.codigo = 0;

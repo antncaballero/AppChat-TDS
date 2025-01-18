@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import umu.tds.utils.Utils;
 
 public class Usuario {
@@ -127,7 +129,25 @@ public class Usuario {
 	}
 	
 	public List<Contacto> getContactos() {
-		return Collections.unmodifiableList(contactos);
+		// Se devuelve una lista de contactos ordenada por la fecha del último mensaje, para que
+		// en toda las ventanas de la aplicación se muestren los contactos ordenados
+		return contactos.stream()
+				.sorted((c1, c2) -> {
+					List<Mensaje> listaC1 = c1.getTodosLosMensajes(this);
+					List<Mensaje> listaC2 = c2.getTodosLosMensajes(this);
+					if (listaC1.isEmpty() && listaC2.isEmpty()) {
+						return 0; // Si ambos están vacíos, son considerados iguales
+					} else if (listaC1.isEmpty()) {
+						return 1; // Si solo el contacto actual tiene lista vacía, va al final
+					} else if (listaC2.isEmpty()) {
+						return -1; // Si solo el otro contacto tiene lista vacía, va al final
+					}
+					// Ambos contactos tienen mensajes, por lo tanto se compara el último mensaje
+					Mensaje ultimoMensajeThis = listaC1.get(listaC1.size() - 1);
+					Mensaje ultimoMensajeOtro = listaC2.get(listaC2.size() - 1);
+					return ultimoMensajeOtro.compareTo(ultimoMensajeThis);
+				})
+				.collect(Collectors.toUnmodifiableList());
 	}
 	
 	public void setContactos(List<Contacto> contactos) {
