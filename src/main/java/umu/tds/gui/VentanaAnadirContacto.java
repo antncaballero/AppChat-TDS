@@ -59,7 +59,7 @@ public class VentanaAnadirContacto {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setTitle("AppChat");
+		frame.setTitle("Añade un contacto");
 		frame.setBounds(100, 100, 600, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
