@@ -77,6 +77,9 @@ public class VentanaEditarContacto extends JFrame {
 		btnAplicar.addActionListener(e -> {
             String nombre = txtNombre.getText();
 			controlador.cambiarNombreContacto(nombre, contacto);
+			JOptionPane.showMessageDialog(null, "Contacto modificado con éxito", "Contacto modificado", JOptionPane.INFORMATION_MESSAGE);
+			new VentanaPrincipal().setVisible(true);
+			this.dispose();
 		});
 		
         getContentPane().add(panelCentro, BorderLayout.CENTER);
