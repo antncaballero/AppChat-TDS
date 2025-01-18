@@ -17,6 +17,8 @@ import com.itextpdf.text.BadElementException;
 
 public class Utils {
 
+	public static final String FOTO_USUARIO_POR_DEFECTO = Utils.convertImageToBase64(new File("src/main/resources/user.png"));;
+	
 	public static String convertImageToBase64(File imageFile) {
         // Leer el archivo de imagen en un arreglo de bytes        
 		byte[] imageBytes;

@@ -81,7 +81,7 @@ public class VentanaRegistro extends JFrame {
 		});
 		
 		nombreField.addActionListener(e -> {
-			accionAceptar();
+			registrar(nombreField.getText(),apellidosField.getText(), telefonoField.getText(), emailField.getText(), String.valueOf(passwordField1.getPassword()), String.valueOf(passwordField2.getPassword()));
 		});
 
 		// Etiqueta y campo de "Apellidos"
@@ -115,7 +115,7 @@ public class VentanaRegistro extends JFrame {
 		});
 		
 		apellidosField.addActionListener(e -> {
-            accionAceptar();
+			registrar(nombreField.getText(),apellidosField.getText(), telefonoField.getText(), emailField.getText(), String.valueOf(passwordField1.getPassword()), String.valueOf(passwordField2.getPassword()));
         });	
 
 		// Etiqueta y campo de "Teléfono"
@@ -148,7 +148,7 @@ public class VentanaRegistro extends JFrame {
 		});
 
 		telefonoField.addActionListener(e -> {
-			accionAceptar();
+			registrar(nombreField.getText(),apellidosField.getText(), telefonoField.getText(), emailField.getText(), String.valueOf(passwordField1.getPassword()), String.valueOf(passwordField2.getPassword()));
 		});
 		
 		JLabel lblEmail = new JLabel("Email:");
@@ -172,7 +172,7 @@ public class VentanaRegistro extends JFrame {
 		});
 		
 		emailField.addActionListener(e -> {
-            accionAceptar();
+			registrar(nombreField.getText(),apellidosField.getText(), telefonoField.getText(), emailField.getText(), String.valueOf(passwordField1.getPassword()), String.valueOf(passwordField2.getPassword()));
         });
 		gbc_emailField.anchor = GridBagConstraints.WEST;
 		gbc_emailField.insets = new Insets(0, 0, 5, 0);
@@ -210,7 +210,7 @@ public class VentanaRegistro extends JFrame {
 		});
 
 		passwordField1.addActionListener(e -> {
-			accionAceptar();
+			registrar(nombreField.getText(),apellidosField.getText(), telefonoField.getText(), emailField.getText(), String.valueOf(passwordField1.getPassword()), String.valueOf(passwordField2.getPassword()));
 		});
 		
 		GridBagConstraints gbcPasswordLabel2 = new GridBagConstraints();
@@ -235,7 +235,7 @@ public class VentanaRegistro extends JFrame {
 		});
 		
 		passwordField2.addActionListener(e -> {
-			accionAceptar();
+			registrar(nombreField.getText(),apellidosField.getText(), telefonoField.getText(), emailField.getText(), String.valueOf(passwordField1.getPassword()), String.valueOf(passwordField2.getPassword()));
 		});
 
 		JPanel btnMostrarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));		
@@ -437,27 +437,20 @@ public class VentanaRegistro extends JFrame {
 		});
 
 		aceptarButton.addActionListener(e -> {		
-			accionAceptar();
+			registrar(nombreField.getText(),apellidosField.getText(), telefonoField.getText(), emailField.getText(), String.valueOf(passwordField1.getPassword()), String.valueOf(passwordField2.getPassword()));
 		});
 
 	}
 	
-	private void accionAceptar() {
-		Optional<String> error = Optional.ofNullable(validarEntrada(nombreField.getText(), 
-				apellidosField.getText(), telefonoField.getText(), emailField.getText(), 
-				String.valueOf(passwordField1.getPassword()), String.valueOf(passwordField2.getPassword())));
-
+	private void registrar(String nombre, String apellidos, String tlf, String email, String pass1, String pass2) {
+		String error = validarEntrada(nombre, apellidos, tlf, email, pass1, pass2);
 		if (error.isEmpty()) {
 			String fotoPerfilCodificada = imageLabel.getIcon() != null 
 					? Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription())) 
-							: Utils.convertImageToBase64(new File("src/main/resources/user.png"));
+					: Utils.FOTO_USUARIO_POR_DEFECTO;
 
 			LocalDate fechaNacimiento = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-			boolean success = ControladorAppChat.getInstancia().registrarUsuario(
-					nombreField.getText(), apellidosField.getText(), Integer.parseInt(telefonoField.getText()),
-					new String(passwordField1.getPassword()), saludoField.getText(), fechaNacimiento,
-					emailField.getText(), fotoPerfilCodificada);
+			boolean success = ControladorAppChat.getInstancia().registrarUsuario(nombre, apellidos, Integer.parseInt(tlf),pass1, saludoField.getText(), fechaNacimiento,email, fotoPerfilCodificada);
 
 			JOptionPane.showMessageDialog(VentanaRegistro.this, success ? "Te has registrado con éxito" : "El usuario ya existe");
 			if (success) {
@@ -467,9 +460,7 @@ public class VentanaRegistro extends JFrame {
 			}
 		} else {
 			Toolkit.getDefaultToolkit().beep();
-			mostrarError(error.get(), nombreField.getText(), apellidosField.getText(), telefonoField.getText(),
-					emailField.getText(), String.valueOf(passwordField1.getPassword()),
-					String.valueOf(passwordField2.getPassword()));
+			mostrarError(error, nombre, apellidos, tlf, email, pass1, pass2);
 		}
 	}
 	
@@ -488,7 +479,7 @@ public class VentanaRegistro extends JFrame {
 	 */
 	private String validarEntrada(String nombre, String apellidos, String tlf, String email, 
 			String pass1, String pass2) {
-		String error = null;
+		String error = "";
 
 		if (nombre.isEmpty() || apellidos.isEmpty() || tlf.isEmpty() || email.isEmpty() || pass1.isEmpty()
 				|| pass2.isEmpty() || dateChooser.getDate() == null) {
@@ -533,7 +524,6 @@ public class VentanaRegistro extends JFrame {
 		passwordField1.setBorder(pass1.isEmpty() || !pass1.equals(pass2) ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
 		passwordField2.setBorder(pass2.isEmpty() || !pass2.equals(pass1) ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
 		dateChooser.setBorder(dateChooser.getDate() == null ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
-
 		JOptionPane.showMessageDialog(VentanaRegistro.this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
