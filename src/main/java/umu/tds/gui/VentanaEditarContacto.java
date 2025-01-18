@@ -76,7 +76,8 @@ public class VentanaEditarContacto extends JFrame {
 		
 		btnAplicar.addActionListener(e -> {
             String nombre = txtNombre.getText();
-			controlador.cambiarNombreContacto(nombre, contacto);
+			if (!validarDatos(nombre)) return;
+            controlador.cambiarNombreContacto(nombre, contacto);
 			JOptionPane.showMessageDialog(null, "Contacto modificado con éxito", "Contacto modificado", JOptionPane.INFORMATION_MESSAGE);
 			new VentanaPrincipal().setVisible(true);
 			this.dispose();
@@ -84,4 +85,12 @@ public class VentanaEditarContacto extends JFrame {
 		
         getContentPane().add(panelCentro, BorderLayout.CENTER);
     }
+    
+	private static boolean validarDatos(String nombre) {
+		if (nombre.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "El nombre no puede estar vacío", "Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		return true;
+	}
 }
