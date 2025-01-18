@@ -25,8 +25,16 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.Optional;
 
+/**
+ * Ventana de login de la aplicación.
+ * 
+ */
 public class VentanaLogin {
-
+	
+	private static final String ERROR_FALTA_CONTRASEÑA = "Falta por introducir una contraseña";
+	private static final String ERROR_FALTA_TELEFONO = "Falta por introducir un teléfono de 9 dígitos";
+	private static final String ERROR_FALTA_TLF_CONTRASEÑA = "Falta por introducir un teléfono de 9 dígitos y una contraseña";
+	
 	private JFrame frame;
 	private JTextField txtTelefono;
 	private JPasswordField txtContrasena;
@@ -65,14 +73,16 @@ public class VentanaLogin {
 		JPanel panelLogin = new JPanel();
 		panelLogin.setLayout(new BorderLayout(0, 0));
 		frame.getContentPane().add(panelLogin);
-
+		
+		//Panel norte con título
 		JPanel panelNorte = new JPanel();
 		panelLogin.add(panelNorte, BorderLayout.NORTH);
 
 		JLabel labelTitulo = new JLabel("AppChat");
 		labelTitulo.setFont(new Font("Segoe UI", Font.BOLD, 65));
 		panelNorte.add(labelTitulo);
-
+		
+		//Panel central con los campos de texto
 		JPanel panelCentro = new JPanel();
 		panelCentro.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1), "Login", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelLogin.add(panelCentro, BorderLayout.CENTER);
@@ -95,6 +105,8 @@ public class VentanaLogin {
 		txtTelefono = new JTextField();
 		txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		txtTelefono.setBorder(new LineBorder(Color.BLACK, 1));
+		
+		//Añadimos un listener para cambiar el borde al entrar y salir del campo de texto
 		txtTelefono.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent evt) {
             	txtTelefono.setBorder(new LineBorder(Color.BLACK, 2));
@@ -103,9 +115,9 @@ public class VentanaLogin {
             	txtTelefono.setBorder(new LineBorder(Color.BLACK, 1));
             }
         });
-		
+		//para que al pulsar enter se intente el inicie sesión
 		txtTelefono.addActionListener(e -> {
-			accionAceptar();
+			iniciarSesion(txtTelefono.getText(), String.valueOf(txtContrasena.getPassword()));
 		});
 		
 		GridBagConstraints gbc_txtTelefono = new GridBagConstraints();
@@ -137,7 +149,7 @@ public class VentanaLogin {
             }
          });
 		txtContrasena.addActionListener(e -> {
-			accionAceptar();
+			iniciarSesion(txtTelefono.getText(), String.valueOf(txtContrasena.getPassword()));
 		});
 		
 		GridBagConstraints gbc_txtContrasena = new GridBagConstraints();
@@ -165,6 +177,7 @@ public class VentanaLogin {
 			}
 		});
 		
+		//Panel sur con botones
 		JPanel panelSur = new JPanel();
 		panelLogin.add(panelSur, BorderLayout.SOUTH);
 
@@ -183,14 +196,19 @@ public class VentanaLogin {
 		JButton btnCancelar = new JButton("Cancelar");
 		btnCancelar.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		panelSur.add(btnCancelar);
+		btnCancelar.addActionListener(e -> {
+			txtTelefono.setText("");
+			txtContrasena.setText("");
+		});
 
 		JButton btnAceptar = new JButton("Aceptar");
 		btnAceptar.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		panelSur.add(btnAceptar);
 		btnAceptar.addActionListener(e -> {
-			accionAceptar();
+			iniciarSesion(txtTelefono.getText(), String.valueOf(txtContrasena.getPassword()));
 		});
-
+		
+		//Paneles este y oeste para ajustar mejor el panel de login
 		JPanel panelOeste = new JPanel();
 		panelLogin.add(panelOeste, BorderLayout.WEST);
 
@@ -203,13 +221,15 @@ public class VentanaLogin {
 		Component espacioEste = Box.createHorizontalStrut(110);
 		panelEste.add(espacioEste);
 	}
-	
-	private void accionAceptar() {
-		//Antes de llamar al controlador, validamos la entrada
-		String tlf = txtTelefono.getText();
-		String pass = String.valueOf(txtContrasena.getPassword());
-		Optional<String> error = Optional.ofNullable(validarEntrada(tlf, pass));
 
+	/**
+	 *  Método para iniciar sesión a partir del controlador con los datos introducidos
+	 * @param tlf 
+	 * @param pass
+	 */
+	private void iniciarSesion(String tlf, String pass) {
+		//Antes de llamar al controlador, validamos posibles campos vacíos
+		String error = validarEntrada(tlf, pass);
 	    if (error.isEmpty()) {
 	    	boolean success = ControladorAppChat.getInstancia().iniciarSesion(Integer.parseInt(tlf), pass);
 	    	JOptionPane.showMessageDialog(frame, success ? "Bienvenido a AppChat" : "Usuario no registrado");
@@ -217,11 +237,11 @@ public class VentanaLogin {
 	    		VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
 				ventanaPrincipal.setVisible(true);
 				frame.dispose();
-			}
-	    	
-	    }else { //Las entradas no son válidas, mostramos mensaje de error y configuramos bordes
+			}	    	
+	    }else { 
+	    	//Las entradas no son válidas, mostramos mensaje de error y configuramos bordes
 	    	Toolkit.getDefaultToolkit().beep();
-	        mostrarError(error.get(), tlf, pass);
+	        mostrarError(error, tlf, pass);
 	    }
 	}
 
@@ -234,17 +254,17 @@ public class VentanaLogin {
 	 */
 	private String validarEntrada(String tlf, String pass) {
 	    if ((tlf.isEmpty() || !tlf.matches("\\d{9}")) && pass.isEmpty()) {
-	        return "Falta por introducir un teléfono de 9 dígitos y una contraseña";
+	        return ERROR_FALTA_TLF_CONTRASEÑA;
 	    }
 	    if ((!tlf.isEmpty() && tlf.matches("\\d{9}")) && pass.isEmpty()) {
-	        return "Falta por introducir una contraseña";
+	        return ERROR_FALTA_CONTRASEÑA;
 	    }
 	    if ((tlf.isEmpty() || !tlf.matches("\\d{9}"))  && !pass.isEmpty()) {
-	        return "Falta por introducir un teléfono de 9 dígitos";
+	        return ERROR_FALTA_TELEFONO;
 	    }
-	    return null; // No hay errores
+	    return ""; // No hay errores
 	}
-
+	
 	/**
 	 * Método para mostrar un mensaje de error y configurar bordes.
 	 * 
