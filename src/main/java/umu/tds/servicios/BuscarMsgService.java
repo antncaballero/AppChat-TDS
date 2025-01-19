@@ -18,7 +18,6 @@ public enum BuscarMsgService {
 				.filter(filtroEmisor(usuario, isEnviados))
 				.filter(filtroReceptor(usuario, isRecibidos))
 				.filter(filtroTexto(texto))		         					
-				.filter(filtroTexto(texto))
 				.sorted()
 				.collect(Collectors.toList());				
 	}
@@ -37,7 +36,10 @@ public enum BuscarMsgService {
 	
 	//Filtros que comprueban si el receptor del mensaje es el usuario
 	private Predicate<Mensaje> filtroReceptor(Usuario usuario, boolean isRecibidos) {
-		return m -> !isRecibidos || ((ContactoIndividual)m.getReceptor()).getUsuarioAsociado().equals(usuario);
+		return m -> {
+			if (!isRecibidos) return true; // no se ha seleccionado recibidos
+			return m.getReceptor() instanceof ContactoIndividual && ((ContactoIndividual) m.getReceptor()).getUsuarioAsociado().equals(usuario);
+		};		
 	}
 	
 	//Filtro que comprueba si el teléfono del emisor o receptor del mensaje coincide con el introducido
