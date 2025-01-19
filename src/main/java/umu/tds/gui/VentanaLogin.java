@@ -23,7 +23,6 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.util.Optional;
 
 /**
  * Ventana de login de la aplicación.

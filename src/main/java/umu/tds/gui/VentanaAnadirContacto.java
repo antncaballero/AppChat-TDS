@@ -17,7 +17,6 @@ import javax.swing.Box;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.util.Optional;
 import java.awt.Dimension;
 /**
  * Ventana que permite añadir un contacto

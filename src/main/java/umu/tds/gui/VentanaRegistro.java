@@ -9,7 +9,6 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.List;
-import java.util.Optional;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.ZoneId;
