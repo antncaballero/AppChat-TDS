@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +24,7 @@ import umu.tds.dominio.Usuario;
 public class ChatPanel extends JPanel implements Scrollable {
 
 	private static final long serialVersionUID = 1L;
-
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 	/**
 	 * Create the panel.
 	 */
@@ -49,12 +51,14 @@ public class ChatPanel extends JPanel implements Scrollable {
 	}
 	
 	public void enviarMensaje(String mensaje) {
-		BubbleText burbuja = new BubbleText(this, mensaje, Color.GREEN, "You", BubbleText.SENT, 12);
+		String fecha = LocalDateTime.now().format(formatter);
+		BubbleText burbuja = new BubbleText(this, mensaje, Color.GREEN, "You - " + fecha, BubbleText.SENT, 12);
 		add(burbuja);
 	}
 	
 	public void enviarEmoticono(int emoticono) {
-		BubbleText burbuja = new BubbleText(this, emoticono, Color.GREEN, "You", BubbleText.SENT, 12);
+		String fecha = LocalDateTime.now().format(formatter);
+		BubbleText burbuja = new BubbleText(this, emoticono, Color.GREEN, "You - " + fecha, BubbleText.SENT, 12);
 		add(burbuja);
 	}
 	
@@ -65,14 +69,15 @@ public class ChatPanel extends JPanel implements Scrollable {
 		
 		return mensajes.stream()
 				.map(m -> { 					
+					String fecha = " - " + m.getHora().format(formatter);
 					if (isEmoticono(m)) {						
 						return m.getEmisor().equals(actual) 
-								? new BubbleText(this, m.getEmoticono(), Color.GREEN, actual.getNombre(), BubbleText.SENT, 12) 
-								: new BubbleText(this, m.getEmoticono(), Color.GREEN, contacto.getNombre(), BubbleText.RECEIVED, 12);					
+								? new BubbleText(this, m.getEmoticono(), Color.GREEN, actual.getNombre() + fecha, BubbleText.SENT, 12) 
+								: new BubbleText(this, m.getEmoticono(), Color.GREEN, contacto.getNombre() + fecha, BubbleText.RECEIVED, 12);					
 					} else {					
 						return m.getEmisor().equals(actual)
-								? new BubbleText(this, m.getTexto(), Color.GREEN, actual.getNombre(), BubbleText.SENT, 12)
-								: new BubbleText(this, m.getTexto(), Color.GREEN, contacto.getNombre(),BubbleText.RECEIVED, 12);
+								? new BubbleText(this, m.getTexto(), Color.GREEN, actual.getNombre() + fecha, BubbleText.SENT, 12)
+								: new BubbleText(this, m.getTexto(), Color.GREEN, contacto.getNombre() + fecha,BubbleText.RECEIVED, 12);
 					}
 				})
 				.collect(Collectors.toList());	
