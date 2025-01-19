@@ -15,7 +15,8 @@ public enum BuscarMsgService {
 		return mensajes.stream()
 				.filter(filtroTelefono(tlf))					
 				.filter(filtroNombreContacto(usuario, nombreContacto))
-				.filter(filtroTexto(texto))		         					
+				.filter(filtroTexto(texto))
+				.sorted()
 				.collect(Collectors.toList());				
 	}
 	
