@@ -16,6 +16,9 @@ import umu.tds.dominio.Contacto;
 import umu.tds.utils.Utils;
 
 @SuppressWarnings("serial")
+/**
+ * Clase que define el renderizado de las celdas de la lista de contactos
+ */
 public class ContactCellRenderer extends JPanel implements ListCellRenderer<Contacto> {
 	
 	private JLabel nameLabel;

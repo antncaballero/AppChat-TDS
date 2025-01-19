@@ -17,6 +17,9 @@ import java.io.File;
 import java.util.List;
 
 @SuppressWarnings("serial")
+/**
+ * Ventana que permite editar el perfil de un usuario
+ */
 public class VentanaPerfil extends JFrame {
 
 	private ControladorAppChat controlador = ControladorAppChat.getInstancia();

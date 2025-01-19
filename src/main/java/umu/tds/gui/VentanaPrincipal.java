@@ -37,6 +37,9 @@ import umu.tds.dominio.Grupo;
 import umu.tds.utils.Utils;
 
 @SuppressWarnings("serial")
+/**
+ * Ventana principal de la aplicación
+ */
 public class VentanaPrincipal extends JFrame {
 
 	private JPanel contentPane;
@@ -320,7 +323,9 @@ public class VentanaPrincipal extends JFrame {
 		});
 
 	}
-
+	/**
+	 * Acción que se realiza al pulsar el botón de enviar mensaje
+	 */
 	private void accionSend() {
 		String mensaje = fieldMensaje.getText();
 		if (!mensaje.isEmpty()) {
@@ -328,7 +333,10 @@ public class VentanaPrincipal extends JFrame {
 			enviarMensaje(mensaje, contacto);				
 		}
 	}
-
+	/**
+	 * Método que valida si se puede generar el pdf
+	 * @return true si se puede generar, false en caso contrario
+	 */
 	private boolean validarBotonGenerarPdf() {
 		if (lista.getSelectedValue() == null) {
 			JOptionPane.showMessageDialog(this, "Selecciona un chat para generar PDF", "Error", JOptionPane.ERROR_MESSAGE);
@@ -339,13 +347,20 @@ public class VentanaPrincipal extends JFrame {
 		}
 		return true;
 	}
-
+	/**
+	 * Método que carga el chat con un contacto
+	 * @param contacto
+	 */
 	public void loadChat(Contacto contacto) {
 		lista.setSelectedValue(contacto, true);
 		chatPanel.mostrarChat(contacto);
 		SwingUtilities.invokeLater(() -> fieldMensaje.requestFocusInWindow());
 	}
-
+	/**
+	 * Método que envía un mensaje a un contacto
+	 * @param mensaje
+	 * @param contacto
+	 */
 	public void enviarMensaje(String mensaje, Contacto contacto) {		
 		if (contacto != null) {
 			controlador.enviarMensaje(mensaje, contacto);
@@ -356,7 +371,11 @@ public class VentanaPrincipal extends JFrame {
 		}
 
 	}
-
+	/**
+	 * Método que envía un emoticono a un contacto
+	 * @param emoticono
+	 * @param contacto
+	 */
 	public void enviarEmoticono(int emoticono, Contacto contacto) {
 		if (contacto != null) {
 			controlador.enviarEmoticono(emoticono, contacto);

@@ -11,12 +11,14 @@ import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
 
 @SuppressWarnings("serial")
+/**
+ * Clase que define el renderizado de las celdas de la tabla de contactos
+ */
 public class ContactTableCellRenderer extends DefaultTableCellRenderer {
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		Component cellComponent = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
 		if (value instanceof Contacto) {
 			Contacto contacto = (Contacto) value;
 			switch (column) {
@@ -31,7 +33,6 @@ public class ContactTableCellRenderer extends DefaultTableCellRenderer {
 				break;
 			}
 		}
-
 		cellComponent.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -41,8 +42,7 @@ public class ContactTableCellRenderer extends DefaultTableCellRenderer {
 		} else {
 			cellComponent.setBackground(row % 2 == 0 ? Color.WHITE : new Color(240, 240, 240));
 			cellComponent.setForeground(Color.DARK_GRAY);
-		}
-		
+		}		
 		return cellComponent;
 	}
 }

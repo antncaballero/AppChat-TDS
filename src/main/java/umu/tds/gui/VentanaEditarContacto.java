@@ -11,6 +11,9 @@ import umu.tds.dominio.ContactoIndividual;
 import java.awt.*;
 
 @SuppressWarnings("serial")
+/**
+ * Ventana que permite editar un contacto individual
+ */
 public class VentanaEditarContacto extends JFrame {
 
 	private ControladorAppChat controlador = ControladorAppChat.getInstancia();
@@ -85,7 +88,11 @@ public class VentanaEditarContacto extends JFrame {
 		
         getContentPane().add(panelCentro, BorderLayout.CENTER);
     }
-    
+    /**
+     * Método que valida los datos introducidos
+     * @param nombre
+     * @return true si los datos son válidos, false en caso contrario
+     */
 	private static boolean validarDatos(String nombre) {
 		if (nombre.isEmpty()) {
 			JOptionPane.showMessageDialog(null, "El nombre no puede estar vacío", "Error", JOptionPane.ERROR_MESSAGE);

@@ -6,6 +6,9 @@ import java.util.List;
 import umu.tds.dominio.Contacto;
 
 @SuppressWarnings("serial")
+/**
+ * Panel que muestra una tabla con los contactos
+ */
 public class ContactosPanel extends JPanel {
 
 	private JTable table;

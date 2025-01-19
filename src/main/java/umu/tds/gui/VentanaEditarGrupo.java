@@ -22,6 +22,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("serial")
+/**
+ * Ventana que permite editar un grupo
+ */
 public class VentanaEditarGrupo extends JFrame {
 
 	private ControladorAppChat controlador = ControladorAppChat.getInstancia();

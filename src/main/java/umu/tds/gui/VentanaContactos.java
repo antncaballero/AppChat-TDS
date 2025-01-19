@@ -14,7 +14,9 @@ import umu.tds.controlador.ControladorAppChat;
 import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Grupo;
-
+/**
+ * Ventana que muestra los contactos del usuario actual y permite acceder a la ventana de chat con ellos
+ */
 public class VentanaContactos extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -23,7 +25,6 @@ public class VentanaContactos extends JFrame {
 	private ContactosPanel contactosPanel;
 	private VentanaPrincipal parent;
 	
-
 	/**
 	 * Create the frame.
 	 */
@@ -49,7 +50,10 @@ public class VentanaContactos extends JFrame {
 		// Añadir el panel sur con sus botones
 		contentPane.add(crearPanelSur(), BorderLayout.SOUTH);
 	}
-	
+	/**
+	 * Crea el panel sur con los botones de cerrar, ir al chat y editar grupo o contacto
+	 * @return panelSur
+	 */
 	public JPanel crearPanelSur() {
 		JPanel panelSur = new JPanel();
 		panelSur.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -77,8 +81,7 @@ public class VentanaContactos extends JFrame {
                 dispose();
             }
 		});
-		
-		
+				
 		JButton btnChat = new JButton("Ir al chat");
 		btnChat.addActionListener(e -> {			
 			if (contactosPanel.getTable().getSelectedRow() == -1) return;			

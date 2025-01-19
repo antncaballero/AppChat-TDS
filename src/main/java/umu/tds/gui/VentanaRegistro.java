@@ -24,6 +24,9 @@ import umu.tds.utils.Utils;
 import org.apache.commons.validator.routines.EmailValidator;
 
 @SuppressWarnings("serial")
+/**
+ * Ventana que permite registrar un nuevo usuario
+ */
 public class VentanaRegistro extends JFrame {
 	private JTextField emailField;
 	private JTextField nombreField;
@@ -441,7 +444,15 @@ public class VentanaRegistro extends JFrame {
 		});
 
 	}
-	
+	/**
+	 * Método para registrar un nuevo usuario.
+	 * @param nombre
+	 * @param apellidos
+	 * @param tlf
+	 * @param email
+	 * @param pass1
+	 * @param pass2
+	 */
 	private void registrar(String nombre, String apellidos, String tlf, String email, String pass1, String pass2) {
 		String error = validarEntrada(nombre, apellidos, tlf, email, pass1, pass2);
 		if (error.isEmpty()) {

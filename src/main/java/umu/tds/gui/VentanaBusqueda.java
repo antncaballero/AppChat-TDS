@@ -39,6 +39,9 @@ import umu.tds.utils.Utils;
 import javax.swing.JComboBox;
 
 @SuppressWarnings("serial")
+/**
+ * Ventana que permite buscar mensajes
+ */
 public class VentanaBusqueda extends JFrame {
 
 	private final static String ERROR_VACIO = "Debe introducir al menos un filtro de búsqueda";
@@ -181,7 +184,7 @@ public class VentanaBusqueda extends JFrame {
 	 * 
 	 * @param tlf
 	 * @param pass
-	 * @return
+	 * @return mensaje de error
 	 */
 	private String validarEntrada(String texto, String tlf, String nombreContacto, boolean isEnviados, boolean isRecibidos ) {		
 		if (texto.isEmpty() && tlf.isEmpty() && nombreContacto.isEmpty() && !isEnviados && !isRecibidos) return ERROR_VACIO;	    	    		

@@ -18,6 +18,9 @@ import java.awt.Font;
 import java.awt.Component;
 
 @SuppressWarnings("serial")
+/**
+ * Clase que define el JDialog para seleccionar un descuento
+ */
 public class JDialogDescuentos extends JDialog {
 	
 	private static final double PRECIO_PREMIUM = 100;
@@ -89,10 +92,17 @@ public class JDialogDescuentos extends JDialog {
         setLocationRelativeTo(owner);
     }
 
+	/**
+	 * Devuelve si se ha confirmado la compra
+	 * @return true si se ha confirmado la compra
+	 */
     public boolean isConfirmed() {
         return confirmed;
     }
-
+	/**
+	 * Devuelve el descuento seleccionado
+	 * @return descuento seleccionado
+	 */
     public String getDescuentoSeleccionado() {
         return (String) comboDescuentos.getSelectedItem();
     }

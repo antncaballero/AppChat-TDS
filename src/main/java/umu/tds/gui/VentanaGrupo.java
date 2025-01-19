@@ -44,6 +44,9 @@ import umu.tds.controlador.ControladorAppChat;
 import umu.tds.dominio.ContactoIndividual;
 
 @SuppressWarnings("serial")
+/**
+ * Ventana que permite crear un grupo
+ */
 public class VentanaGrupo extends JFrame {
 
 	private JPanel contentPane;
@@ -155,7 +158,14 @@ public class VentanaGrupo extends JFrame {
 			}
 		});
 		nombregrupo.addActionListener(e -> {
-			comprobarNombre(nombregrupo.getText());
+			String nombreGrupo = nombregrupo.getText() != null ? nombregrupo.getText() : "";
+			String fotoGrupoCodificada = imageLabel.getIcon() != null 
+					? Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription())) 
+					: Utils.convertImageToBase64(new File("src/main/resources/group.png"));
+			String estado = areaEstado.getText() != null ? areaEstado.getText() : "";
+			List<ContactoIndividual> contactos = new LinkedList<>();
+			modelAdded.elements().asIterator().forEachRemaining(contactos::add);			
+			crearGrupo(nombreGrupo, fotoGrupoCodificada, contactos, estado);
         });
         GridBagConstraints gbc_nombregrupo = new GridBagConstraints();
         gbc_nombregrupo.insets = new Insets(5, 5, 10, 0);
@@ -306,46 +316,43 @@ public class VentanaGrupo extends JFrame {
 		});
 		
 		btnAceptar.addActionListener(e -> {
-			comprobarNombre(nombregrupo.getText());
+			String nombreGrupo = nombregrupo.getText() != null ? nombregrupo.getText() : "";
+			String fotoGrupoCodificada = imageLabel.getIcon() != null 
+					? Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription())) 
+					: Utils.convertImageToBase64(new File("src/main/resources/group.png"));
+			String estado = areaEstado.getText() != null ? areaEstado.getText() : "";
+			List<ContactoIndividual> contactos = new LinkedList<>();
+			modelAdded.elements().asIterator().forEachRemaining(contactos::add);			
+			crearGrupo(nombreGrupo, fotoGrupoCodificada, contactos, estado);
 		});
 		
 	}
-	
-	private void accionAceptar() {
-		List<ContactoIndividual> contactos = new LinkedList<>();
-		modelAdded.elements().asIterator().forEachRemaining(contactos::add);
-		String fotoPGrupoCodificada = imageLabel.getIcon() != null 
-				? Utils.convertImageToBase64(new File(((ImageIcon) imageLabel.getIcon()).getDescription())) 
-				: Utils.convertImageToBase64(new File("src/main/resources/group.png"));
-		String estado = areaEstado.getText() != null ? areaEstado.getText() : "";
-		ControladorAppChat.getInstancia().crearGrupo(nombregrupo.getText(), contactos, fotoPGrupoCodificada, estado);
+	/**
+	 * Crea un grupo con los datos introducidos
+	 * @param nombre
+	 * @param fotoGrupoCodificada
+	 * @param lista
+	 * @param estado
+	 */
+	private void crearGrupo(String nombre, String fotoGrupoCodificada, List<ContactoIndividual> lista, String estado) {
+		if (!validarEntrada(nombre, lista).isEmpty()) return;				
+		ControladorAppChat.getInstancia().crearGrupo(nombre, lista, fotoGrupoCodificada, estado);
 		JOptionPane.showMessageDialog(this, "Grupo creado correctamente");
+		new VentanaPrincipal().setVisible(true);
+		dispose();
 	}
-	
-	private void comprobarNombre(String nombre) {
-		Optional<String> error = Optional.ofNullable(validarListaContactos());
-		if (error.isPresent()) {
-			JOptionPane.showMessageDialog(this, error.get());
-		}else {
-			if (!nombre.isEmpty()) {
-				accionAceptar();
-			} else {
-				int respuesta = JOptionPane.showConfirmDialog(
-						this,
-						"¿Quieres asignar un nombre al grupo?",
-						"Nombre del grupo",
-						JOptionPane.YES_NO_OPTION
-						);
-				if (respuesta == JOptionPane.YES_OPTION) SwingUtilities.invokeLater(() -> nombregrupo.requestFocusInWindow());
-				else accionAceptar();
-			}
-		}
-	}
-	
-	private String validarListaContactos() {
-		if (modelAdded.isEmpty())
-			return "El grupo debe tener al menos un contacto";
-		return null;
+	/**
+	 * Valida los datos introducidos
+	 * @param nombre
+	 * @param lista
+	 * @return String con los errores encontrados
+	 */
+	private String validarEntrada(String nombre,List<ContactoIndividual> lista) {		
+		String error = "";
+		if (lista.isEmpty()) error += "El grupo debe tener al menos un contacto\n";
+		if (nombre.isEmpty()) error +=  "El grupo debe tener un nombre\n";
+		if (!error.isEmpty()) JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
+		return error;
 	}
 
 }

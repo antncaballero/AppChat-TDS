@@ -5,7 +5,9 @@ import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
-
+/**
+ * Modelo de tabla para los contactos
+ */
 public class ContactosTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 	private final List<Contacto> contactos;

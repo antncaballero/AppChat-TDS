@@ -19,7 +19,9 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.util.Optional;
 import java.awt.Dimension;
-
+/**
+ * Ventana que permite añadir un contacto
+ */
 public class VentanaAnadirContacto {
 
 	private static final String ERROR_TLF = "Se necesita un teléfono de 9 dígitos para el contacto";
@@ -40,9 +42,9 @@ public class VentanaAnadirContacto {
 		initialize();
 	}
 	
-	/*
+	/**
 	 * Constructor para añadir un contacto ficticio
-	 * */
+	 */
 	public VentanaAnadirContacto(String tlf) {
 		initialize();
 		txtTelefono.setText(tlf);
@@ -101,7 +103,9 @@ public class VentanaAnadirContacto {
 		txtNombre.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		txtNombre.addActionListener(e -> {
-			añadirContacto();
+			String tlf = txtTelefono.getText();
+			String nombre = txtNombre.getText();
+			añadirContacto(tlf, nombre);
 		});
 		GridBagConstraints gbc_txtNombre = new GridBagConstraints();
 		gbc_txtNombre.insets = new Insets(0, 0, 5, 5);
@@ -124,7 +128,9 @@ public class VentanaAnadirContacto {
 		txtTelefono.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		txtTelefono.addActionListener(e -> {
-			añadirContacto();
+			String tlf = txtTelefono.getText();
+			String nombre = txtNombre.getText();
+			añadirContacto(tlf, nombre);
 		});
 		GridBagConstraints gbc_txtTelefono = new GridBagConstraints();
 		gbc_txtTelefono.insets = new Insets(0, 0, 5, 5);
@@ -155,7 +161,9 @@ public class VentanaAnadirContacto {
 		});
 		
 		btnAceptar.addActionListener(e -> {
-			añadirContacto();
+			String tlf = txtTelefono.getText();
+			String nombre = txtNombre.getText();
+			añadirContacto(tlf, nombre);
 		});
 
 		JPanel panelOeste = new JPanel();
@@ -171,12 +179,13 @@ public class VentanaAnadirContacto {
 		panelEste.add(espacioEste);
 	}
 	
-	private void añadirContacto() {
-		//Antes de llamar al controlador, validamos la entrada
-		String tlf = txtTelefono.getText();
-		String nombre = txtNombre.getText();
+	/**
+	 * Se comunica con el controlador para añadir un contacto
+	 * @param tlf
+	 * @param nombre
+	 */
+	private void añadirContacto(String tlf, String nombre) {		
 		String errorEntrada = validarEntrada(tlf, nombre);
-
 	    if (errorEntrada.isEmpty()) {
 			boolean success = ControladorAppChat.getInstancia().anadirContactoNuevo(txtNombre.getText(), txtTelefono.getText());
 			if (!success) {
@@ -195,7 +204,12 @@ public class VentanaAnadirContacto {
 	        mostrarError(errorEntrada, tlf, nombre);
 	    }
 	}
-	
+	/**
+	 * Comprueba si la entrada es válida
+	 * @param tlf
+	 * @param nombre
+	 * @return mensaje de error
+	 */
 	private String validarEntrada(String tlf, String nombre) {
 	    if ((tlf.isEmpty() || !tlf.matches("\\d{9}")) && nombre.isEmpty()) {
 	        return ERROR_TLF_NOMBRE;
@@ -208,17 +222,16 @@ public class VentanaAnadirContacto {
 	    }
 	    return ""; // No hay errores
 	}
-	
+	/**
+	 * Muestra un error en la ventana
+	 * @param mensaje
+	 * @param tlf
+	 * @param nombre
+	 */
 	private void mostrarError(String mensaje, String tlf, String nombre) {
 	    // Cambiar bordes según tipo de error
-	    txtTelefono.setBorder(tlf.isEmpty() || !tlf.matches("[0-9]{9}") 
-	                          ? new LineBorder(Color.RED, 2) 
-	                          : new LineBorder(Color.BLACK, 1));
-	    
-	    txtNombre.setBorder(nombre.isEmpty() 
-	                            ? new LineBorder(Color.RED, 2) 
-	                            : new LineBorder(Color.BLACK, 1));
-	    
+	    txtTelefono.setBorder(tlf.isEmpty() || !tlf.matches("[0-9]{9}") ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
+	    txtNombre.setBorder(nombre.isEmpty() ? new LineBorder(Color.RED, 2) : new LineBorder(Color.BLACK, 1));
 	    // Mostrar mensaje de error
 	    JOptionPane.showMessageDialog(frame, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
 	}
