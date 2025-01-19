@@ -1,5 +1,9 @@
 package umu.tds.dominio;
 
+/**
+ * Clase que representa un descuento por número de mensajes.
+ * 
+ */
 public class DescuentoPorMensaje implements Descuento {
 
 	private static final double DESCUENTO_MENSAJES = 0.85;

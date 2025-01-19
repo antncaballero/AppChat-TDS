@@ -1,5 +1,9 @@
 package umu.tds.dominio;
 
+/**
+ * Clase que representa un descuento nulo.
+ * 
+ */
 public class DescuentoNulo implements Descuento {
 
 	//patrón null object
