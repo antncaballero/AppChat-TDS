@@ -129,8 +129,11 @@ public class Usuario {
 	}
 	
 	public List<Contacto> getContactos() {
-		// Se devuelve una lista de contactos ordenada por la fecha del último mensaje, para que
-		// en toda las ventanas de la aplicación se muestren los contactos ordenados
+		return Collections.unmodifiableList(contactos);
+	}
+	
+	public List<Contacto> getContactosOrdenados() {
+		//Para que se ordenen los contactos por el último mensaje recibido
 		return contactos.stream()
 				.sorted((c1, c2) -> {
 					List<Mensaje> listaC1 = c1.getTodosLosMensajes(this);

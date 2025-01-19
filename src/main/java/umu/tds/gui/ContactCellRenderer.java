@@ -3,6 +3,7 @@ package umu.tds.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -25,7 +26,6 @@ public class ContactCellRenderer extends JPanel implements ListCellRenderer<Cont
 
 		setLayout(new BorderLayout(0, 0));
 		setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-
 		nameLabel = new JLabel();
 		nameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 17));
 		estadoLabel = new JLabel();
@@ -46,13 +46,13 @@ public class ContactCellRenderer extends JPanel implements ListCellRenderer<Cont
 		add(panelOeste, BorderLayout.WEST);
 		add(panelCentro, BorderLayout.CENTER);
 		add(Box.createHorizontalStrut(5), BorderLayout.EAST);
-
 	}
+	
 	@Override
 	public Component getListCellRendererComponent(JList<? extends Contacto> list, Contacto contacto, int index,
 			boolean isSelected, boolean cellHasFocus) {
 		nameLabel.setText(contacto.getNombre());
-		estadoLabel.setText(contacto.getEstado());
+		estadoLabel.setText(contacto.getEstado().length() < 45 ? contacto.getEstado() : contacto.getEstado().substring(0, 44)+"...");
 		imageLabel.setIcon(Utils.imageToImageIcon(contacto.getFoto(), 50, 50));
 		
 		if (isSelected) setBackground(Color.lightGray);

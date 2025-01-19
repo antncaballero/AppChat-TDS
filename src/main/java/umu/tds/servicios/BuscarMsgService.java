@@ -18,6 +18,8 @@ public enum BuscarMsgService {
 				.filter(filtroEmisor(usuario, isEnviados))
 				.filter(filtroReceptor(usuario, isRecibidos))
 				.filter(filtroTexto(texto))		         					
+				.filter(filtroTexto(texto))
+				.sorted()
 				.collect(Collectors.toList());				
 	}
 	

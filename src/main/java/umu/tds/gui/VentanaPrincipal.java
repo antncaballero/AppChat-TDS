@@ -54,7 +54,7 @@ public class VentanaPrincipal extends JFrame {
 	public VentanaPrincipal() {
 		setTitle("AppChat");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 930, 620);
+		setBounds(100, 100, 930, 630);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -255,12 +255,12 @@ public class VentanaPrincipal extends JFrame {
 		AbstractListModel<Contacto> model = new AbstractListModel<Contacto>() {
 			@Override
 			public int getSize() {
-				return controlador.getUsuarioActual().getContactos().size();
+				return controlador.getUsuarioActual().getContactosOrdenados().size();
 			}
 
 			@Override
 			public Contacto getElementAt(int index) {
-				return controlador.getUsuarioActual().getContactos().get(index);
+				return controlador.getUsuarioActual().getContactosOrdenados().get(index);
 			}
 		};
 
