@@ -40,6 +40,9 @@ public class VentanaAnadirContacto {
 		initialize();
 	}
 	
+	/*
+	 * Constructor para añadir un contacto ficticio
+	 * */
 	public VentanaAnadirContacto(String tlf) {
 		initialize();
 		txtTelefono.setText(tlf);

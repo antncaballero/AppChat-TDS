@@ -67,11 +67,11 @@ public class VentanaContactos extends JFrame {
 			JTable t = contactosPanel.getTable();
 			Contacto contactoSeleccionado = controlador
 					.buscarContactoDeUsuario(t.getValueAt(t.getSelectedRow(), 0).toString());
-			if (contactoSeleccionado instanceof Grupo) {
+			if (contactoSeleccionado instanceof Grupo) { //Si el contacto seleccionado es un grupo
 				VentanaEditarGrupo ventanaEditarGrupo = new VentanaEditarGrupo((Grupo) contactoSeleccionado);
 				ventanaEditarGrupo.setVisible(true);
 				dispose();
-			}else {
+			}else { //Si el contacto seleccionado es un contacto individual
                 VentanaEditarContacto ventanaEditarContacto = new VentanaEditarContacto((ContactoIndividual) contactoSeleccionado);
                 ventanaEditarContacto.setVisible(true);
                 dispose();

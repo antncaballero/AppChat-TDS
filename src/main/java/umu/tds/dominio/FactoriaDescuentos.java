@@ -21,10 +21,24 @@ public enum FactoriaDescuentos {
 		return descuentos;
 	}
 	
+	/**
+	 * Comprueba si el usuario cumple las condiciones para aplicar el descuento por
+	 * mensajes
+	 * 
+	 * @param u Usuario
+	 * @return true si cumple las condiciones, false en caso contrario
+	 */
 	private boolean DescuentoPorMensajesAplicable(Usuario u) {      
         return u.getNumMensajesUltimoMes() > NUM_MENSAJES_DESCUENTO;      
     }
 	
+	/**
+	 * Comprueba si el usuario cumple las condiciones para aplicar el descuento por 
+	 * fecha de registro
+	 * 
+	 * @param u Usuario
+	 * @return true si cumple las condiciones, false en caso contrario
+	 */
 	private boolean DescuentoPorFechaAplicable(Usuario u) {
 		return u.getFechaRegistro().isAfter(FECHA_INICIO_DESCUENTO) && u.getFechaRegistro().isBefore(FECHA_FIN_DESCUENTO);
 		

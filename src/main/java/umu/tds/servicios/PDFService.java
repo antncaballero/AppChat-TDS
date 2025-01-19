@@ -58,7 +58,7 @@ public enum PDFService {
 
 			c.getTodosLosMensajes(usuario).forEach(m -> {
 				PdfPCell cell;
-				if (!m.getEmisor().equals(usuario)) {
+				if (!m.getEmisor().equals(usuario)) {//Comprobamos si el mensaje es del usuario
 					cell = crearCeldaIzquierda(m, regularFont, boldFont);
 					table.addCell(cell);
 					table.addCell(createEmptyCell());

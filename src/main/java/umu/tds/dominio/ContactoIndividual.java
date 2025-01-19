@@ -59,6 +59,13 @@ public class ContactoIndividual extends Contacto {
 		return contacto.isPresent() ? contacto.get().getMensajesRecibidos() : new LinkedList<>();
 	}
 	
+	
+	/**
+	 * Devuelve el contacto individual asociado a un usuario
+	 * 
+	 * @param usuario
+	 * @return contacto individual asociado al usuario
+	 */
 	private Optional<ContactoIndividual> encontrarContactoIndividualPorUsuario(Usuario usuario) {
 		return usuarioAsociado.getContactos().stream()
 				.filter(c -> c instanceof ContactoIndividual)

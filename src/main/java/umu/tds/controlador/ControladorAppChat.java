@@ -15,7 +15,6 @@ import umu.tds.servicios.BuscarMsgService;
 import umu.tds.servicios.PDFService;
 import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
-import umu.tds.dominio.Descuento;
 import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.RepositorioUsuarios;
@@ -135,7 +134,7 @@ public class ControladorAppChat {
 	 */
 	public boolean registrarUsuario(String nombre, String apellidos, int numTlf, String password, String estado,LocalDate fechaNacimiento, String email, String fotoPerfilCodificada) {
 		Usuario user = new Usuario(nombre, apellidos, numTlf, password, estado, fechaNacimiento, email, fotoPerfilCodificada);
-		if (!repositorioUsuarios.contains(user)) {
+		if (!repositorioUsuarios.contains(user)) { //Comprobamos que no exista el usuario
 			adaptadorUsuario.registrarUsuario(user);
 			repositorioUsuarios.add(user);			
 			return true;
@@ -185,8 +184,8 @@ public class ControladorAppChat {
 	 * @param contacto
 	 */
 	public void enviarMensaje(String texto, Contacto contacto) {
-		Mensaje mensajeNuevo = new Mensaje(texto, usuarioActual, contacto);
-		usuarioActual.enviarMensaje(mensajeNuevo, contacto);
+		Mensaje mensajeNuevo = new Mensaje(texto, usuarioActual, contacto); //Creamos el mensaje a enviar
+		usuarioActual.enviarMensaje(mensajeNuevo, contacto);//Lo añadimos a la lista de mensajes
 		adaptadorMensaje.registrarMensaje(mensajeNuevo);
 
 		if (contacto instanceof ContactoIndividual) {
@@ -288,12 +287,12 @@ public class ControladorAppChat {
 	 * @param nombreContato
 	 * @return lista de mensajes encontrados
      */
-	public List<Mensaje> buscarMensaje(String texto, String tlf, String nombreContacto) {
+	public List<Mensaje> buscarMensaje(String texto, String tlf, String nombreContacto, boolean isEnviados, boolean isRecibidos) {
 		List<Mensaje> mensajes = usuarioActual.getContactos().stream()
 				.flatMap(c -> c.getTodosLosMensajes(usuarioActual).stream())
 				.distinct()
 				.collect(Collectors.toList());
-		return buscadorMensajes.buscarMensajes(usuarioActual, mensajes, tlf, nombreContacto, texto);
+		return buscadorMensajes.buscarMensajes(usuarioActual, mensajes, tlf, nombreContacto, texto, isEnviados, isRecibidos);
 	}
 
 	/**
@@ -303,13 +302,12 @@ public class ControladorAppChat {
 	 */
 	public boolean anadirContactoNuevo(String nombre, String tlf) {
 		if (repositorioUsuarios.containsTlf(Integer.parseInt(tlf))) { // Si el usuario existe, comprobamos que sea ContactoNuevo
-			Usuario usuarioAsociado = repositorioUsuarios.getUsuarioPorTlf(Integer.parseInt(tlf));
+			Usuario usuarioAsociado = repositorioUsuarios.getUsuarioPorTlf(Integer.parseInt(tlf)); //Obtenemos el usuario asociado al tlf
 			Optional<ContactoIndividual> contacto = Optional.ofNullable((ContactoIndividual)usuarioActual.encontrarContactoPorNumTlf(Integer.parseInt(tlf)));
-			if (usuarioAsociado.equals(usuarioActual)) {
+			if (usuarioAsociado.equals(usuarioActual)) { //Comprobamos que no sea el mismo usuario
                 //No se puede añadir a uno mismo
                 return false;
-            } else if (!contacto.isPresent()) {
-				//contacto no esta registrado
+            } else if (!contacto.isPresent()) { //contacto no esta registrado
 				ContactoIndividual nuevoContacto = new ContactoIndividual(nombre, usuarioAsociado);
 				adaptadorContactoIndividual.registrarContactoIndividual(nuevoContacto);
 				usuarioActual.addContacto(nuevoContacto);
