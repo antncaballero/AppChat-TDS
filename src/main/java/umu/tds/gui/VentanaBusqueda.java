@@ -36,6 +36,7 @@ import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.Usuario;
 import umu.tds.utils.Utils;
+import javax.swing.JComboBox;
 
 @SuppressWarnings("serial")
 public class VentanaBusqueda extends JFrame {
@@ -87,7 +88,7 @@ public class VentanaBusqueda extends JFrame {
 		panelArriba.add(lblTexto);
 		panelArriba.add(textFieldTexto);
 		
-		JPanel panelAbajo = new JPanel();
+		JPanel panelMedio = new JPanel();
 		
 		JLabel lblTlf = new JLabel("Teléfono: ");
 		lblTlf.setFont(new Font("Segoe UI", Font.PLAIN, 15));
@@ -95,23 +96,44 @@ public class VentanaBusqueda extends JFrame {
 		textFieldTlf = new JTextField();
 		textFieldTlf.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		textFieldTlf.setColumns(18);
-		panelAbajo.add(lblTlf);
-		panelAbajo.add(textFieldTlf);
+		panelMedio.add(lblTlf);
+		panelMedio.add(textFieldTlf);
 		
 		JLabel lblContacto = new JLabel("Contacto: ");
 		lblContacto.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		textFieldContacto = new JTextField();
 		textFieldContacto.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		textFieldContacto.setColumns(18);
-		panelAbajo.add(lblContacto);
-		panelAbajo.add(textFieldContacto);
-		
-		JButton btnBuscar = new JButton("Buscar");
-		btnBuscar.setFont(new Font("Segoe UI", Font.BOLD, 15));
-		panelAbajo.add(btnBuscar);
-		panelBuscar.add(panelAbajo);
+		panelMedio.add(lblContacto);
+		panelMedio.add(textFieldContacto);
+		panelBuscar.add(panelMedio);
 		
 		panelBuscar.setPreferredSize(new Dimension(800, 120));
+		
+		JPanel panelAbajo = new JPanel();
+		panelBuscar.add(panelAbajo);
+		
+		JLabel lblEmisor = new JLabel("Emisor:");
+		lblEmisor.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		panelAbajo.add(lblEmisor);
+		
+		String[] opciones = { "Todos","Enviados", "Recibidos" };
+		JComboBox<String> comboBox = new JComboBox<String>(opciones);
+		panelAbajo.add(comboBox);
+		
+		
+		JButton btnBuscar = new JButton("Buscar");
+		panelAbajo.add(btnBuscar);
+		btnBuscar.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		
+		btnBuscar.addActionListener(e -> {
+			String filtroTexto = textFieldTexto.getText();
+			String filtroTlf = textFieldTlf.getText();
+			String filtroNombreContacto = textFieldContacto.getText();
+			boolean filtroEnviados = comboBox.getSelectedIndex() == 1;
+			boolean filtroRecibidos = comboBox.getSelectedIndex() == 2;
+			buscarMensajes(filtroTexto, filtroTlf, filtroNombreContacto, filtroEnviados, filtroRecibidos);
+		});		
 		
 		mensajesBuscados = new DefaultListModel<>();
 		listaMensajes = new JList<>(mensajesBuscados);
@@ -135,23 +157,16 @@ public class VentanaBusqueda extends JFrame {
 			ventanaPrincipal.setVisible(true);
 			dispose();
 		});
-		
-		btnBuscar.addActionListener(e -> {
-			String filtroTexto = textFieldTexto.getText();
-			String filtroTlf = textFieldTlf.getText();
-			String filtroNombreContacto = textFieldContacto.getText();
-			buscarMensajes(filtroTexto, filtroTlf, filtroNombreContacto);
-		});		
 	}
 
 	/**
 	 * Método que se ejecuta al pulsar el botón de buscar.
 	 */
-	private void buscarMensajes(String texto, String tlf, String nombreContacto) {
+	private void buscarMensajes(String texto, String tlf, String nombreContacto, boolean isEnviados, boolean isRecibidos) {
 		//Antes de llamar al controlador, validamos la entrada			
-		String error = validarEntrada(texto, tlf, nombreContacto);	    
+		String error = validarEntrada(texto, tlf, nombreContacto, isEnviados, isRecibidos);	    
 		if (error.isEmpty()) {
-	    	List<Mensaje> mensajes = controlador.buscarMensaje(texto, tlf, nombreContacto);
+	    	List<Mensaje> mensajes = controlador.buscarMensaje(texto, tlf, nombreContacto, isEnviados, isRecibidos);
 	    	mensajesBuscados.clear();
 	    	listaMensajes.repaint();
 	    	mensajes.forEach(m -> mensajesBuscados.addElement(m));	    		    
@@ -168,8 +183,8 @@ public class VentanaBusqueda extends JFrame {
 	 * @param pass
 	 * @return
 	 */
-	private String validarEntrada(String texto, String tlf, String nombreContacto ) {		
-		if (texto.isEmpty() && tlf.isEmpty() && nombreContacto.isEmpty()) return ERROR_VACIO;	    	    		
+	private String validarEntrada(String texto, String tlf, String nombreContacto, boolean isEnviados, boolean isRecibidos ) {		
+		if (texto.isEmpty() && tlf.isEmpty() && nombreContacto.isEmpty() && !isEnviados && !isRecibidos) return ERROR_VACIO;	    	    		
 		if (!nombreContacto.isEmpty()) {
 	    	Optional<Contacto> contacto = Optional.ofNullable(controlador.buscarContactoDeUsuario(nombreContacto));
 	    	if (contacto.isEmpty()) return ERROR_NOMBRE_CONTACTO;	    		    
