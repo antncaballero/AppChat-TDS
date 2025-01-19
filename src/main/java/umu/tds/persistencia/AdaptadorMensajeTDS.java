@@ -15,7 +15,9 @@ import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.Usuario;
-
+/**
+ * Clase que implementa el Adaptador de Mensaje para el servicio de persistencia TDS
+ */
 public class AdaptadorMensajeTDS implements MensajeDAO {
 	
 	private static final String PROPIEDAD_EMISOR = "emisor";
@@ -23,37 +25,37 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 	private static final String PROPIEDAD_HORA = "hora";
 	private static final String PROPIEDAD_TEXTO = "texto";
 	private static final String PROPIEDAD_EMOTICONO = "emoticono";
-	private static final String PROPIEDAD_TIPO_RECEPTOR = "tipoReceptor";
-	
+	private static final String PROPIEDAD_TIPO_RECEPTOR = "tipoReceptor";	
 	
 	private static ServicioPersistencia servPersistencia;
 	private static AdaptadorMensajeTDS unicaInstancia = null;
-	
+	/**
+	 * Devuelve la unica instancia de AdaptadorMensajeTDS
+	 * @return unicaInstancia
+	 */
 	public static AdaptadorMensajeTDS getInstancia() {
-		if (unicaInstancia == null) {
-			return new AdaptadorMensajeTDS();
-		} else {
-			return unicaInstancia;
-		}
+		if (unicaInstancia == null) return new AdaptadorMensajeTDS();
+		else return unicaInstancia;	
 	}
-	
+	/**
+	 * Constructor de AdaptadorMensajeTDS
+	 */
 	private AdaptadorMensajeTDS() {
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
-	
+	/**
+	 * Registra un mensaje en la base de datos
+	 * @param mensaje
+	 */
 	public void registrarMensaje(Mensaje mensaje) {
-		//Comprobamos si ya esta registrado
 		Optional<Entidad> eMensaje = Optional.ofNullable(servPersistencia.recuperarEntidad(mensaje.getCodigo()));
 		if (eMensaje.isPresent()) return;
 		
 		//Registramos sus objetos asociados
 		AdaptadorUsuarioTDS.getInstancia().registrarUsuario(mensaje.getEmisor());
-		if (mensaje.getReceptor() instanceof ContactoIndividual) {
-			AdaptadorContactoIndividualTDS.getInstancia().registrarContactoIndividual((ContactoIndividual) mensaje.getReceptor());
-	    } else {
-	    	AdaptadorGrupoTDS.getInstancia().registrarGrupo((Grupo) mensaje.getReceptor());
-	    }
-		
+		if (mensaje.getReceptor() instanceof ContactoIndividual) AdaptadorContactoIndividualTDS.getInstancia().registrarContactoIndividual((ContactoIndividual) mensaje.getReceptor());
+	    else AdaptadorGrupoTDS.getInstancia().registrarGrupo((Grupo) mensaje.getReceptor());
+	    		
 		//Creamos una entidad mensaje
 		eMensaje = Optional.of(new Entidad());
 		//Asignamos tipo
@@ -70,16 +72,14 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 			        
 			     ))
 		);
-		//Registramos la entidad
-		eMensaje = Optional.ofNullable(servPersistencia.registrarEntidad(eMensaje.get()));
-		
-		//Asignamos el codigo unico, aprovechamos el que genera el servicio de persistencia
-		mensaje.setCodigo(eMensaje.get().getId());
-		
-		//Añadimos al pool
+		eMensaje = Optional.ofNullable(servPersistencia.registrarEntidad(eMensaje.get()));		
+		mensaje.setCodigo(eMensaje.get().getId());		
 		PoolDAO.INSTANCE.addObject(mensaje.getCodigo(), mensaje);
 	}
-
+	/**
+	 * Borra un mensaje de la base de datos
+	 * @param mensaje
+	 */
 	public void borrarMensaje(Mensaje mensaje) {
 		//Recuperamos la entidad
 		Entidad eMensaje = servPersistencia.recuperarEntidad(mensaje.getCodigo());
@@ -92,12 +92,11 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 			PoolDAO.INSTANCE.removeObject(mensaje.getCodigo());
 		
 	}
-
+	/**
+	 * Modifica un mensaje en la base de datos
+	 */
 	public void modificarMensaje(Mensaje mensaje) {
-		// Recuperamos la entidad
 		Entidad eMensaje = servPersistencia.recuperarEntidad(mensaje.getCodigo());
-
-		//Se recorren sus propiedades y se actualiza su valor
 		for (Propiedad prop : eMensaje.getPropiedades()) {
 			if (prop.getNombre().equals(PROPIEDAD_TEXTO)) {
 				prop.setValor(mensaje.getTexto());
@@ -113,12 +112,13 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 			servPersistencia.modificarEntidad(eMensaje);
 		}		
 	}
-
+	/**
+	 * Recupera un mensaje de la base de datos
+	 * @param codigo
+	 */
 	public Mensaje recuperarMensaje(int codigo) {
 		//Si esta en el pool, lo devolvemos
-		if (PoolDAO.INSTANCE.contains(codigo))
-			return (Mensaje) PoolDAO.INSTANCE.getObject(codigo);
-		
+		if (PoolDAO.INSTANCE.contains(codigo)) return (Mensaje) PoolDAO.INSTANCE.getObject(codigo);		
 		//Sino, recuperamos la entidad
 		Entidad eMensaje = servPersistencia.recuperarEntidad(codigo);
 		
@@ -137,12 +137,9 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		//Añadimos al pool antes de llamar a otros adaptadores
 		PoolDAO.INSTANCE.addObject(codigo, mensaje);
 		
-		emisor = AdaptadorUsuarioTDS.getInstancia().recuperarUsuario(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_EMISOR)));
-		
-		if (tipo.equals("grupo"))
-			receptor = AdaptadorGrupoTDS.getInstancia().recuperarGrupo(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_RECEPTOR)));
-		else
-			receptor = AdaptadorContactoIndividualTDS.getInstancia().recuperarContactoIndividual(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_RECEPTOR)));
+		emisor = AdaptadorUsuarioTDS.getInstancia().recuperarUsuario(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_EMISOR)));		
+		if (tipo.equals("grupo")) receptor = AdaptadorGrupoTDS.getInstancia().recuperarGrupo(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_RECEPTOR)));
+		else receptor = AdaptadorContactoIndividualTDS.getInstancia().recuperarContactoIndividual(Integer.parseInt(servPersistencia.recuperarPropiedadEntidad(eMensaje, PROPIEDAD_RECEPTOR)));
 		
 		mensaje.setEmisor(emisor);
 		mensaje.setReceptor(receptor);
@@ -150,8 +147,9 @@ public class AdaptadorMensajeTDS implements MensajeDAO {
 		//Devolvemos el mensaje
 		return mensaje;
 	}
-
-	@Override
+	/**
+	 * Recupera todos los mensajes de la base de datos
+	 */
 	public List<Mensaje> recuperarTodosLosMensajes() {
 		List<Mensaje> mensajes = new ArrayList<Mensaje>();
 		List<Entidad> eMensajes = servPersistencia.recuperarEntidades("mensaje");

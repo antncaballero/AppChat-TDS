@@ -17,7 +17,9 @@ import umu.tds.dominio.Contacto;
 import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Grupo;
 import umu.tds.dominio.Usuario;
-
+/**
+ * Clase que implementa el Adaptador de Usuario para el servicio de persistencia TDS
+ */
 public class AdaptadorUsuarioTDS implements UsuarioDAO {
 	
 	private static final String PROPIEDAD_NOMBRE = "nombre";
@@ -33,23 +35,25 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 	private static final String PROPIEDAD_GRUPOS = "grupos";
 	private static final String PROPIEDAD_FECHA_REGISTRO = "fechaRegistro";
 	
-	
 	private static ServicioPersistencia servPersistencia;
 	private static AdaptadorUsuarioTDS unicaInstancia = null;
-	
+	/**
+	 * Devuelve la unica instancia de la clase
+	 * @return unicaInstancia
+	 */
 	public static AdaptadorUsuarioTDS getInstancia() {
-		if (unicaInstancia == null) {
-			return new AdaptadorUsuarioTDS();
-		}else {
-			return unicaInstancia;
-		}
+		if (unicaInstancia == null) return new AdaptadorUsuarioTDS();
+		else return unicaInstancia;	
 	}
 	
 	private AdaptadorUsuarioTDS() {
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
 	
-	@Override
+	/**
+	 * Registra un usuario en la base de datos
+	 * @param user Usuario a registrar
+	 */
 	public void registrarUsuario(Usuario user) {
 		//Comprobamos si ya esta registrado
 		Optional<Entidad> eUsuario = Optional.ofNullable(servPersistencia.recuperarEntidad(user.getCodigo()));
@@ -63,7 +67,6 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 				AdaptadorGrupoTDS.getInstancia().registrarGrupo((Grupo) contacto);
 			}
 		}
-		
 		//Creamos una entidad usuario
 		eUsuario = Optional.of(new Entidad());
         //Asignamos tipo
@@ -86,23 +89,19 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 				new Propiedad(PROPIEDAD_CONTACTOS, obtenerCodigosContactos(contactosInd)),
 				new Propiedad(PROPIEDAD_GRUPOS, obtenerCodigosContactos(grupos)),
 				new Propiedad(PROPIEDAD_FECHA_REGISTRO, user.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))) 
-			    )));
+			    )));	
 		
-		// registrar entidad cliente
 		eUsuario = Optional.ofNullable(servPersistencia.registrarEntidad(eUsuario.get()));
-		// asignar identificador unico al usuario, aprovechando el que genera el servicio de persistencia
-		user.setCodigo(eUsuario.get().getId());
-		
-		//Añadimos al pool
+		user.setCodigo(eUsuario.get().getId());		
 		PoolDAO.INSTANCE.addObject(user.getCodigo(), user);
 	}
-	
-
-	@Override
+	/**
+	 * Borra un usuario de la base de datos
+	 * @param user Usuario a borrar
+	 */
 	public void borrarUsuario(Usuario user) {
 		//Se recupera entidad usuario
-		Entidad eUsuario = servPersistencia.recuperarEntidad(user.getCodigo());
-		
+		Entidad eUsuario = servPersistencia.recuperarEntidad(user.getCodigo());		
 		//Eliminamos sus entidades agregadas
 		for (Contacto contacto : user.getContactos()) {
 			if (contacto instanceof ContactoIndividual) {
@@ -110,18 +109,18 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 			} else{
 				AdaptadorGrupoTDS.getInstancia().borrarGrupo((Grupo) contacto);
 			}
-		}
-		
+		}		
 		//Eliminamos la entidad usuario
-		servPersistencia.borrarEntidad(eUsuario);
-		
+		servPersistencia.borrarEntidad(eUsuario);		
 		//Si esta en el pool, lo eliminamos
 		if (PoolDAO.INSTANCE.contains(user.getCodigo()))
-			PoolDAO.INSTANCE.removeObject(user.getCodigo());
-		
+			PoolDAO.INSTANCE.removeObject(user.getCodigo());		
 	}
 
-	@Override
+	/**
+	 * Modifica un usuario en la base de datos
+	 * @param user
+	 */
 	public void modificarUsuario(Usuario user) {
 		//Se recupera entidad
 		Entidad eUsuario = servPersistencia.recuperarEntidad(user.getCodigo());
@@ -161,7 +160,10 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		}
 	}
 
-	@Override
+	/**
+	 * Recupera un usuario de la base de datos
+	 * @param Codigo del usuario a recuperar
+	 */
 	public Usuario recuperarUsuario(int codigo) {
 		//Si esta en el pool, devolvemos el objeto del pool
 		if (PoolDAO.INSTANCE.contains(codigo))
@@ -195,28 +197,38 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 		List<Contacto> grupos = obtenerGruposDesdeCodigos(servPersistencia.recuperarPropiedadEntidad(eUsuario, PROPIEDAD_GRUPOS));		
 		contactos.addAll(grupos);
 		
-		usuario.setContactos(contactos);
-		
-		//Devolvemos el usuario
+		usuario.setContactos(contactos);	
 		return usuario;
 	}
-	
-	@Override
+	/**
+	 * Recupera todos los usuarios de la base de datos
+	 * @return Lista de usuarios
+	 */
 	public List<Usuario> recuperarTodosLosUsuarios() {
 		List<Usuario> usuarios = new LinkedList<Usuario>();
 		List<Entidad> eUsuarios = servPersistencia.recuperarEntidades("usuario");
 		eUsuarios.forEach(e -> usuarios.add(recuperarUsuario(e.getId())));
 		return usuarios;
 	}
-//Funciones auxiliares
+
+	//Funciones auxiliares
 	
+	/**
+	 * Obtiene los codigos de los contactos
+	 * @param contactos
+	 * @return Cadena con los codigos de los contactos
+	 */
 	private String obtenerCodigosContactos(List<Contacto> contactos) {
 		return contactos.stream()
 				.map(c -> String.valueOf(c.getCodigo()))
 				.reduce("", (l, c) -> l + c + " ")
 				.trim();
 	}
-	
+	/**
+	 * Obtiene los contactos individuales a partir de los codigos
+	 * @param codigos
+	 * @return Lista de contacto individuales
+	 */
 	private List<Contacto> obtenerContactosIndividualesDesdeCodigos(String codigos) {		
 		return Arrays.stream(codigos.split(" "))
 				.filter(codigo -> !codigo.isEmpty())  //filtro cadenas vacias
@@ -224,7 +236,11 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
                 .map(AdaptadorContactoIndividualTDS.getInstancia()::recuperarContactoIndividual)
                 .collect(Collectors.toList());		
 	}
-	
+	/**
+	 * Obtiene los grupos a partir de los codigos
+	 * @param codigos
+	 * @return Lista de grupos
+	 */
 	private List<Contacto> obtenerGruposDesdeCodigos(String codigos) {
 		return Arrays.stream(codigos.split(" "))
 				.filter(c -> !c.isEmpty())
@@ -232,8 +248,4 @@ public class AdaptadorUsuarioTDS implements UsuarioDAO {
 				.map(AdaptadorGrupoTDS.getInstancia()::recuperarGrupo)
 				.collect(Collectors.toList());
 	}
-
-	
-	
-	
 }

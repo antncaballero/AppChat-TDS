@@ -1,14 +1,18 @@
 package umu.tds.persistencia;
-
-
-
+/**
+ *  Factoría abstracta para la creación de las distintas factorías DAO concretas
+ */
 public abstract class FactoriaDAO {
 
 	private static FactoriaDAO unicaInstancia;
-
 	public static final String DAO_TDS = "umu.tds.persistencia.TDSFactoriaDAO";
 
-	
+	/**
+	 * Obtiene la instancia única de la factoría
+	 * @param tipo
+	 * @return la instancia única de la factoría
+	 * @throws DAOException
+	 */
 	public static FactoriaDAO getInstancia(String tipo) throws DAOException {
 		if (unicaInstancia == null)
 			try {
@@ -18,12 +22,18 @@ public abstract class FactoriaDAO {
 			}
 		return unicaInstancia;
 	}
-
+	/**
+	 * Obtiene una instancia de la Factoría por defecto
+	 * @return
+	 * @throws DAOException
+	 */
 	public static FactoriaDAO getInstancia() throws DAOException {
 			return getInstancia(FactoriaDAO.DAO_TDS);	
 	}
 
-	/* Constructor */
+	/**
+	 * Constructor por defecto protegido para que sólo las factorías concretas puedan usarlo
+     */
 	protected FactoriaDAO() {
 	}
 

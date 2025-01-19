@@ -1,7 +1,9 @@
 package umu.tds.persistencia;
 
 import java.util.HashMap;
-
+/**
+ * Clase que implementa un pool de objetos
+ */
 public enum PoolDAO{
 	INSTANCE;
 	

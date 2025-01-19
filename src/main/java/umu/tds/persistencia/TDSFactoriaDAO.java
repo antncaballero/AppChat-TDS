@@ -1,5 +1,7 @@
 package umu.tds.persistencia;
-
+/**
+ * Clase que implementa una factoria de DAOs concreta para el sistema de persistencia TDS
+ */
 public class TDSFactoriaDAO extends FactoriaDAO{
 	
 	public TDSFactoriaDAO () {

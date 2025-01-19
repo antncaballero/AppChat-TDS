@@ -25,7 +25,7 @@ public class AppChatLoader {
 		
 		//Usuarios de prueba
 		Usuario u1 = new Usuario("Pepe", "López", 123456789, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba2.jpeg")));
-		Usuario u2 = new Usuario("Antonio", "López", 111111111, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
+		Usuario u2 = new Usuario("Antonio", "López", 111111111, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba3.jpg")));
 		Usuario u3 = new Usuario("Jose", "López Rodríguez", 222222222, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
 		Usuario u4 = new Usuario("Pepe", "López", 333333333, "pass", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/user.png")));
 		Usuario u5 = new Usuario("Juan", "López", 444444444, "pass", "prueba de estadoprueba de estadoprueba de estadoprueba de estadoprueba de estadoprueba de estado", LocalDate.of(2004, 7, 5), "name@gmail.com", Utils.convertImageToBase64(new File("src/main/resources/fotoPrueba1.jpeg")));

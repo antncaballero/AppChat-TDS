@@ -3,7 +3,9 @@ package umu.tds.persistencia;
 import java.util.List;
 
 import umu.tds.dominio.ContactoIndividual;
-
+/**
+ * Interfaz que define las operaciones de persistencia relacionadas con los contactos individuales
+ */
 public interface ContactoIndividualDAO {
 
 	public void registrarContactoIndividual(ContactoIndividual contactoIndividual);

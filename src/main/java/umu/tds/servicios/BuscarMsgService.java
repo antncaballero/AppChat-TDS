@@ -8,9 +8,23 @@ import umu.tds.dominio.ContactoIndividual;
 import umu.tds.dominio.Mensaje;
 import umu.tds.dominio.Usuario;
 
+/**
+ * Clase que representa un servicio para buscar mensajes en la aplicación
+ */
 public enum BuscarMsgService {
 	INSTANCE;
-
+	
+	/**
+	 * Busca mensajes en la lista de mensajes de un usuario
+	 * @param usuario
+	 * @param mensajes sobre los que buscar
+	 * @param filtro tlf
+	 * @param filtro nombreContacto
+	 * @param filtro texto
+	 * @param filtro isEnviados
+	 * @param filtro isRecibidos
+	 * @return Lista de mensajes que cumplen los filtros, ordenados por fecha
+	 */
 	public List<Mensaje> buscarMensajes(Usuario usuario, List<Mensaje> mensajes, String tlf, String nombreContacto, String texto, boolean isEnviados, boolean isRecibidos) {				
 		return mensajes.stream()
 				.filter(filtroTelefono(tlf))					
@@ -24,25 +38,41 @@ public enum BuscarMsgService {
 	
 	//Filtros como funciones que devuelven predicados
 	
-	//Filtro que comprueba si el texto del mensaje contiene el texto introducido
+	/**
+	 * Filtro que comprueba si el texto del mensaje contiene el texto introducido
+	 * @param texto
+	 * @return predicado que comprueba si el texto del mensaje contiene el texto introducido
+	 */
 	private Predicate<Mensaje> filtroTexto(String texto) {
 		return m -> texto.isEmpty() || m.getTexto().contains(texto);
 	}
-	
-	//Filtros que comprueban si el emisor del mensaje es el usuario
+	/**
+	 * Filtro que comprueba si el emisor del mensaje es el usuario
+	 * @param usuario
+	 * @param isEnviados
+	 * @return
+	 */
 	private Predicate<Mensaje> filtroEmisor(Usuario usuario, boolean isEnviados) {
 		return m -> !isEnviados || m.getEmisor().equals(usuario);
 	}
-	
-	//Filtros que comprueban si el receptor del mensaje es el usuario
+	/**
+	 * Filtro que comprueba si el receptor del mensaje es el usuario
+	 * @param usuario
+	 * @param isRecibidos
+	 * @return
+	 */
 	private Predicate<Mensaje> filtroReceptor(Usuario usuario, boolean isRecibidos) {
 		return m -> {
 			if (!isRecibidos) return true; // no se ha seleccionado recibidos
-			return m.getReceptor() instanceof ContactoIndividual && ((ContactoIndividual) m.getReceptor()).getUsuarioAsociado().equals(usuario);
+			return m.getReceptor() instanceof ContactoIndividual 
+					&& ((ContactoIndividual) m.getReceptor()).getUsuarioAsociado().equals(usuario);
 		};		
 	}
-	
-	//Filtro que comprueba si el teléfono del emisor o receptor del mensaje coincide con el introducido
+	/**
+	 * Filtro que comprueba si el mensaje está asociado (emisor o receptor) al teléfono introducido
+	 * @param tlf
+	 * @return
+	 */
 	private Predicate<Mensaje> filtroTelefono(String tlf) {
 		return m -> {
 			if (tlf.isEmpty()) return true; 												// no hay filtro por tlf
@@ -54,8 +84,12 @@ public enum BuscarMsgService {
 			return false;
 		};
 	}
-	
-	//Filtro que comprueba si el nombre del contacto coincide con el introducido
+	/**
+	 * Filtro que comprueba si el nombre del contacto corresponde al emisor o receptor del mensaje
+	 * @param u
+	 * @param nombreContacto
+	 * @return
+	 */
 	private Predicate<Mensaje> filtroNombreContacto(Usuario u, String nombreContacto) {
 		return m -> {
 			if (nombreContacto.isEmpty()) return true; 														// no se ha introducido nombre
