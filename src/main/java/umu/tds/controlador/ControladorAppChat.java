@@ -60,13 +60,13 @@ public class ControladorAppChat {
 		try {
 			//por defecto se crea FactoriaTDS, se le podría especificar el tipo de factoría
 			factoria = FactoriaDAO.getInstancia();
+			adaptadorUsuario = factoria.getUsuarioDAO();
+			adaptadorContactoIndividual = factoria.getContactoIndividualDAO();
+			adaptadorGrupo = factoria.getGrupoDAO();
+			adaptadorMensaje = factoria.getMensajeDAO();
 		} catch (DAOException e) {
 			e.printStackTrace();
-		}
-		adaptadorUsuario = factoria.getUsuarioDAO();
-		adaptadorContactoIndividual = factoria.getContactoIndividualDAO();
-		adaptadorGrupo = factoria.getGrupoDAO();
-		adaptadorMensaje = factoria.getMensajeDAO();
+		}		
 	}
 
 	/**
@@ -367,7 +367,7 @@ public class ControladorAppChat {
 		.filter(m -> !usuarioActual.tieneAgregado(m.getEmisor())) 					//emisor no está en la lista de contactos del usuario actual
 		.map(m -> m.getEmisor())                                                    //obtenemos el emisor						
 		.distinct()				                                                    //eliminamos duplicados
-		.forEach(u -> anadirContactoPorTlf(String.valueOf(u.getNumTlf()), u));		//se crea un contacto ficticio para el usuario
+		.forEach(u -> anadirContactoPorTlf(String.valueOf(u.getNumTlf()), u));		//se crea un contacto ficticio para el usuario	
 		
 		adaptadorUsuario.modificarUsuario(usuarioActual);
 	}
