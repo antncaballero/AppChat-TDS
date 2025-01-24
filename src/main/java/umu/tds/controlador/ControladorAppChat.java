@@ -356,7 +356,7 @@ public class ControladorAppChat {
 	 * Método para cargar los mensajes de los usuarios que han enviado mensajes a usuario y no están agregados
 	 * @param usuario
 	 */
-	public void cargarMensajesDeNoAgregados() {
+	private void cargarMensajesDeNoAgregados() {
 		//Obtenemos los usuarios que han enviado mensajes a usuario y no están en su lista de contactos
 		adaptadorMensaje.recuperarTodosLosMensajes().stream()
 			.filter(m -> m.getReceptor() instanceof ContactoIndividual)					//receptor es un contacto individual

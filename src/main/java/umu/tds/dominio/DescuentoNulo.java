@@ -17,4 +17,9 @@ public class DescuentoNulo implements Descuento {
 		return "Sin descuento";
 	}
 
+	@Override
+	public boolean isApplicable(Usuario u) {
+		return true;
+	}
+
 }
